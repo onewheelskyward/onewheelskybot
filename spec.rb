@@ -1,9 +1,11 @@
 require 'rspec'
 require_relative 'helpers'
 
+DataMapper::Logger.new($stdout, :debug)
+#DataMapper.setup(:default, "sqlite::memory:")
+DataMapper.setup(:default, "postgres://localhost/beers")
+DataMapper.finalize
+DataMapper.auto_migrate!
+
 describe "stuff" do
-  it "should" do
-    x = grab_baileys
-    x['status'].should == "ok"
-  end
 end

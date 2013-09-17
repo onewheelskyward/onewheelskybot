@@ -1,0 +1,6 @@
+server: localhost
+nick: guest
+user: bot
+realname: bot
+password: password
+port: 1919

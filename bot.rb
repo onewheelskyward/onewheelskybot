@@ -1,5 +1,16 @@
 require 'cinch'
 require 'mechanize'
+require 'open-uri'
+require 'json'
+
+def handle_image(search_term)
+	url = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=#{URI::encode search_term}"
+	agent = Mechanize.new
+	agent.get(url) do |result|
+		parsed = JSON.parse result.body
+		return parsed['responseData']['results'][0]['url']
+	end
+end
 
 bot = Cinch::Bot.new do
   configure do |c|
@@ -8,13 +19,17 @@ bot = Cinch::Bot.new do
 	c.user = "onewheelskybot"
 	c.realname = "onewheelskybot"
 	c.password = "password"
-	c.port = 19191
+	c.port = 1919
 
     #c.channels = ["#pdxbots"]
   end
 
-  on :message, "beer" do |m|
-    m.reply "Hello, #{m.user.nick}"
+  on :message, /onewheelskybot (.*)/ do |m, element|
+    case element
+		when /^image/i
+			reply = handle_image(element.gsub /image\s*m*e*\s*/, '')
+	end
+	m.reply reply
   end
 end
 

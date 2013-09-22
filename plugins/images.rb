@@ -7,7 +7,7 @@ class Images
 
   #listen_to :message, :method => :on_connect
   #match /help(.*)/i, :use_prefix => false, :react_on => :private
-  match /image\s*m*e*\s(.*)/i, use_prefix: false, method: :image_search #, react_on: :channel
+  match /image\s*m*e*\s(.*)/i, method: :image_search #, react_on: :channel
 
   set :help, <<-EOF
 [/msg] image me [x]

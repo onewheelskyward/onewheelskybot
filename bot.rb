@@ -12,8 +12,9 @@ bot = Cinch::Bot.new do
     c.realname = config['realname']
     c.password = config['password']
     c.port = config['port']
-    c.plugins.plugins = [Images]
-    #c.plugins.options[Cinch::Plugins::Images][:nick] = config['nick']
+    c.plugins.plugins = [Images, Wolfram]
+    c.plugins.options[Wolfram][:wolfram_url] = config['wolfram_url']
+    c.plugins.options[Wolfram][:wolfram_appid] = config['wolfram_appid']
     #c.channels = ["#pdxbots"]
   end
 

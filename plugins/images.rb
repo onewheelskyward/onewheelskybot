@@ -14,17 +14,50 @@ class Images
   Display an image of [x]
   EOF
 
+  def get_google_url(query)
+    "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=#{URI::encode query}"
+  end
+
   def image_search(msg, query)
-    url = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=#{URI::encode query}"
+    url = get_google_url(query)
+
     image_url = nil
+    req = ApiRequest.first_or_create(type: :image, request: query)
+    if req.reply
+      msg.reply("* #{req.reply}")
+    else
+      result = api_call(url)
+      parsed = JSON.parse result
+      image_url = get_image_url(parsed)
 
-    agent = Mechanize.new
-    agent.get(url) do |result|
-      parsed = JSON.parse result.body
-      image_url = parsed['responseData']['results'][0]['url']
+      req.response = result
+      req.reply = image_url
+      req.save
+
+      msg.reply(image_url)    if image_url
     end
+  end
 
-    msg.reply(image_url)    if image_url
+  def get_image_url(parsed)
+    #Todo: Return a different image if this one has been used.
+    agent = Mechanize.new
+    parsed['responseData']['results'].each do |image|
+      puts "Image URL: #{image['url']}"
+      if image['url']
+        begin
+          info = agent.head(image['url'])
+          return image['url']
+        rescue Mechanize::ResponseCodeError => e
+          puts "image['url'] not found. #{e.inspect}"
+        end
+      end
+    end
+  end
+
+  def api_call(url)
+    agent = Mechanize.new
+    result = agent.get(url)
+    result.body
   end
 
 
@@ -37,6 +70,7 @@ class Images
   # where +Plugin+ is the plugin’s class object. It also parses configuration
   # options.
   def on_connect(msg)
+    @agent = Mechanize.new
     #@help = {}
 
     #if config[:intro]

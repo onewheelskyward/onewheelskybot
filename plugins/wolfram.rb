@@ -2,17 +2,24 @@ require 'mechanize'
 require 'open-uri'
 require 'json'
 require 'nokogiri'
+require 'data_mapper'
+require 'dm-postgres-adapter'
+require_relative '../models/api_request'
 
 class Wolfram
   include Cinch::Plugin
+  DataMapper::Logger.new($stdout, :debug)
+  DataMapper.setup(:default, "postgres://localhost/skybot")
+  DataMapper.finalize
+  ApiRequest.auto_upgrade!
 
   #listen_to :message, :method => :on_connect
   #match /help(.*)/i, :use_prefix => false, :react_on => :private
   match /alpha\s*m*e*\s(.*)/i, method: :wolfram_alpha_search #, react_on: :channel
 
   set :help, <<-EOF
-[/msg] !alpha me [x]
-  Wolfram Alpha's [x]
+[/msg] !alpha [me] [x]
+  Wolfram Alpha search for [x]
   EOF
 
   def get_app_id
@@ -38,14 +45,24 @@ class Wolfram
       end
     end
 
+    # If the query fails, wolfram often finds something else relevant.
     if didyoumean = xml_doc.xpath("//didyoumean").first
       return "Did you mean #{didyoumean.children.to_s}?"
     end
   end
 
   def wolfram_alpha_search(msg, query)
-    xml = query_wolfram_alpha(query)
-    result = parse_search_result(xml)
-    msg.reply(result)  if result
+    # Check cache.
+    req = ApiRequest.first_or_create(request: query)
+    if req.reply
+      msg.reply("(cached) #{req.reply}")
+    else
+      xml = query_wolfram_alpha(query)
+      req.response = xml
+      reply = parse_search_result(xml)
+      req.reply = reply.gsub "\n", "  /  "
+      req.save
+      msg.reply(req.reply)  if req.reply
+    end
   end
 end

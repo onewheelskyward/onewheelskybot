@@ -15,18 +15,37 @@ class Wolfram
   Wolfram Alpha's [x]
   EOF
 
-  def wolfram_alpha_search(msg, query)
-    url = config[:wolfram_url] + URI::encode(query) + "&" + config[:wolfram_appid]
+  def get_app_id
+    "&appid=" + config[:wolfram_appid]
+  end
+
+  def query_wolfram_alpha(query)
+    url = config[:wolfram_url] + URI::encode(query) + get_app_id
 
     agent = Mechanize.new
-    agent.get(url) do |result|
-      puts result.body
-      xml_doc  = Nokogiri::SLOP result.body
-      #xml_doc.pod['
-      #parsed = JSON.parse result.body
-      #image_url = parsed['responseData']['results'][0]['url']
+    request = agent.get(url)
+    request.body
+  end
+
+  def parse_search_result(xml)
+    xml_doc = Nokogiri::XML xml
+
+    xml_doc.xpath("//pod").each_with_index do |pod, index|
+      if index == 1
+        element = pod.xpath("subpod").first
+        p element
+        return element.xpath("plaintext").children.to_s
+      end
     end
 
-    #msg.reply(image_url)    if image_url
+    if didyoumean = xml_doc.xpath("//didyoumean").first
+      return "Did you mean #{didyoumean.children.to_s}?"
+    end
+  end
+
+  def wolfram_alpha_search(msg, query)
+    xml = query_wolfram_alpha(query)
+    result = parse_search_result(xml)
+    msg.reply(result)  if result
   end
 end

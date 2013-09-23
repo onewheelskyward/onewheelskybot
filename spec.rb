@@ -10,11 +10,21 @@ DataMapper.auto_migrate!
 
 #make_bot(plugin, plugin_opts)
 include Cinch::Test
-bot = make_bot(Images)
 
-describe "stuff" do
-  message = make_message(bot, 'image me yyz')
-  replies = get_replies(message)
-  puts message.inspect
-  puts replies.inspect
+describe "Bot specs" do
+  #it "will search google for images" do
+  #  bot = make_bot(Images)
+  #  message = make_message(bot, '!image me yyz')
+  #  replies = get_replies(message)
+  #  puts message.inspect
+  #  puts replies.inspect
+  #end
+  #
+  #it "will search wolfram for pi" do
+    bot = make_bot(Wolfram, {wolfram_url: 'http://api.wolframalpha.com/v1/query?input=', wolfram_appid: 'LH99EJ-YTE6LQU6VJ'})
+    message = make_message(bot, '!alpha pi')
+    replies = get_replies(message)
+    puts message.inspect
+    puts replies.inspect
+  #end
 end

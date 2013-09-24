@@ -60,7 +60,7 @@ class Wolfram
       xml = query_wolfram_alpha(query)
       req.response = xml
       reply = parse_search_result(xml)
-      req.reply = reply.gsub "\n", "  /  "
+      req.reply = reply.to_s.gsub "\n", "  /  "
       req.save
       msg.reply(req.reply)  if req.reply
     end

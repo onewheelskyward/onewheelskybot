@@ -14,8 +14,8 @@ set :normalize_asset_timestamps, false
 namespace :deploy do
   desc "Restarting mod_rails with restart.txt"
   task :restart, :roles => :app, :except => { :no_release => true } do
-    run "pkill bot.rb"
-    run "ruby bot.rb"
+    run "/usr/bin/pkill bot.rb"
+    run "~/.rbenv/shims/ruby bot.rb"
   end
 end
 # if you want to clean up old releases on each deploy uncomment this:

@@ -8,7 +8,16 @@ set :repository,  "git@github.com:onewheelskyward/onewheelskybot"
 role :app, "pucksteak"                          # This may be the same as your `Web` server
 #role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
 #role :db,  "your slave db-server here"
+set :use_sudo,		false
+set :normalize_asset_timestamps, false
 
+namespace :deploy do
+  desc "Restarting mod_rails with restart.txt"
+  task :restart, :roles => :app, :except => { :no_release => true } do
+    run "pkill bot.rb"
+    run "ruby bot.rb"
+  end
+end
 # if you want to clean up old releases on each deploy uncomment this:
 # after "deploy:restart", "deploy:cleanup"
 

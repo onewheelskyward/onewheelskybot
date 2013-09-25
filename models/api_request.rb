@@ -2,7 +2,7 @@ class ApiRequest
   include DataMapper::Resource
 
   property :id, Serial
-  property :type, Enum[:image, :wolfram]
+  property :type, Enum[:image, :wolfram, :google]
   property :request, String, length: 4000
   property :response, Text
   property :reply, String, length: 4000

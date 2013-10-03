@@ -7,3 +7,7 @@ port: 1919
 
 wolfram_url: http://api.wolframalpha.com/v1/query?input=
 wolfram_appid:
+
+google_developer_key:
+google_application_name:
+google_application_version:

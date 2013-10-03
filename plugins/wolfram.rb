@@ -41,10 +41,18 @@ class Wolfram
       if index == 1
         element = pod.xpath("subpod").first
         p element
-        return element.xpath("plaintext").children.to_s
+        plaintext = element.xpath("plaintext").children.to_s
+        if plaintext == ""
+          plaintext = element.xpath("img").attr("src").to_s
+        end
+        return plaintext
       end
     end
 
+
+    if futuretopic = xml_doc.xpath("//futuretopic").first
+      return futuretopic.attr("msg")
+    end
     # If the query fails, wolfram often finds something else relevant.
     if didyoumean = xml_doc.xpath("//didyoumean").first
       return "Did you mean #{didyoumean.children.to_s}?"
@@ -55,7 +63,8 @@ class Wolfram
     # Check cache.
     req = ApiRequest.first_or_create(type: :wolfram, request: query)
     if req.reply
-      msg.reply("* #{req.reply}")
+      reply = parse_search_result(req.response)
+      msg.reply("* #{reply}")
     else
       xml = query_wolfram_alpha(query)
       req.response = xml

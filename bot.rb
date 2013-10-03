@@ -12,19 +12,14 @@ bot = Cinch::Bot.new do
     c.realname = config['realname']
     c.password = config['password']
     c.port = config['port']
-    c.plugins.plugins = [Images, Wolfram, Google, Youtube]
+    c.plugins.plugins = [Images, Wolfram, GoogleSearch, Youtube]
     c.plugins.options[Wolfram][:wolfram_url] = config['wolfram_url']
     c.plugins.options[Wolfram][:wolfram_appid] = config['wolfram_appid']
-    #c.channels = ["#pdxbots"]
-  end
+    c.plugins.options[GoogleSearch][:google_developer_key] = config['google_developer_key']
+    c.plugins.options[Youtube][:google_developer_key] = config['google_developer_key']
 
-  #on :message, /#{config['nick']} (.*)/ do |m, element|
-  #  case element
-  #    when /^image/i
-  #      reply = handle_image(element.gsub /image\s*m*e*\s*/, '')
-  #  end
-  #  m.reply reply  if reply
-  #end
+    c.channels = ["#booberries"]
+  end
 end
 
 bot.start

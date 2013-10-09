@@ -15,7 +15,7 @@ class ForecastIO
     url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/45.5252,-122.6751'
 
     request = HTTParty.get url
-    puts request.body
+    #puts request.body
     forecast = JSON.parse request.body
     msg.reply format_message forecast
   end

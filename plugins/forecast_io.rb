@@ -19,14 +19,17 @@ class ForecastIO
     forecast = JSON.parse request.body
     msg.reply format_message forecast
   end
-
+# °℃℉
   def format_message(forecast)
-    "Weather for PDX is currently #{forecast['currently']['temperature']}℉ " +
+    "Weather for PDX is currently #{forecast['currently']['temperature']}℉ (#{celcius forecast['currently']['temperature']}℃) " +
     "and #{forecast['currently']['summary'].downcase}.  " +
     "It will be #{forecast['minutely']['summary'].downcase.chop}, and #{forecast['hourly']['summary'].downcase.chop}.  The ozone reads #{forecast['currently']['ozone']}."
     # daily.summary
   end
 
+  def celcius(degreesF)
+    (0.5555555556 * (degreesF.to_f - 32)).round(2)
+  end
 end
 
 x = <<-end

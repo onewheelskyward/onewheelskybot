@@ -29,7 +29,7 @@ class ForecastIO
 
 end
 
-<<-end
+x = <<-end
 {
      "latitude": 45.5252,
      "longitude": -122.6751,

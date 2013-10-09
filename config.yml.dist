@@ -11,3 +11,6 @@ wolfram_appid:
 google_developer_key:
 google_application_name:
 google_application_version:
+
+forecast_io_url: https://api.forecast.io/forecast/
+forecast_io_api_key:

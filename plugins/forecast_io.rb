@@ -21,9 +21,9 @@ class ForecastIO
   end
 # °℃℉
   def format_message(forecast)
-    "Weather for PDX is currently #{forecast['currently']['temperature']}℉ (#{celcius forecast['currently']['temperature']}℃) " +
+    "Weather for PDX is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
     "and #{forecast['currently']['summary'].downcase}.  " +
-    "It will be #{forecast['minutely']['summary'].downcase.chop}, and #{forecast['hourly']['summary'].downcase.chop}.  The ozone reads #{forecast['currently']['ozone']}."
+    "It will be #{forecast['minutely']['summary'].downcase.chop}, and #{forecast['hourly']['summary'].downcase.chop}.  There are also #{forecast['currently']['ozone']} ozones."
     # daily.summary
   end
 

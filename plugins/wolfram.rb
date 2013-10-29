@@ -16,6 +16,8 @@ class Wolfram
   #listen_to :message, :method => :on_connect
   #match /help(.*)/i, :use_prefix => false, :react_on => :private
   match /alpha\s*m*e*\s(.*)/i, method: :wolfram_alpha_search #, react_on: :channel
+  match /sunset$/i, method: :sunset
+  match /sunrise$/i, method: :sunrise
 
   set :help, <<-EOF
 [/msg] !alpha [me] [x]
@@ -74,5 +76,13 @@ class Wolfram
       req.save
       msg.reply(req.reply)  if req.reply
     #end
+  end
+
+  def sunset(msg)
+    wolfram_alpha_search(msg, 'sunset pdx')
+  end
+
+  def sunrise(msg)
+    wolfram_alpha_search(msg, 'sunrise pdx')
   end
 end

@@ -16,12 +16,20 @@ class Wolfram
   #listen_to :message, :method => :on_connect
   #match /help(.*)/i, :use_prefix => false, :react_on => :private
   match /alpha\s*m*e*\s(.*)/i, method: :wolfram_alpha_search #, react_on: :channel
-  match /sunset$/i, method: :sunset
   match /sunrise$/i, method: :sunrise
+  match /sunset$/i, method: :sunset
+  match /moonrise$/i, method: :moonrise
+  match /moonset$/i, method: :moonset
+  match /moonphase$/i, method: :moonphase
 
   set :help, <<-EOF
 [/msg] !alpha [me] [x]
   Wolfram Alpha search for [x]
+[/msg] !sunrise
+[/msg] !sunset
+[/msg] !moonrise
+[/msg] !moonset
+[/msg] !moonphase
   EOF
 
   def get_app_id
@@ -78,11 +86,25 @@ class Wolfram
     #end
   end
 
+  def sunrise(msg)
+    wolfram_alpha_search(msg, 'sunrise pdx')
+  end
+
   def sunset(msg)
     wolfram_alpha_search(msg, 'sunset pdx')
   end
 
-  def sunrise(msg)
-    wolfram_alpha_search(msg, 'sunrise pdx')
+  def moonrise(msg)
+    wolfram_alpha_search(msg, 'moonrise pdx')
   end
+
+  def moonset(msg)
+    wolfram_alpha_search(msg, 'moonset pdx')
+  end
+
+  def moonphase(msg)
+    wolfram_alpha_search(msg, 'moon phase pdx')
+  end
+
+
 end

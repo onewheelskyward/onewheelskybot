@@ -61,17 +61,17 @@ class Wolfram
 
   def wolfram_alpha_search(msg, query)
     # Check cache.
-    req = ApiRequest.first_or_create(type: :wolfram, request: query)
-    if req.reply
-      reply = parse_search_result(req.response)
-      msg.reply("* #{reply}")
-    else
+    #req = ApiRequest.first_or_create(type: :wolfram, request: query, :created_at.lt => )
+    #if req.reply
+    #  reply = parse_search_result(req.response)
+    #  msg.reply("* #{reply}")
+    #else
       xml = query_wolfram_alpha(query)
       req.response = xml
       reply = parse_search_result(xml)
       req.reply = reply.to_s.gsub "\n", "  /  "
       req.save
       msg.reply(req.reply)  if req.reply
-    end
+    #end
   end
 end

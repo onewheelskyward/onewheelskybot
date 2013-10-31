@@ -31,8 +31,10 @@ class ForecastIO
 
   def get_dot(probability)
     if probability == 0
+      '_'
+    elsif probability <= 10
       '.'
-    elsif probability <= 20
+    elsif probability <= 25
       '-'
     elsif probability <= 50
       ':'

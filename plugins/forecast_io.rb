@@ -5,21 +5,53 @@ class ForecastIO
   include Cinch::Plugin
 
   match /fo*r*e*c*a*s*t*$/i, method: :execute #, react_on: :channel
+  match /asciirain/i, method: :ascii_rain_forecast
 
   set :help, <<-EOF
 [/msg] !forecast
   Forecast IO forecast for Portland.
+[/msg] !asciirain
+  Incoming rain data for the next hour.
   EOF
 
   def execute(msg)
-    url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/45.5252,-122.6751'
+    forecast = get_forecast_io_results
+    msg.reply format_message forecast
+  end
 
+  def get_forecast_io_results
+    url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/45.5252,-122.6751'
+    puts url
     request = HTTParty.get url
     #puts request.body
     forecast = JSON.parse request.body
-    msg.reply format_message forecast
   end
+
 # °℃℉
+
+  def get_dot(probability)
+    if probability == 0
+      '.'
+    elsif probability <= 20
+      '-'
+    elsif probability <= 50
+      ':'
+    elsif probability <= 75
+      '^'
+    elsif probability <= 100
+      '*'
+    end
+  end
+
+  def ascii_rain_forecast(msg)
+    forecast = get_forecast_io_results
+    str = ""
+    forecast['minutely']['data'].each do |datum|
+      str += get_dot datum['precipProbability']
+    end
+    msg.reply str
+  end
+
   def format_message(forecast)
     "Weather for PDX is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
     "and #{forecast['currently']['summary'].downcase}.  " +

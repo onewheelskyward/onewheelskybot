@@ -51,7 +51,7 @@ class ForecastIO
     forecast['minutely']['data'].each do |datum|
       str += get_dot datum['precipProbability']
     end
-    msg.reply str
+    msg.reply str + ' (Minute-by-minute rain prediction for the hour. The higher the line, the higher the chance.)'
   end
 
   def format_message(forecast)

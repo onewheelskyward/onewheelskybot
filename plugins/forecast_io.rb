@@ -6,6 +6,7 @@ class ForecastIO
 
   match /fo*r*e*c*a*s*t*$/i, method: :execute #, react_on: :channel
   match /asciirain/i, method: :ascii_rain_forecast
+  match /ansirain/i, method: :ansi_rain_forecast
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -45,6 +46,22 @@ class ForecastIO
     end
   end
 
+  def get_ansi_dot(probability)
+    if probability == 0
+      '_'
+    elsif probability == 0.10
+      '▁'
+    elsif probability <= 0.25
+      '▃'
+    elsif probability <= 0.50
+      '▅'
+    elsif probability <= 0.75
+      '▇'
+    elsif probability <= 1.00
+      '█'
+    end
+  end
+# ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg)
     forecast = get_forecast_io_results
     str = ''
@@ -52,6 +69,15 @@ class ForecastIO
       str += get_dot datum['precipProbability']
     end
     msg.reply "|#{str}|  min-by-min rain prediction.  range |_.-⸚*'*⸚-._|"
+  end
+
+  def ansi_rain_forecast(msg)
+    forecast = get_forecast_io_results
+    str = ''
+    forecast['minutely']['data'].each do |datum|
+      str += get_ansi_dot datum['precipProbability']
+    end
+    msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by agj"
   end
 
   def format_message(forecast)

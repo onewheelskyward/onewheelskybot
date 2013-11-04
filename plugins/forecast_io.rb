@@ -37,21 +37,21 @@ class ForecastIO
     elsif probability <= 0.25
       '-'
     elsif probability <= 0.50
-      ':'
+      '⸚'
     elsif probability <= 0.75
-      '^'
-    elsif probability <= 1.00
       '*'
+    elsif probability <= 1.00
+      "'"
     end
   end
 
   def ascii_rain_forecast(msg)
     forecast = get_forecast_io_results
-    str = ""
+    str = ''
     forecast['minutely']['data'].each do |datum|
       str += get_dot datum['precipProbability']
     end
-    msg.reply str + ' (Minute-by-minute rain prediction for the hour. The higher the line, the higher the chance.)'
+    msg.reply "|#{str}|  min-by-min rain prediction.  range |_.-*'*-._|"
   end
 
   def format_message(forecast)

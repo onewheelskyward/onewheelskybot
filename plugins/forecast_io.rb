@@ -29,53 +29,40 @@ class ForecastIO
   end
 
 # °℃℉
-
-  def get_dot(probability)
+  def get_dot(probability, char_array)
     if probability == 0
-      '_'
+      char_array[0]
     elsif probability <= 0.10
-      '.'
+      char_array[1]
     elsif probability <= 0.25
-      '-'
+      char_array[2]
     elsif probability <= 0.50
-      '⸚'
+      char_array[3]
     elsif probability <= 0.75
-      '*'
+      char_array[4]
     elsif probability <= 1.00
-      "'"
+      char_array[5]
     end
   end
 
-  def get_ansi_dot(probability)
-    if probability == 0
-      '_'
-    elsif probability == 0.10
-      '▁'
-    elsif probability <= 0.25
-      '▃'
-    elsif probability <= 0.50
-      '▅'
-    elsif probability <= 0.75
-      '▇'
-    elsif probability <= 1.00
-      '█'
-    end
-  end
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg)
+    chars = %w[_ . - ⸚ * ']
     forecast = get_forecast_io_results
     str = ''
     forecast['minutely']['data'].each do |datum|
-      str += get_dot datum['precipProbability']
+      str += get_dot datum['precipProbability'], ascii_chars
     end
-    msg.reply "|#{str}|  min-by-min rain prediction.  range |_.-⸚*'*⸚-._|"
+    msg.reply "|#{str}|  min-by-min rain prediction.  range |#{chars.each {|c| print c}}|"
   end
 
   def ansi_rain_forecast(msg)
+    chars = %w[_ ▁ ▃ ▅ ▇ █]
+
     forecast = get_forecast_io_results
     str = ''
     forecast['minutely']['data'].each do |datum|
-      str += get_ansi_dot datum['precipProbability']
+      str += get_ansi_dot datum['precipProbability'], chars
     end
     msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by agj"
   end

@@ -51,7 +51,7 @@ class ForecastIO
     forecast = get_forecast_io_results
     str = ''
     forecast['minutely']['data'].each do |datum|
-      str += get_dot datum['precipProbability'], ascii_chars
+      str += get_dot datum['precipProbability'], chars
     end
     msg.reply "|#{str}|  min-by-min rain prediction.  range |#{chars.each {|c| print c}}|"
   end

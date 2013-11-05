@@ -47,7 +47,7 @@ class ForecastIO
 
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg)
-    chars = %w[_ . - ⸚ * ']
+    chars = %w[_ . - • * ']
     forecast = get_forecast_io_results
     str = ''
     forecast['minutely']['data'].each do |datum|
@@ -64,7 +64,7 @@ class ForecastIO
     forecast['minutely']['data'].each do |datum|
       str += get_ansi_dot datum['precipProbability'], chars
     end
-    msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by agj"
+    msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
 
   def format_message(forecast)

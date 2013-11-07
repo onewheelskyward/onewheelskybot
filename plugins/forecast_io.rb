@@ -1,12 +1,13 @@
 require 'json'
 require 'httparty'
+# cbe69d2e1728dd7c5c04@cloudmailin.net   http://192.81.215.203/inbound/mail
 
 class ForecastIO
   include Cinch::Plugin
 
   match /fo*r*e*c*a*s*t*$/i, method: :execute #, react_on: :channel
-  match /asciirain/i, method: :ascii_rain_forecast
-  match /ansirain/i, method: :ansi_rain_forecast
+  match /asciirain\s*(.*)/i, method: :ascii_rain_forecast
+  match /ansirain\s*(.*)/i, method: :ansi_rain_forecast
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -46,23 +47,31 @@ class ForecastIO
   end
 
 # ▁▃▅▇█▇▅▃▁ agj
-  def ascii_rain_forecast(msg)
+  def ascii_rain_forecast(msg, query)
     chars = %w[_ . - • * ']
     forecast = get_forecast_io_results
     str = ''
     forecast['minutely']['data'].each do |datum|
-      str += get_dot datum['precipProbability'], chars
+      if query == "intensity"
+        str += get_dot datum['precipIntensity'], chars
+      else
+        str += get_dot datum['precipProbability'], chars
+      end
     end
     msg.reply "|#{str}|  min-by-min rain prediction.  range |_.-•*'*•-._|"
   end
 
-  def ansi_rain_forecast(msg)
+  def ansi_rain_forecast(msg, query)
     chars = %w[_ ▁ ▃ ▅ ▇ █]
 
     forecast = get_forecast_io_results
     str = ''
     forecast['minutely']['data'].each do |datum|
-      str += get_dot datum['precipProbability'], chars
+      if query == "intensity"
+        str += get_dot datum['precipIntensity'], chars
+      else
+        str += get_dot datum['precipProbability'], chars
+      end
     end
     msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end

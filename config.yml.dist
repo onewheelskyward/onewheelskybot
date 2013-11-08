@@ -5,6 +5,8 @@ realname: bot
 password: password
 port: 1919
 
+plugins: [Images, Wolfram, GoogleSearch, Youtube, ForecastIO]
+
 wolfram_url: http://api.wolframalpha.com/v1/query?input=
 wolfram_appid:
 

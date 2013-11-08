@@ -12,7 +12,8 @@ bot = Cinch::Bot.new do
     c.realname = config['realname']
     c.password = config['password']
     c.port = config['port']
-    c.plugins.plugins = [Images, Wolfram, GoogleSearch, Youtube, ForecastIO, LuaEval]
+    puts config['plugins'].inspect
+    c.plugins.plugins = [Images, Wolfram, GoogleSearch, Youtube, ForecastIO] # Hmm. config['plugins']
     c.plugins.options[Wolfram][:wolfram_url] = config['wolfram_url']
     c.plugins.options[Wolfram][:wolfram_appid] = config['wolfram_appid']
     c.plugins.options[GoogleSearch][:google_developer_key] = config['google_developer_key']

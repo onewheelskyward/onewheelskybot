@@ -61,6 +61,15 @@ class Images < GoogleAbstract
     result.body
   end
 
+  def get_search_url_and_text(json, index)
+    #Todo: Return a different image if this one has been used.
+    #agent = Mechanize.new
+    parsed = JSON.parse json
+    link = parsed['responseData']['results'][index]
+    if link['url']
+      return link['url'], link['titleNoFormatting']
+    end
+  end
 
   # Called on startup. This method iterates the list of registered plugins
   # and parses all their help messages, collecting them in the @help hash,

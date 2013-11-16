@@ -36,7 +36,7 @@ describe "Bot specs" do
   it 'y' do
     date = DateTime.now
     puts
-    puts Time.now.strftime('%H:%M').to_s
+    puts (Time.now - 25200).strftime('%H:%M').to_s
     puts ((Time.now + 3600).strftime('%H:%M')).to_s
   end
 end

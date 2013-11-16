@@ -58,7 +58,8 @@ class ForecastIO
         str += get_dot datum['precipProbability'], chars
       end
     end
-    msg.reply "|#{str}|  min-by-min rain prediction.  range |_.-•*'*•-._|"
+
+    msg.reply "#{Time.now.strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ansi_rain_forecast(msg, query)
@@ -73,7 +74,8 @@ class ForecastIO
         str += get_dot datum['precipProbability'], chars
       end
     end
-    msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
+    msg.reply "#{Time.now.strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
 
   def format_message(forecast)

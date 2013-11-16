@@ -27,10 +27,16 @@ describe "Bot specs" do
   #  puts message.inspect
   #  puts replies.inspect
   #end
-  it "x" do
+  it 'x' do
     date = DateTime.now
     puts date.to_s
     date = DateTime.now - 1
     puts date.to_s
+  end
+  it 'y' do
+    date = DateTime.now
+    puts
+    puts Time.now.strftime('%H:%M').to_s
+    puts ((Time.now + 3600).strftime('%H:%M')).to_s
   end
 end

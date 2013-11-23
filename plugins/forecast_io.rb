@@ -80,13 +80,36 @@ class ForecastIO
 
   def format_message(forecast)
     "Weather for PDX is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
-    "and #{forecast['currently']['summary'].downcase}.  " +
+    "and #{forecast['currently']['summary'].downcase}.  Winds out of the #{compass_point forecast['currently']['windBearing']} at #{forecast['currently']['windSpeed']} mph. " +
     "It will be #{forecast['minutely']['summary'].downcase.chop}, and #{forecast['hourly']['summary'].downcase.chop}.  There are also #{forecast['currently']['ozone']} ozones."
     # daily.summary
   end
 
   def celcius(degreesF)
     (0.5555555556 * (degreesF.to_f - 32)).round(2)
+  end
+
+  def compass_point(bearing)
+    case bearing
+      when 0..25
+        "N"
+      when 26..65
+        "NE"
+      when 66..115
+        "E"
+      when 116..155
+        "SE"
+      when 156..205
+        "S"
+      when 206..245
+        "SW"
+      when 246..295
+        "W"
+      when 296..335
+        "NW"
+      when 336..360
+        "N"
+    end
   end
 end
 

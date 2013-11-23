@@ -2,7 +2,7 @@ require 'rspec'
 #require 'cinch/test'
 #require 'data_mapper'
 #Dir.glob("plugins/*.rb").each { |file| require_relative file }
-
+require 'tzinfo'
 #DataMapper::Logger.new($stdout, :debug)
 #DataMapper.setup(:default, "sqlite::memory:")
 #DataMapper.finalize
@@ -38,5 +38,7 @@ describe "Bot specs" do
     puts
     puts (Time.now - 25200).strftime('%H:%M').to_s
     puts ((Time.now + 3600).strftime('%H:%M')).to_s
+    tz = TZInfo::Timezone.get('America/Los_Angeles')
+    puts tz.utc_to_local(Time.now.utc).to_s
   end
 end

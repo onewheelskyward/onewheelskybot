@@ -92,23 +92,23 @@ class ForecastIO
   def compass_point(bearing)
     case bearing
       when 0..25
-        "N"
+        'N'
       when 26..65
-        "NE"
+        'NE'
       when 66..115
-        "E"
+        'E'
       when 116..155
-        "SE"
+        'SE'
       when 156..205
-        "S"
+        'S'
       when 206..245
-        "SW"
+        'SW'
       when 246..295
-        "W"
+        'W'
       when 296..335
-        "NW"
+        'NW'
       when 336..360
-        "N"
+        'N'
     end
   end
 end

@@ -25,10 +25,13 @@ class ForecastIO
   end
 
   def get_gps_coords(query)
+    query = 'Portland, OR' if query == ''
     if query =~ /\d+\.*\d*,\d+\.*\d*/
       return query
     end
-    response = HTTParty.get "http://maps.googleapis.com/maps/api/geocode/json?address=#{CGI.escape query}&sensor=false"
+    url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{CGI.escape query}&sensor=false"
+    puts url
+    response = HTTParty.get url
     return response['results'][0]['geometry']['location']['lat'].to_s + ',' + response['results'][0]['geometry']['location']['lng'].to_s, response['results'][0]['formatted_address']
   end
 
@@ -44,7 +47,6 @@ class ForecastIO
 
 # °℃℉
   def get_dot(probability, char_array)
-    puts probability
     if probability == 0
       return char_array[0]
     elsif probability <= 0.10
@@ -78,7 +80,7 @@ class ForecastIO
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg, query)
     chars = %w[_ . - • * ']
-    forecast = get_forecast_io_results
+    forecast, long_name = get_forecast_io_results query
     str = ''
     forecast['minutely']['data'].each do |datum|
       if query == "intensity"
@@ -94,7 +96,7 @@ class ForecastIO
   def ansi_rain_forecast(msg, query)
     chars = %w[_ ▁ ▃ ▅ ▇ █]
 
-    forecast = get_forecast_io_results
+    forecast, long_name = get_forecast_io_results query
     str = ''
     forecast['minutely']['data'].each do |datum|
       if query == "intensity"
@@ -111,7 +113,7 @@ class ForecastIO
     chars = %w[・ o O ◎ ◉]
     # O ◎ ]
 
-    forecast = get_forecast_io_results
+    forecast, long_name = get_forecast_io_results query
     str = ''
     first = last = nil
     forecast['hourly']['data'].each do |datum|
@@ -128,7 +130,7 @@ class ForecastIO
   def ascii_temp_forecast(msg, query)
     chars = %w[_ ▁ ▃ ▅ ▇ █]
 
-    forecast = get_forecast_io_results
+    forecast, long_name = get_forecast_io_results query
     str = ''
     first = last = high = nil
     low = 99999
@@ -153,7 +155,6 @@ class ForecastIO
       if index == 0
         first = temp
       end
-      puts "(#{temp} - #{low}) / #{differential}"
       probability = (temp - low) / differential
       str += get_dot probability, chars
       last = temp
@@ -162,7 +163,6 @@ class ForecastIO
 
     msg.reply "now #{first.round(1)}°F |#{str}| #{last.round(1)}°F this hour tomorrow.  Range: #{low.round(1)}-#{high.round(1)}°F"
   end
-
 
   def format_forecast_message(forecast, query, long_name)
     "Weather for #{long_name} is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +

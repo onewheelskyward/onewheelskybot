@@ -5,7 +5,7 @@ require 'httparty'
 class ForecastIO
   include Cinch::Plugin
 
-  match /fo*r*e*c*a*s*t*$/i, method: :execute #, react_on: :channel
+  match /fo*r*e*c*a*s*t*\s*(.*)$/i, method: :execute #, react_on: :channel
   match /asciithefuckingweather/i, method: :execute #, react_on: :channel
   match /asciirain\s*(.*)/i, method: :ascii_rain_forecast
   match /ansirain\s*(.*)/i, method: :ansi_rain_forecast
@@ -19,17 +19,27 @@ class ForecastIO
   Incoming rain data for the next hour.
   EOF
 
-  def execute(msg)
-    forecast = get_forecast_io_results
-    msg.reply format_forecast_message forecast
+  def execute(msg, query = 'Portland')
+    forecast, long_name = get_forecast_io_results query
+    msg.reply format_forecast_message forecast, query, long_name
   end
 
-  def get_forecast_io_results
-    url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/45.5252,-122.6751'
+  def get_gps_coords(query)
+    if query =~ /\d+\.*\d*,\d+\.*\d*/
+      return query
+    end
+    response = HTTParty.get "http://maps.googleapis.com/maps/api/geocode/json?address=#{CGI.escape query}&sensor=false"
+    return response['results'][0]['geometry']['location']['lat'].to_s + ',' + response['results'][0]['geometry']['location']['lng'].to_s, response['results'][0]['formatted_address']
+  end
+
+  def get_forecast_io_results(query = '45.5252,-122.6751')
+    gps_coords, long_name = get_gps_coords query
+    url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/' + gps_coords.to_s
     puts url
     request = HTTParty.get url
     #puts request.body
     forecast = JSON.parse request.body
+    return forecast, long_name
   end
 
 # °℃℉
@@ -154,8 +164,8 @@ class ForecastIO
   end
 
 
-  def format_forecast_message(forecast)
-    "Weather for PDX is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
+  def format_forecast_message(forecast, query, long_name)
+    "Weather for #{long_name} is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
     "and #{forecast['currently']['summary'].downcase}.  Winds out of the #{compass_point forecast['currently']['windBearing']} at #{forecast['currently']['windSpeed']} mph. " +
     "It will be #{forecast['minutely']['summary'].downcase.chop}, and #{forecast['hourly']['summary'].downcase.chop}.  There are also #{forecast['currently']['ozone']} ozones."
     # daily.summary
@@ -1618,5 +1628,77 @@ x = <<-end
   ],
       "units": "us"
   }
+}
+
+{
+    results: [
+        {
+            address_components: [
+                {
+                    long_name: "97206",
+                    short_name: "97206",
+                    types: [
+                        "postal_code"
+                    ]
+                },
+                {
+                    long_name: "Portland",
+                    short_name: "Portland",
+                    types: [
+                        "locality",
+                        "political"
+                    ]
+                },
+                {
+                    long_name: "Oregon",
+                    short_name: "OR",
+                    types: [
+                        "administrative_area_level_1",
+                        "political"
+                    ]
+                },
+                {
+                    long_name: "Stati Uniti",
+                    short_name: "US",
+                    types: [
+                        "country",
+                        "political"
+                    ]
+                }
+            ],
+            formatted_address: "Portland, Oregon 97206, Stati Uniti",
+            geometry: {
+                bounds: {
+                    northeast: {
+                        lat: 45.5089909,
+                        lng: -122.578679
+                    },
+                    southwest: {
+                        lat: 45.455264,
+                        lng: -122.620776
+                    }
+                },
+                location: {
+                    lat: 45.48563720000001,
+                    lng: -122.5946256
+                },
+                location_type: "APPROXIMATE",
+                viewport: {
+                    northeast: {
+                        lat: 45.5089909,
+                        lng: -122.578679
+                    },
+                    southwest: {
+                        lat: 45.455264,
+                        lng: -122.620776
+                    }
+                }
+            },
+            types: [
+                "postal_code"
+            ]
+        }
+    ],
+    status: "OK"
 }
 end

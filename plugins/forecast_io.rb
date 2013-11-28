@@ -99,11 +99,16 @@ class ForecastIO
 
     forecast = get_forecast_io_results
     str = ''
+    first = last = nil
     forecast['hourly']['data'].each do |datum|
+      unless first
+        first = datum['ozone']
+      end
       str += get_ozone_dot datum['ozone'], chars
+      last = datum['ozone']
     end
 
-    msg.reply "now |#{str}| 24h"
+    msg.reply "#{first} |#{str}| #{last} [24h forecast]"
   end
 
 

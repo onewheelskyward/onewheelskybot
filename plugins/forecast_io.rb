@@ -8,6 +8,7 @@ class ForecastIO
   match /fo*r*e*c*a*s*t*$/i, method: :execute #, react_on: :channel
   match /asciirain\s*(.*)/i, method: :ascii_rain_forecast
   match /ansirain\s*(.*)/i, method: :ansi_rain_forecast
+  match /asciiozone\s*(.*)/i, method: :ascii_ozone_forecast
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -46,6 +47,20 @@ class ForecastIO
     end
   end
 
+  def get_ozone_dot(ozone, char_array)
+    if ozone <= 260
+      char_array[0]
+    elsif ozone <= 275
+      char_array[1]
+    elsif ozone <= 295
+      char_array[2]
+    elsif ozone <= 305
+      char_array[3]
+    elsif ozone > 305
+      char_array[4]
+    end
+  end
+
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg, query)
     chars = %w[_ . - • * ']
@@ -77,6 +92,20 @@ class ForecastIO
     msg.reply "#{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
+
+  def ascii_ozone_forecast(msg, query)
+    chars = %w[・ o O ◎ ◉]
+    # O ◎ ]
+
+    forecast = get_forecast_io_results
+    str = ''
+    forecast['hourly']['data'].each do |datum|
+      str += get_ozone_dot datum['ozone'], chars
+    end
+
+    msg.reply "now |#{str}| 24h"
+  end
+
 
   def format_message(forecast)
     "Weather for PDX is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +

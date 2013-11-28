@@ -6,6 +6,7 @@ class ForecastIO
   include Cinch::Plugin
 
   match /fo*r*e*c*a*s*t*$/i, method: :execute #, react_on: :channel
+  match /asciithefuckingweather/i, method: :execute #, react_on: :channel
   match /asciirain\s*(.*)/i, method: :ascii_rain_forecast
   match /ansirain\s*(.*)/i, method: :ansi_rain_forecast
   match /asciiozone\s*(.*)/i, method: :ascii_ozone_forecast

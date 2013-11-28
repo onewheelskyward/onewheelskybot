@@ -165,9 +165,10 @@ class ForecastIO
   end
 
   def format_forecast_message(forecast, query, long_name)
+    minute_forecast = forecast['minutely']['summary'].to_s.downcase.chop if forecast['minutely']
     "Weather for #{long_name} is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
     "and #{forecast['currently']['summary'].downcase}.  Winds out of the #{compass_point forecast['currently']['windBearing']} at #{forecast['currently']['windSpeed']} mph. " +
-    "It will be #{forecast['minutely']['summary'].downcase.chop}, and #{forecast['hourly']['summary'].downcase.chop}.  There are also #{forecast['currently']['ozone']} ozones."
+    "It will be #{minute_forecast}, and #{forecast['hourly']['summary'].to_s.downcase.chop}.  There are also #{forecast['currently']['ozone'].to_s} ozones."
     # daily.summary
   end
 

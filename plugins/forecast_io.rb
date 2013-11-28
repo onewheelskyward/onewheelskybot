@@ -9,6 +9,7 @@ class ForecastIO
   match /asciirain\s*(.*)/i, method: :ascii_rain_forecast
   match /ansirain\s*(.*)/i, method: :ansi_rain_forecast
   match /asciiozone\s*(.*)/i, method: :ascii_ozone_forecast
+  match /asciitemp\s*(.*)/i, method: :ascii_temp_forecast
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -19,7 +20,7 @@ class ForecastIO
 
   def execute(msg)
     forecast = get_forecast_io_results
-    msg.reply format_message forecast
+    msg.reply format_forecast_message forecast
   end
 
   def get_forecast_io_results
@@ -32,19 +33,21 @@ class ForecastIO
 
 # °℃℉
   def get_dot(probability, char_array)
+    puts probability
     if probability == 0
-      char_array[0]
+      return char_array[0]
     elsif probability <= 0.10
-      char_array[1]
+      return char_array[1]
     elsif probability <= 0.25
-      char_array[2]
+      return char_array[2]
     elsif probability <= 0.50
-      char_array[3]
+      return char_array[3]
     elsif probability <= 0.75
-      char_array[4]
+      return char_array[4]
     elsif probability <= 1.00
-      char_array[5]
+      return char_array[5]
     end
+    return ''
   end
 
   def get_ozone_dot(ozone, char_array)
@@ -111,8 +114,46 @@ class ForecastIO
     msg.reply "#{first} |#{str}| #{last} [24h forecast]"
   end
 
+  def ascii_temp_forecast(msg, query)
+    chars = %w[_ ▁ ▃ ▅ ▇ █]
 
-  def format_message(forecast)
+    forecast = get_forecast_io_results
+    str = ''
+    first = last = high = nil
+    low = 99999
+
+    forecast['hourly']['data'].each_with_index do |datum, index|
+      temp = datum['temperature']
+      if temp < low.to_f
+        low = temp
+      end
+
+      if temp > high.to_f
+        high = temp
+      end
+      break if index == 23
+    end
+
+    differential = high - low
+
+    forecast['hourly']['data'].each_with_index do |datum, index|
+      temp = datum['temperature']
+
+      if index == 0
+        first = temp
+      end
+      puts "(#{temp} - #{low}) / #{differential}"
+      probability = (temp - low) / differential
+      str += get_dot probability, chars
+      last = temp
+      break if index == 23
+    end
+
+    msg.reply "now #{first.round(1)}°F |#{str}| #{last.round(1)}°F this hour tomorrow.  Range: #{low.round(1)}-#{high.round(1)}°F"
+  end
+
+
+  def format_forecast_message(forecast)
     "Weather for PDX is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
     "and #{forecast['currently']['summary'].downcase}.  Winds out of the #{compass_point forecast['currently']['windBearing']} at #{forecast['currently']['windSpeed']} mph. " +
     "It will be #{forecast['minutely']['summary'].downcase.chop}, and #{forecast['hourly']['summary'].downcase.chop}.  There are also #{forecast['currently']['ozone']} ozones."

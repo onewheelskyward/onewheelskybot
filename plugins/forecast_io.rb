@@ -25,7 +25,8 @@ class ForecastIO
 
   get '/forecast' do
     bot = self.bot
-    text = bot.plugins[4].get_weather_forecast('Portland')
+    puts params[:Body]
+    text = bot.plugins[4].get_weather_forecast(params[:Body])
     twiml = Twilio::TwiML::Response.new do |r|
       r.Message text
     end

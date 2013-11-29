@@ -27,10 +27,12 @@ class ForecastIO
     bot = self.bot
     request = params[:Body]
     case request
-      when /^forecast/
+      when /^forecast/i
         text = bot.plugins[4].get_weather_forecast(request.gsub /^forecast\s*/, '')
-      when /^asciirain/
+      when /^asciirain/i
         text = bot.plugins[4].do_the_ascii_thing(request.gsub /^asciirain\s*/, '')
+      when /^ansirain/i
+        text = bot.plugins[4].do_the_ansi_thing(request.gsub /^ansirain\s*/, '')
     end
 
     twiml = Twilio::TwiML::Response.new do |r|
@@ -122,6 +124,12 @@ class ForecastIO
   end
 
   def ansi_rain_forecast(msg, query)
+    str = do_the_ansi_thing(query)
+    msg.reply str
+    #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
+  end
+
+  def do_the_ansi_thing(query)
     chars = %w[_ ▁ ▃ ▅ ▇ █]
 
     forecast, long_name = get_forecast_io_results query
@@ -133,8 +141,7 @@ class ForecastIO
         str += get_dot datum['precipProbability'], chars
       end
     end
-    msg.reply "#{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
-    #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
+    "#{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"
   end
 
   def ascii_ozone_forecast(msg, query)

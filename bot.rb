@@ -13,11 +13,16 @@ bot = Cinch::Bot.new do
     c.password = config['password']
     c.port = config['port']
     puts config['plugins'].inspect
-    c.plugins.plugins = [Images, Wolfram, GoogleSearch, Youtube, ForecastIO] # Hmm. config['plugins']
+    c.plugins.plugins = [Images, Wolfram, GoogleSearch, Youtube, ForecastIO, Cinch::HttpServer] # Hmm. config['plugins']
     c.plugins.options[Wolfram][:wolfram_url] = config['wolfram_url']
     c.plugins.options[Wolfram][:wolfram_appid] = config['wolfram_appid']
     c.plugins.options[GoogleSearch][:google_developer_key] = config['google_developer_key']
     c.plugins.options[Youtube][:google_developer_key] = config['google_developer_key']
+    c.plugins.options[Cinch::HttpServer] = {
+        :host => config['http_server_host'],
+        :port => config['http_server_port']
+        #:logfile => "/var/log/cinch-http-server.log" # OPTIONAL
+    }
     c.plugins.options[ForecastIO][:forecast_io_url] = config['forecast_io_url']
     c.plugins.options[ForecastIO][:forecast_io_api_key] = config['forecast_io_api_key']
 

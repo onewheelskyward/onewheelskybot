@@ -1,9 +1,12 @@
 require 'json'
 require 'httparty'
+require_relative 'http_server'
+
 # cbe69d2e1728dd7c5c04@cloudmailin.net   http://192.81.215.203/inbound/mail
 
 class ForecastIO
   include Cinch::Plugin
+  extend Cinch::HttpServer::Verbs
 
   match /fo*r*e*c*a*s*t*\s*(.*)$/i, method: :execute #, react_on: :channel
   match /asciithefuckingweather\s*(.*)$/i, method: :execute #, react_on: :channel
@@ -19,9 +22,18 @@ class ForecastIO
   Incoming rain data for the next hour.
   EOF
 
+  get '/forecast' do
+    bot = self.bot
+    bot.plugins[4].get_weather_forecast('Portland')
+  end
+
   def execute(msg, query = 'Portland')
+    msg.reply get_weather_forecast(query)
+  end
+
+  def get_weather_forecast(query)
     forecast, long_name = get_forecast_io_results query
-    msg.reply format_forecast_message forecast, query, long_name
+    format_forecast_message forecast, query, long_name
   end
 
   def get_gps_coords(query)

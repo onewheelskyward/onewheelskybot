@@ -16,3 +16,6 @@ google_application_version:
 
 forecast_io_url: https://api.forecast.io/forecast/
 forecast_io_api_key:
+
+http_server_host: localhost
+http_server_port:

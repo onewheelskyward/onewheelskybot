@@ -25,8 +25,14 @@ class ForecastIO
 
   get '/forecast' do
     bot = self.bot
-    puts params[:Body]
-    text = bot.plugins[4].get_weather_forecast(params[:Body])
+    request = params[:Body]
+    case request
+      when /^forecast/
+        text = bot.plugins[4].get_weather_forecast(request.gsub /^forecast\s*/, '')
+      when /^asciirain/
+        text = bot.plugins[4].do_the_ascii_thing(request.gsub /^asciirain\s*/, '')
+    end
+
     twiml = Twilio::TwiML::Response.new do |r|
       r.Message text
     end
@@ -97,6 +103,11 @@ class ForecastIO
 
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg, query)
+    str = do_the_ascii_thing(query)
+    msg.reply str
+  end
+
+  def do_the_ascii_thing(query)
     chars = %w[_ . - • * ']
     forecast, long_name = get_forecast_io_results query
     str = ''
@@ -107,8 +118,7 @@ class ForecastIO
         str += get_dot datum['precipProbability'], chars
       end
     end
-
-    msg.reply "#{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    "#{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ansi_rain_forecast(msg, query)

@@ -28,11 +28,11 @@ class ForecastIO
     request = params[:Body]
     case request
       when /^forecast/i
-        text = bot.plugins[4].get_weather_forecast(request.gsub /^forecast\s*/, '')
+        text = bot.plugins[4].get_weather_forecast(request.gsub /^forecast\s*/i, '')
       when /^asciirain/i
-        text = bot.plugins[4].do_the_ascii_thing(request.gsub /^asciirain\s*/, '')
+        text = bot.plugins[4].do_the_ascii_thing(request.gsub /^asciirain\s*/i, '')
       when /^ansirain/i
-        text = bot.plugins[4].do_the_ansi_thing(request.gsub /^ansirain\s*/, '')
+        text = bot.plugins[4].do_the_ansi_thing(request.gsub /^ansirain\s*/i, '')
     end
 
     twiml = Twilio::TwiML::Response.new do |r|

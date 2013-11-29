@@ -1,6 +1,7 @@
 require 'json'
 require 'httparty'
 require_relative 'http_server'
+require 'twilio-ruby'
 
 # cbe69d2e1728dd7c5c04@cloudmailin.net   http://192.81.215.203/inbound/mail
 
@@ -24,7 +25,11 @@ class ForecastIO
 
   get '/forecast' do
     bot = self.bot
-    bot.plugins[4].get_weather_forecast('Portland')
+    text = bot.plugins[4].get_weather_forecast('Portland')
+    twiml = Twilio::TwiML::Response.new do |r|
+      r.Message text
+    end
+    twiml.text
   end
 
   def execute(msg, query = 'Portland')

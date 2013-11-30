@@ -33,6 +33,8 @@ class ForecastIO
         text = bot.plugins[4].do_the_ascii_thing(request.gsub /^asciirain\s*/i, '')
       when /^ansirain/i
         text = bot.plugins[4].do_the_ansi_thing(request.gsub /^ansirain\s*/i, '')
+      else
+        text = bot.plugins[4].get_weather_forecast(request)
     end
 
     twiml = Twilio::TwiML::Response.new do |r|

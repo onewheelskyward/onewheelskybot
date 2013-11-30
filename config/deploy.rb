@@ -14,7 +14,7 @@ set :normalize_asset_timestamps, false
 namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
     #run "ps auxww | grep 'ruby bot.rb' | grep -v grep | awk '{print $2}' | xargs kill "
-    #run "cd /u/apps/onewheelskybot/current ; ~/.rbenv/shims/ruby bot.rb"
+    #run "cd /u/apps/onewheelskybot/current ; ~/.rbenv/shims/bundle install ; ~/.rbenv/shims/ruby bot.rb"
   end
   task :create_config_symlink do
     run "ln -s /u/apps/onewheelskybot/shared/config.yml /u/apps/onewheelskybot/current/config.yml"

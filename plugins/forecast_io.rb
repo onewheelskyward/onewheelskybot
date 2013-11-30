@@ -33,6 +33,8 @@ class ForecastIO
         text = bot.plugins[4].do_the_ascii_thing(request.gsub /^asciirain\s*/i, '')
       when /^ansirain/i
         text = bot.plugins[4].do_the_ansi_thing(request.gsub /^ansirain\s*/i, '')
+      when /^asciitemp/i
+        text = bot.plugins[4].do_the_ascii_temp_thing(request.gsub /^asciitemp\s*/i, '')
       else
         text = bot.plugins[4].get_weather_forecast(request)
     end
@@ -165,6 +167,11 @@ class ForecastIO
   end
 
   def ascii_temp_forecast(msg, query)
+    str = do_the_ascii_temp_thing(query)
+    msg.reply str
+  end
+
+  def do_the_ascii_temp_thing(query)
     chars = %w[_ ▁ ▃ ▅ ▇ █]
 
     forecast, long_name = get_forecast_io_results query
@@ -197,8 +204,7 @@ class ForecastIO
       last = temp
       break if index == 23
     end
-
-    msg.reply "now #{first.round(1)}°F |#{str}| #{last.round(1)}°F this hour tomorrow.  Range: #{low.round(1)}-#{high.round(1)}°F"
+    str = "now #{first.round(1)}°F |#{str}| #{last.round(1)}°F this hour tomorrow.  Range: #{low.round(1)}-#{high.round(1)}°F"
   end
 
   def format_forecast_message(forecast, query, long_name)

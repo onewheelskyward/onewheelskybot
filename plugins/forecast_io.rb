@@ -126,7 +126,7 @@ class ForecastIO
         str += get_dot datum['precipProbability'], chars
       end
     end
-    "#{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    "#{long_name} rain likelihood #{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ansi_rain_forecast(msg, query)
@@ -147,7 +147,7 @@ class ForecastIO
         str += get_dot datum['precipProbability'], chars
       end
     end
-    "#{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"
+    "#{long_name} rain likelihood #{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"
   end
 
   def ascii_ozone_forecast(msg, query)
@@ -165,7 +165,7 @@ class ForecastIO
       last = datum['ozone']
     end
 
-    msg.reply "#{first} |#{str}| #{last} [24h forecast]"
+    msg.reply "#{long_name} ozones #{first} |#{str}| #{last} [24h forecast]"
   end
 
   def ascii_temp_forecast(msg, query)
@@ -206,7 +206,7 @@ class ForecastIO
       last = temp
       break if index == 23
     end
-    str = "now #{first.round(1)}°F |#{str}| #{last.round(1)}°F this hour tomorrow.  Range: #{low.round(1)}-#{high.round(1)}°F"
+    str = "#{longname} temps: now #{first.round(1)}°F |#{str}| #{last.round(1)}°F this hour tomorrow.  Range: #{low.round(1)}-#{high.round(1)}°F"
   end
 
   def format_forecast_message(forecast, query, long_name)

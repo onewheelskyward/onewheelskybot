@@ -9,12 +9,14 @@ class ForecastIO
   include Cinch::Plugin
   extend Cinch::HttpServer::Verbs
 
-  match /fo*r*e*c*a*s*t*\s*(.*)$/i, method: :execute #, react_on: :channel
+  match /forecast*\s*(.*)$/i, method: :execute #, react_on: :channel
+  match /w\s*(.*)$/i, method: :execute #, react_on: :channel
   match /asciithefuckingweather\s*(.*)$/i, method: :execute #, react_on: :channel
   match /asciirain\s*(.*)/i, method: :ascii_rain_forecast
   match /ansirain\s*(.*)/i, method: :ansi_rain_forecast
   match /asciiozone\s*(.*)/i, method: :ascii_ozone_forecast
   match /asciitemp\s*(.*)/i, method: :ascii_temp_forecast
+  match /ansitemp\s*(.*)/i, method: :ascii_temp_forecast
 
   set :help, <<-EOF
 [/msg] !forecast

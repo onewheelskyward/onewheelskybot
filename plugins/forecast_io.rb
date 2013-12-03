@@ -206,7 +206,7 @@ class ForecastIO
       last = temp
       break if index == 23
     end
-    str = "#{longname} temps: now #{first.round(1)}°F |#{str}| #{last.round(1)}°F this hour tomorrow.  Range: #{low.round(1)}-#{high.round(1)}°F"
+    str = "#{long_name} temps: now #{first.round(1)}°F |#{str}| #{last.round(1)}°F this hour tomorrow.  Range: #{low.round(1)}-#{high.round(1)}°F"
   end
 
   def format_forecast_message(forecast, query, long_name)

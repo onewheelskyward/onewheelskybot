@@ -31,12 +31,12 @@ class ForecastIO
     case request
       when /^forecast/i
         text = bot.plugins[4].get_weather_forecast(request.gsub /^forecast\s*/i, '')
-      when /^asciirain/i
-        text = bot.plugins[4].do_the_ascii_thing(request.gsub /^asciirain\s*/i, '')
-      when /^ansirain/i
-        text = bot.plugins[4].do_the_ansi_thing(request.gsub /^ansirain\s*/i, '')
-      when /^asciitemp/i
-        text = bot.plugins[4].do_the_ascii_temp_thing(request.gsub /^asciitemp\s*/i, '')
+      #when /^rain/i
+      #  text = bot.plugins[4].do_the_ascii_thing(request.gsub /^asciirain\s*/i, '')
+      when /^rain/i
+        text = bot.plugins[4].do_the_ansi_thing(request.gsub /^rain\s*/i, '')
+      when /^temp/i
+        text = bot.plugins[4].do_the_ascii_temp_thing(request.gsub /^temp\s*/i, '')
       else
         text = bot.plugins[4].get_weather_forecast(request)
     end

@@ -128,7 +128,8 @@ class ForecastIO
         str += get_dot datum['precipProbability'], chars
       end
     end
-    "#{long_name} snow likelihood #{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    #  - 28800
+    "#{long_name} snow likelihood #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ansi_rain_forecast(msg, query)
@@ -149,7 +150,7 @@ class ForecastIO
         str += get_dot datum['precipProbability'], chars
       end
     end
-    "#{long_name} snow likelihood #{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"
+    "#{long_name} snow likelihood #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"
   end
 
   def ascii_ozone_forecast(msg, query)

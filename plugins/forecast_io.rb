@@ -123,7 +123,7 @@ class ForecastIO
     str = ''
     precip_type = 'rain'
     forecast['minutely']['data'].each do |datum|
-      precip_type = forecast['minutely']['icon']
+      precip_type == 'snow' if datum['precipType'] == 'snow'
       if query == "intensity"
         str += get_dot datum['precipIntensity'], chars
       else
@@ -147,7 +147,7 @@ class ForecastIO
     str = ''
     precip_type = 'rain'
     forecast['minutely']['data'].each do |datum|
-      precip_type = forecast['minutely']['icon']
+      precip_type == 'snow' if datum['precipType'] == 'snow'
       if query == "intensity"
         str += get_dot datum['precipIntensity'], chars
       else

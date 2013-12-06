@@ -14,6 +14,7 @@ class ForecastIO
   match /asciithefuckingweather\s*(.*)$/i, method: :execute #, react_on: :channel
   match /asciirain\s*(.*)/i, method: :ascii_rain_forecast
   match /ansirain\s*(.*)/i, method: :ansi_rain_forecast
+  match /ansisnow\s*(.*)/i, method: :ansi_rain_forecast
   match /asciiozone\s*(.*)/i, method: :ascii_ozone_forecast
   match /asciitemp\s*(.*)/i, method: :ascii_temp_forecast
   match /ansitemp\s*(.*)/i, method: :ascii_temp_forecast
@@ -147,7 +148,7 @@ class ForecastIO
         str += get_dot datum['precipProbability'], chars
       end
     end
-    "#{long_name} rain likelihood #{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"
+    "#{long_name} snow likelihood #{(Time.now - 28800).strftime('%H:%M').to_s}|#{str}|#{(Time.now - 28800 + 3600).strftime('%H:%M').to_s}"
   end
 
   def ascii_ozone_forecast(msg, query)

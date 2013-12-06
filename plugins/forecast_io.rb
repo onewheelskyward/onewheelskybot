@@ -121,6 +121,7 @@ class ForecastIO
     chars = %w[_ . - • * ']
     forecast, long_name = get_forecast_io_results query
     str = ''
+    precip_type = 'rain'
     forecast['minutely']['data'].each do |datum|
       precip_type = forecast['minutely']['icon']
       if query == "intensity"
@@ -144,6 +145,7 @@ class ForecastIO
 
     forecast, long_name = get_forecast_io_results query
     str = ''
+    precip_type = 'rain'
     forecast['minutely']['data'].each do |datum|
       precip_type = forecast['minutely']['icon']
       if query == "intensity"

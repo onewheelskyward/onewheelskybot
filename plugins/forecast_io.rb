@@ -185,7 +185,8 @@ class ForecastIO
 
     forecast, long_name = get_forecast_io_results query
     str = ''
-    first = last = high = nil
+    first = last = nil
+    high = -99999
     low = 99999
 
     forecast['hourly']['data'].each_with_index do |datum, index|

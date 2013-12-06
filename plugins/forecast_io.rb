@@ -122,6 +122,7 @@ class ForecastIO
     forecast, long_name = get_forecast_io_results query
     str = ''
     forecast['minutely']['data'].each do |datum|
+      precip_type = forecast['minutely']['icon']
       if query == "intensity"
         str += get_dot datum['precipIntensity'], chars
       else
@@ -129,7 +130,7 @@ class ForecastIO
       end
     end
     #  - 28800
-    "#{long_name} snow likelihood #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    "#{long_name} #{precip_type} likelihood #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ansi_rain_forecast(msg, query)
@@ -144,13 +145,14 @@ class ForecastIO
     forecast, long_name = get_forecast_io_results query
     str = ''
     forecast['minutely']['data'].each do |datum|
+      precip_type = forecast['minutely']['icon']
       if query == "intensity"
         str += get_dot datum['precipIntensity'], chars
       else
         str += get_dot datum['precipProbability'], chars
       end
     end
-    "#{long_name} snow likelihood #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"
+    "#{long_name} #{precip_type} likelihood #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"
   end
 
   def ascii_ozone_forecast(msg, query)

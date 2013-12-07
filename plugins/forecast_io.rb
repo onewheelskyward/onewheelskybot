@@ -27,6 +27,18 @@ class ForecastIO
   Incoming rain data for the next hour.
   EOF
 
+  def ansi_chars
+    %w[_ ▁ ▃ ▅ ▇ █]
+  end
+
+  def ozone_chars
+    %w[・ o O ◎ ◉]
+  end
+
+  def ascii_chars
+    %w[_ . - • * ']
+  end
+
   get '/forecast' do
     bot = self.bot
     request = params[:Body]
@@ -113,12 +125,11 @@ class ForecastIO
 
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg, query)
-    str = do_the_ascii_thing(query)
+    str = do_the_precip_thing(query, ascii_chars)
     msg.reply str
   end
 
-  def do_the_ascii_thing(query)
-    chars = %w[_ . - • * ']
+  def do_the_precip_thing(query, chars)
     forecast, long_name = get_forecast_io_results query
     str = ''
     precip_type = 'rain'
@@ -135,30 +146,13 @@ class ForecastIO
   end
 
   def ansi_rain_forecast(msg, query)
-    str = do_the_ansi_thing(query)
+    str = do_the_precip_thing(query, ansi_chars)
     msg.reply str
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
 
-  def do_the_ansi_thing(query)
-    chars = %w[_ ▁ ▃ ▅ ▇ █]
-
-    forecast, long_name = get_forecast_io_results query
-    str = ''
-    precip_type = 'rain'
-    forecast['minutely']['data'].each do |datum|
-      precip_type = 'snow' if datum['precipType'] == 'snow'
-      if query == "intensity"
-        str += get_dot datum['precipIntensity'], chars
-      else
-        str += get_dot datum['precipProbability'], chars
-      end
-    end
-    "#{long_name} #{precip_type} likelihood #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"
-  end
-
   def ascii_ozone_forecast(msg, query)
-    chars = %w[・ o O ◎ ◉]
+    chars = ozone_chars
     # O ◎ ]
 
     forecast, long_name = get_forecast_io_results query
@@ -181,8 +175,6 @@ class ForecastIO
   end
 
   def do_the_ascii_temp_thing(query)
-    chars = %w[_ ▁ ▃ ▅ ▇ █]
-
     forecast, long_name = get_forecast_io_results query
     str = ''
     first = last = nil
@@ -210,7 +202,7 @@ class ForecastIO
         first = temp
       end
       probability = (temp - low) / differential
-      str += get_dot probability, chars
+      str += get_dot probability, ansi_chars
       last = temp
       break if index == 23
     end

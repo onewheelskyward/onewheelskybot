@@ -263,14 +263,14 @@ def seven_day(msg, query)
 
   str = ''
   maxtemps.each do |t|
-    str += get_dot (t - differential) / maxtemps.max, ansi_chars
+    str += get_dot (t - maxtemps.min) / differential, ansi_chars
   end
 
   msg.reply "7day high temps for #{long_name} #{maxtemps.first}°F |#{str}| #{maxtemps.last}°F"
 
   str = ''
   mintemps.each do |t|
-    str += get_dot (t - differential) / mintemps.max, ansi_chars
+    str += get_dot (t - mintemps.min) / differential, ansi_chars
   end
 
   msg.reply "7day loow temps for #{long_name} #{mintemps.first}°F |#{str}| #{mintemps.last}°F"

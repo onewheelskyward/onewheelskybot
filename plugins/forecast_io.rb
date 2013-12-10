@@ -19,6 +19,7 @@ class ForecastIO
   match /asciiozone\s*(.*)/i, method: :ascii_ozone_forecast
   match /asciitemp\s*(.*)/i, method: :ascii_temp_forecast
   match /ansitemp\s*(.*)/i, method: :ascii_temp_forecast
+  match /7day\s*(.*)/i, method: :seven_day
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -51,6 +52,9 @@ class ForecastIO
         text = bot.plugins[4].do_the_ansi_thing(request.gsub /^rain\s*/i, '')
       when /^temp/i
         text = bot.plugins[4].do_the_ascii_temp_thing(request.gsub /^temp\s*/i, '')
+      when /^say/i
+        text = request.sub /^say /i, ''
+        bot.reply
       else
         text = bot.plugins[4].get_weather_forecast(request)
     end
@@ -243,6 +247,34 @@ class ForecastIO
         'N'
     end
   end
+end
+
+def seven_day(msg, query)
+  forecast, long_name = get_forecast_io_results query
+
+  mintemps = []
+  maxtemps = []
+
+  forecast['daily']['data'].each do |day|
+    mintemps.push day['temperatureMin'].to_f.round(1)
+    maxtemps.push day['temperatureMax'].to_f.round(1)
+  end
+  differential = maxtemps.max - maxtemps.min
+
+  str = ''
+  maxtemps.each do |t|
+    str += get_dot (t - differential) / maxtemps.max, ansi_chars
+  end
+
+  msg.reply "7day high temps for #{long_name} #{maxtemps.first}°F |#{str}| #{maxtemps.last}°F"
+
+  str = ''
+  mintemps.each do |t|
+    str += get_dot (t - differential) / mintemps.max, ansi_chars
+  end
+
+  msg.reply "7day loow temps for #{long_name} #{mintemps.first}°F |#{str}| #{mintemps.last}°F"
+  #  / mins: #{mintemps.join ' '}
 end
 
 x = <<-end

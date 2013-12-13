@@ -12,6 +12,8 @@ plugins: [Images,
          ForecastIO,
          'Cinch::HttpServer']
 
+channels: ['#pdxbots']
+
 wolfram_url: http://api.wolframalpha.com/v1/query?input=
 wolfram_appid:
 

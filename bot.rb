@@ -28,7 +28,7 @@ bot = Cinch::Bot.new do
     c.plugins.options[ForecastIO][:forecast_io_url] = config['forecast_io_url']
     c.plugins.options[ForecastIO][:forecast_io_api_key] = config['forecast_io_api_key']
 
-    c.channels = ["#booberries"]
+    c.channels = config['channels']
   end
 end
 

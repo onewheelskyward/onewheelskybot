@@ -9,17 +9,17 @@ class ForecastIO
   include Cinch::Plugin
   extend Cinch::HttpServer::Verbs
 
-  match /forecast\s*(.*)$/i, method: :execute #, react_on: :channel
-  match /weather\s*(.*)$/i, method: :execute #, react_on: :channel
-  match /asciithefuckingweather\s*(.*)$/i, method: :execute #, react_on: :channel
-  match /asciirain\s*(.*)/i, method: :ascii_rain_forecast
-  match /asciisnow\s*(.*)/i, method: :ascii_rain_forecast
-  match /ansirain\s*(.*)/i, method: :ansi_rain_forecast
-  match /ansisnow\s*(.*)/i, method: :ansi_rain_forecast
-  match /asciiozone\s*(.*)/i, method: :ascii_ozone_forecast
-  match /asciitemp\s*(.*)/i, method: :ascii_temp_forecast
-  match /ansitemp\s*(.*)/i, method: :ascii_temp_forecast
-  match /7day\s*(.*)/i, method: :seven_day
+  match /forecast\s*(.*)$/i,                method: :execute #, react_on: :channel
+  match /weather\s*(.*)$/i,                 method: :execute #, react_on: :channel
+  match /asciithefuckingweather\s*(.*)$/i,  method: :execute #, react_on: :channel
+  match /asciirain\s*(.*)/i,                method: :ascii_rain_forecast
+  match /asciisnow\s*(.*)/i,                method: :ascii_rain_forecast
+  match /ansirain\s*(.*)/i,                 method: :ansi_rain_forecast
+  match /ansisnow\s*(.*)/i,                 method: :ansi_rain_forecast
+  match /asciiozone\s*(.*)/i,               method: :ascii_ozone_forecast
+  match /asciitemp\s*(.*)/i,                method: :ascii_temp_forecast
+  match /ansitemp\s*(.*)/i,                 method: :ascii_temp_forecast
+  match /7day\s*(.*)/i,                     method: :seven_day
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -89,14 +89,18 @@ class ForecastIO
     gps_coords, long_name = get_gps_coords query
     url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/' + gps_coords.to_s
     puts url
-    request = HTTParty.get url
+    forecast = HTTParty.get url
     #puts request.body
-    forecast = JSON.parse request.body
+    #forecast = JSON.parse request.body
     return forecast, long_name
   end
 
 # °℃℉
   def get_dot(probability, char_array)
+    if probability < 0 or probability > 1
+      return '?'
+    end
+
     if probability == 0
       return char_array[0]
     elsif probability <= 0.10
@@ -110,7 +114,6 @@ class ForecastIO
     elsif probability <= 1.00
       return char_array[5]
     end
-    return ''
   end
 
   def get_ozone_dot(ozone, char_array)
@@ -129,30 +132,50 @@ class ForecastIO
 
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg, query)
-    str = do_the_precip_thing(query, ascii_chars)
+    query, key = determine_intensity(query)
+    str = do_the_precip_thing(query, ascii_chars, key)
     msg.reply str
-  end
-
-  def do_the_precip_thing(query, chars)
-    forecast, long_name = get_forecast_io_results query
-    str = ''
-    precip_type = 'rain'
-    forecast['minutely']['data'].each do |datum|
-      precip_type = 'snow' if datum['precipType'] == 'snow'
-      if query == "intensity"
-        str += get_dot datum['precipIntensity'], chars
-      else
-        str += get_dot datum['precipProbability'], chars
-      end
-    end
-    #  - 28800
-    "#{long_name} #{precip_type} likelihood #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ansi_rain_forecast(msg, query)
-    str = do_the_precip_thing(query, ansi_chars)
+    query, key = determine_intensity(query)
+    str = do_the_precip_thing(query, ansi_chars, key)
     msg.reply str
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
+  end
+
+  def determine_intensity(query)
+    if query =~ /^intensity/
+      query = query.gsub /^intensity\s*/, ''
+      key = 'precipIntensity'
+    else
+      key = 'precipProbability'
+    end
+    return query, key
+  end
+
+  def do_the_precip_thing(query, chars, key)
+    forecast, long_name = get_forecast_io_results query
+    str = ''
+    precip_type = 'rain'
+    data_points = []
+    forecast['minutely']['data'].each do |datum|
+      data_points.push datum[key]
+    end
+
+    forecast['minutely']['data'].each do |datum|
+      precip_type = 'snow' if datum['precipType'] == 'snow'
+      differential = data_points.max - data_points.min
+      if differential == 0
+        percentage = 0
+      else
+        percentage = (datum[key] - data_points.min) / (differential)
+      end
+      str += get_dot percentage, chars
+    end
+    #  - 28800
+    type_str = (key == 'precipProbability')? 'likelihood':'intensity'
+    "#{long_name} #{precip_type} #{type_str} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ascii_ozone_forecast(msg, query)
@@ -259,8 +282,8 @@ def seven_day(msg, query)
     mintemps.push day['temperatureMin'].to_f.round(1)
     maxtemps.push day['temperatureMax'].to_f.round(1)
   end
-  differential = maxtemps.max - maxtemps.min
 
+  differential = maxtemps.max - maxtemps.min
   str = ''
   maxtemps.each do |t|
     str += get_dot (t - maxtemps.min) / differential, ansi_chars
@@ -268,6 +291,7 @@ def seven_day(msg, query)
 
   msg.reply "7day high temps for #{long_name} #{maxtemps.first}°F |#{str}| #{maxtemps.last}°F"
 
+  differential = mintemps.max - mintemps.min
   str = ''
   mintemps.each do |t|
     str += get_dot (t - mintemps.min) / differential, ansi_chars

@@ -81,6 +81,10 @@ class Images < GoogleAbstract
                      https://dl.dropboxusercontent.com/u/575564/apecgnU.gif
                      http://i.imgur.com/1LG3p1Q.gif
                      http://imgur.com/9M815Ur
+                     http://30.media.tumblr.com/tumblr_m3056cCdb71rr3l61o1_500.gif
+                     http://giphy.com/gifs/Us2YBZNhO8Pba/tiled
+                     http://media.giphy.com/media/2WhCMpG85VhWE/giphy.gif
+                     http://media.giphy.com/media/rUCzODGkQF8GY/giphy.gif
                     )
     msg.reply("Pong! #{pong_images.sample}")
   end

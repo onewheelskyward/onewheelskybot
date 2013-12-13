@@ -9,10 +9,13 @@ class Images < GoogleAbstract
   #listen_to :message, :method => :on_connect
   #match /help(.*)/i, :use_prefix => false, :react_on => :private
   match /im*a*g*e*\s*m*e*\s(.*)/i, method: :image_search #, react_on: :channel
+  match /ping/, method: :pong
 
   set :help, <<-EOF
 [/msg] image me [x]
   Display an image of [x]
+[/msg] ping
+  pong
   EOF
 
   def get_google_url(query)
@@ -20,7 +23,8 @@ class Images < GoogleAbstract
   end
 
   def image_search(msg, query)
-    url = get_google_url(query)
+    index = get_index query
+    url = get_google_url query
 
     image_url = nil
     req = ApiRequest.first_or_create(type: :image, request: query)
@@ -69,6 +73,16 @@ class Images < GoogleAbstract
     if link['url']
       return link['url'], link['titleNoFormatting']
     end
+  end
+
+  def pong(msg)
+    pong_images = %w(http://img209.imageshack.us/img209/366/toast.gif
+                     http://i.imgur.com/cRgZZca.gif
+                     https://dl.dropboxusercontent.com/u/575564/apecgnU.gif
+                     http://i.imgur.com/1LG3p1Q.gif
+                     http://imgur.com/9M815Ur
+                    )
+    msg.reply("Pong! #{pong_images.sample}")
   end
 
   # Called on startup. This method iterates the list of registered plugins

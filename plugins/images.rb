@@ -9,8 +9,8 @@ class Images < GoogleAbstract
   #listen_to :message, :method => :on_connect
   #match /help(.*)/i, :use_prefix => false, :react_on => :private
   match /im*a*g*e*\s*m*e*\s(.*)/i, method: :image_search #, react_on: :channel
-  match /ping/, method: :pong
-  match /ping/, use_prefix: false, method: :pong
+  match /ping$/, method: :pong
+  match /^ping$/, use_prefix: false, method: :pong
 
   set :help, <<-EOF
 [/msg] image me [x]

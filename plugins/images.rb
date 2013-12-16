@@ -10,6 +10,7 @@ class Images < GoogleAbstract
   #match /help(.*)/i, :use_prefix => false, :react_on => :private
   match /im*a*g*e*\s*m*e*\s(.*)/i, method: :image_search #, react_on: :channel
   match /ping/, method: :pong
+  match /ping/, use_prefix: false, method: :pong
 
   set :help, <<-EOF
 [/msg] image me [x]
@@ -86,7 +87,7 @@ class Images < GoogleAbstract
                      http://media.giphy.com/media/2WhCMpG85VhWE/giphy.gif
                      http://media.giphy.com/media/rUCzODGkQF8GY/giphy.gif
                     )
-    msg.reply("Pong! #{pong_images.sample}")
+    msg.reply("#{pong_images.sample}")
   end
 
   # Called on startup. This method iterates the list of registered plugins

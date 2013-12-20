@@ -18,3 +18,5 @@ gem 'nokogiri'
 #gem 'mail'
 gem 'twilio-ruby'
 gem 'hipchat-api'
+gem 'capistrano', '<3'
+

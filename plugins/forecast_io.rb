@@ -20,6 +20,7 @@ class ForecastIO
   match /asciitemp\s*(.*)/i,                method: :ascii_temp_forecast
   match /ansitemp\s*(.*)/i,                 method: :ascii_temp_forecast
   match /7day\s*(.*)/i,                     method: :seven_day
+  match /alerts\s*(.*)/i,                    method: :alerts
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -299,6 +300,13 @@ def seven_day(msg, query)
 
   msg.reply "7day loow temps for #{long_name} #{mintemps.first}°F |#{str}| #{mintemps.last}°F"
   #  / mins: #{mintemps.join ' '}
+end
+
+def alerts(msg, query)
+  forecast, long_name = get_forecast_io_results query
+  forecast['alerts'].each do |alert|
+    msg.reply(long_name + ' ' + alert['uri'])
+  end
 end
 
 x = <<-end

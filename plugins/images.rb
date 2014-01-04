@@ -11,6 +11,7 @@ class Images < GoogleAbstract
   match /im*a*g*e*\s*m*e*\s(.*)/i, method: :image_search #, react_on: :channel
   match /ping$/, method: :pong
   match /^ping$/, use_prefix: false, method: :pong
+  match /puppy$/, method: :puppy
 
   set :help, <<-EOF
 [/msg] image me [x]
@@ -88,6 +89,37 @@ class Images < GoogleAbstract
                      http://media.giphy.com/media/rUCzODGkQF8GY/giphy.gif
                     )
     msg.reply("#{pong_images.sample}")
+  end
+
+  def puppy(msg)
+    puppy_images = %w(http://thebarkpost.com/wp-content/uploads/2013/02/oie_14175751vZSQRLEn.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mhm4f1v1fG1s3r70co1_250.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mg6b5xgrQb1rls0kbo1_500.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mf39gmuHjZ1rccyxzo1_500.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mevhkec7OG1qfvx4yo1_500.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_me2c57Qkrm1rgkou7o1_500.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mbl5larwCV1qdoqhwo1_500.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mdngefQhjs1rk74yho1_250.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mc5eo7CvP41qzizmho2_250.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mbjrewD8uo1qgumxh.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mbd8tvlE7m1rcyxhzo6_250.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mb27ysAZ871qfvx4yo1_400.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_ma2vi81TdV1rcyxhzo6_r2_250.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mahffvX0He1r2gqh6o1_500.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_inline_mgdkmjDsGJ1ro2d43.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_m9vthz47RK1rcyxhzo6_250.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mb4impeV181rudh26o1_500.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_m4g6y8VrjG1qhq793o1_500.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/cuddle.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/anigif_enhanced-buzz-12144-1330113478-30.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/42.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/50.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/25.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/22.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/download-1.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/download.gif
+                      http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mhdh3aaPE51r2afs6o1_500.gif)
+    msg.reply("#{puppy_images.sample}")
   end
 
   # Called on startup. This method iterates the list of registered plugins

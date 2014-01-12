@@ -198,6 +198,7 @@ class ForecastIO
     chars = ozone_chars
     # O ◎ ]
 
+    query = get_personalized_query(msg.user.name, query)
     forecast, long_name = get_forecast_io_results query
     str = ''
     first = last = nil

@@ -41,6 +41,7 @@ class ForecastIO
     %w[_ . - • * ']
   end
 
+  # Twillio response block
   get '/forecast' do
     bot = self.bot
     request = params[:Body]
@@ -66,21 +67,10 @@ class ForecastIO
     twiml.text
   end
 
+  # !weather
   def execute(msg, query)
     query = get_personalized_query(msg.user.name, query)
     msg.reply get_weather_forecast(query)
-  end
-
-  def get_personalized_query(user, query)
-    if query != ''
-      UserStore.create(user: user, keything: 'weather', value: query)
-    else
-      store = UserStore.last(user: user, keything: 'weather')
-      if store
-        query = store.value
-      end
-    end
-    query
   end
 
   def get_weather_forecast(query)
@@ -88,86 +78,21 @@ class ForecastIO
     format_forecast_message forecast, query, long_name
   end
 
-  def get_gps_coords(query)
-    query = 'Portland, OR' if query == ''
-    if query =~ /\d+\.*\d*,\d+\.*\d*/
-      return query
-    end
-    url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{CGI.escape query}&sensor=false"
-    puts url
-    response = HTTParty.get url
-    return response['results'][0]['geometry']['location']['lat'].to_s + ',' + response['results'][0]['geometry']['location']['lng'].to_s, response['results'][0]['formatted_address']
-  end
-
-  def get_forecast_io_results(query = '45.5252,-122.6751')
-    gps_coords, long_name = get_gps_coords query
-    url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/' + gps_coords.to_s
-    puts url
-    forecast = HTTParty.get url
-    #puts request.body
-    #forecast = JSON.parse request.body
-    return forecast, long_name
-  end
-
-# °℃℉
-  def get_dot(probability, char_array)
-    if probability < 0 or probability > 1
-      return '?'
-    end
-
-    if probability == 0
-      return char_array[0]
-    elsif probability <= 0.10
-      return char_array[1]
-    elsif probability <= 0.25
-      return char_array[2]
-    elsif probability <= 0.50
-      return char_array[3]
-    elsif probability <= 0.75
-      return char_array[4]
-    elsif probability <= 1.00
-      return char_array[5]
-    end
-  end
-
-  def get_ozone_dot(ozone, char_array)
-    if ozone <= 260
-      char_array[0]
-    elsif ozone <= 275
-      char_array[1]
-    elsif ozone <= 295
-      char_array[2]
-    elsif ozone <= 305
-      char_array[3]
-    elsif ozone > 305
-      char_array[4]
-    end
-  end
-
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg, query)
-    query, key = determine_intensity(query)
-    query = get_personalized_query(msg.user.name, query)
-    str = do_the_precip_thing(query, ascii_chars, key)
-    msg.reply str
+    rain_forecast(msg, query, ascii_chars)
   end
 
   def ansi_rain_forecast(msg, query)
-    query, key = determine_intensity(query)
-    query = get_personalized_query(msg.user.name, query)
-    str = do_the_precip_thing(query, ansi_chars, key)
-    msg.reply str
+    rain_forecast(msg, query, ansi_chars)
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
 
-  def determine_intensity(query)
-    if query =~ /^intensity/
-      query = query.gsub /^intensity\s*/, ''
-      key = 'precipIntensity'
-    else
-      key = 'precipProbability'
-    end
-    return query, key
+  def rain_forecast(msg, query, chars)
+    query, key = determine_intensity(query)
+    query = get_personalized_query(msg.user.name, query)
+    str = do_the_precip_thing(query, chars, key)
+    msg.reply str
   end
 
   def do_the_precip_thing(query, chars, key)
@@ -262,6 +187,122 @@ class ForecastIO
     # daily.summary
   end
 
+  def seven_day(msg, query)
+    query = get_personalized_query(msg.user.name, query)
+    forecast, long_name = get_forecast_io_results query
+
+    mintemps = []
+    maxtemps = []
+
+    forecast['daily']['data'].each do |day|
+      mintemps.push day['temperatureMin'].to_f.round(1)
+      maxtemps.push day['temperatureMax'].to_f.round(1)
+    end
+
+    differential = maxtemps.max - maxtemps.min
+    str = ''
+    maxtemps.each do |t|
+      str += get_dot (t - maxtemps.min) / differential, ansi_chars
+    end
+
+    msg.reply "7day high temps for #{long_name} #{maxtemps.first}°F |#{str}| #{maxtemps.last}°F"
+
+    differential = mintemps.max - mintemps.min
+    str = ''
+    mintemps.each do |t|
+      str += get_dot (t - mintemps.min) / differential, ansi_chars
+    end
+
+    msg.reply "7day loow temps for #{long_name} #{mintemps.first}°F |#{str}| #{mintemps.last}°F"
+    #  / mins: #{mintemps.join ' '}
+  end
+
+  def alerts(msg, query)
+    query = get_personalized_query(msg.user.name, query)
+    forecast, long_name = get_forecast_io_results query
+    forecast['alerts'].each do |alert|
+      msg.reply(long_name + ' ' + alert['uri'])
+    end
+  end
+
+  def get_personalized_query(user, query)
+    if query != ''
+      UserStore.create(user: user, keything: 'weather', value: query)
+    else
+      store = UserStore.last(user: user, keything: 'weather')
+      if store
+        query = store.value
+      end
+    end
+    query
+  end
+
+  def get_gps_coords(query)
+    query = 'Portland, OR' if query == ''
+    if query =~ /\d+\.*\d*,\d+\.*\d*/
+      return query
+    end
+    url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{CGI.escape query}&sensor=false"
+    puts url
+    response = HTTParty.get url
+    return response['results'][0]['geometry']['location']['lat'].to_s + ',' + response['results'][0]['geometry']['location']['lng'].to_s, response['results'][0]['formatted_address']
+  end
+
+  def get_forecast_io_results(query = '45.5252,-122.6751')
+    gps_coords, long_name = get_gps_coords query
+    url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/' + gps_coords.to_s
+    puts url
+    forecast = HTTParty.get url
+    #puts request.body
+    #forecast = JSON.parse request.body
+    return forecast, long_name
+  end
+
+# °℃℉
+  def get_dot(probability, char_array)
+    if probability < 0 or probability > 1
+      return '?'
+    end
+
+    if probability == 0
+      return char_array[0]
+    elsif probability <= 0.10
+      return char_array[1]
+    elsif probability <= 0.25
+      return char_array[2]
+    elsif probability <= 0.50
+      return char_array[3]
+    elsif probability <= 0.75
+      return char_array[4]
+    elsif probability <= 1.00
+      return char_array[5]
+    end
+  end
+
+  def get_ozone_dot(ozone, char_array)
+    if ozone <= 280
+      char_array[0]
+    elsif ozone <= 295
+      char_array[1]
+    elsif ozone <= 315
+      char_array[2]
+    elsif ozone <= 345
+      char_array[3]
+    elsif ozone > 345
+      char_array[4]
+    end
+  end
+
+  def determine_intensity(query)
+    if query =~ /^intensity/
+      query = query.gsub /^intensity\s*/, ''
+      key = 'precipIntensity'
+    else
+      key = 'precipProbability'
+    end
+    return query, key
+  end
+
   def celcius(degreesF)
     (0.5555555556 * (degreesF.to_f - 32)).round(2)
   end
@@ -287,44 +328,6 @@ class ForecastIO
       when 336..360
         'N'
     end
-  end
-end
-
-def seven_day(msg, query)
-  query = get_personalized_query(msg.user.name, query)
-  forecast, long_name = get_forecast_io_results query
-
-  mintemps = []
-  maxtemps = []
-
-  forecast['daily']['data'].each do |day|
-    mintemps.push day['temperatureMin'].to_f.round(1)
-    maxtemps.push day['temperatureMax'].to_f.round(1)
-  end
-
-  differential = maxtemps.max - maxtemps.min
-  str = ''
-  maxtemps.each do |t|
-    str += get_dot (t - maxtemps.min) / differential, ansi_chars
-  end
-
-  msg.reply "7day high temps for #{long_name} #{maxtemps.first}°F |#{str}| #{maxtemps.last}°F"
-
-  differential = mintemps.max - mintemps.min
-  str = ''
-  mintemps.each do |t|
-    str += get_dot (t - mintemps.min) / differential, ansi_chars
-  end
-
-  msg.reply "7day loow temps for #{long_name} #{mintemps.first}°F |#{str}| #{mintemps.last}°F"
-  #  / mins: #{mintemps.join ' '}
-end
-
-def alerts(msg, query)
-  query = get_personalized_query(msg.user.name, query)
-  forecast, long_name = get_forecast_io_results query
-  forecast['alerts'].each do |alert|
-    msg.reply(long_name + ' ' + alert['uri'])
   end
 end
 

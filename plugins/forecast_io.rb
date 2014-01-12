@@ -20,7 +20,7 @@ class ForecastIO
   match /asciitemp\s*(.*)/i,                method: :ascii_temp_forecast
   match /ansitemp\s*(.*)/i,                 method: :ascii_temp_forecast
   match /7day\s*(.*)/i,                     method: :seven_day
-  match /alerts\s*(.*)/i,                    method: :alerts
+  match /alerts*\s*(.*)/i,                    method: :alerts
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -66,8 +66,16 @@ class ForecastIO
     twiml.text
   end
 
-  def execute(msg, query = 'Portland')
-    msg.reply get_weather_forecast(query)
+  def execute(msg, query)
+    if query != ''
+      UserStore.create(user: msg.user.name, keything: 'weather', value: query)
+    else
+      store = UserStore.last(user: msg.user.name, keything: 'weather')
+      if store
+        query = store.value
+      end
+    end
+    msg.reply get_weather_forecast(query || 'Portland')
   end
 
   def get_weather_forecast(query)

@@ -4,6 +4,16 @@ require 'yaml'
 config = YAML.load_file('config.yml')
 Dir.glob("plugins/*.rb").each { |file| require_relative file }
 
+require 'data_mapper'
+require 'dm-postgres-adapter'
+
+Dir.glob("models/*.rb").each { |model| require_relative model }
+DataMapper::Logger.new($stdout, :debug)
+DataMapper::Property::String.length(4000)
+DataMapper.setup(:default, "postgres://localhost/skybot")
+DataMapper.finalize
+DataMapper.auto_upgrade!
+
 bot = Cinch::Bot.new do
   configure do |c|
     c.server = config['server']

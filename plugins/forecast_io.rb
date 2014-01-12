@@ -67,15 +67,20 @@ class ForecastIO
   end
 
   def execute(msg, query)
+    query = get_personalized_query(msg.user.name, query)
+    msg.reply get_weather_forecast(query)
+  end
+
+  def get_personalized_query(user, query)
     if query != ''
-      UserStore.create(user: msg.user.name, keything: 'weather', value: query)
+      UserStore.create(user: user, keything: 'weather', value: query)
     else
-      store = UserStore.last(user: msg.user.name, keything: 'weather')
+      store = UserStore.last(user: user, keything: 'weather')
       if store
         query = store.value
       end
     end
-    msg.reply get_weather_forecast(query || 'Portland')
+    query
   end
 
   def get_weather_forecast(query)
@@ -142,12 +147,14 @@ class ForecastIO
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg, query)
     query, key = determine_intensity(query)
+    query = get_personalized_query(msg.user.name, query)
     str = do_the_precip_thing(query, ascii_chars, key)
     msg.reply str
   end
 
   def ansi_rain_forecast(msg, query)
     query, key = determine_intensity(query)
+    query = get_personalized_query(msg.user.name, query)
     str = do_the_precip_thing(query, ansi_chars, key)
     msg.reply str
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
@@ -206,6 +213,7 @@ class ForecastIO
   end
 
   def ascii_temp_forecast(msg, query)
+    query = get_personalized_query(msg.user.name, query)
     str = do_the_ascii_temp_thing(query)
     msg.reply str
   end
@@ -282,6 +290,7 @@ class ForecastIO
 end
 
 def seven_day(msg, query)
+  query = get_personalized_query(msg.user.name, query)
   forecast, long_name = get_forecast_io_results query
 
   mintemps = []
@@ -311,6 +320,7 @@ def seven_day(msg, query)
 end
 
 def alerts(msg, query)
+  query = get_personalized_query(msg.user.name, query)
   forecast, long_name = get_forecast_io_results query
   forecast['alerts'].each do |alert|
     msg.reply(long_name + ' ' + alert['uri'])

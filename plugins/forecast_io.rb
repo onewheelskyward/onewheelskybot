@@ -10,6 +10,9 @@ class ForecastIO
   extend Cinch::HttpServer::Verbs
 
   @@key = 'weather'
+  @@ansi_chars = %w[_ ▁ ▃ ▅ ▇ █]
+  @@ozone_chars = %w[・ o O ◎ ◉]
+  @@ascii_chars = %w[_ . - • * ']
 
   match /forecast\s*(.*)$/i,                method: :execute #, react_on: :channel
   match /weather\s*(.*)$/i,                 method: :execute #, react_on: :channel
@@ -22,7 +25,7 @@ class ForecastIO
   match /asciitemp\s*(.*)/i,                method: :ascii_temp_forecast
   match /ansitemp\s*(.*)/i,                 method: :ascii_temp_forecast
   match /7day\s*(.*)/i,                     method: :seven_day
-  match /alerts*\s*(.*)/i,                    method: :alerts
+  match /alerts*\s*(.*)/i,                  method: :alerts
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -30,18 +33,6 @@ class ForecastIO
 [/msg] !asciirain
   Incoming rain data for the next hour.
   EOF
-
-  def ansi_chars
-    %w[_ ▁ ▃ ▅ ▇ █]
-  end
-
-  def ozone_chars
-    %w[・ o O ◎ ◉]
-  end
-
-  def ascii_chars
-    %w[_ . - • * ']
-  end
 
   # Twillio response block
   get '/forecast' do
@@ -82,11 +73,11 @@ class ForecastIO
 
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(msg, query)
-    rain_forecast(msg, query, ascii_chars)
+    rain_forecast(msg, query, @@ascii_chars)
   end
 
   def ansi_rain_forecast(msg, query)
-    rain_forecast(msg, query, ansi_chars)
+    rain_forecast(msg, query, @@ansi_chars)
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
 
@@ -122,7 +113,6 @@ class ForecastIO
   end
 
   def ascii_ozone_forecast(msg, query)
-    chars = ozone_chars
     # O ◎ ]
 
     query = get_personalized_query(msg.user.name, @@key, query)
@@ -133,7 +123,7 @@ class ForecastIO
       unless first
         first = datum['ozone']
       end
-      str += get_ozone_dot datum['ozone'], chars
+      str += get_ozone_dot datum['ozone'], @@ozone_chars
       last = datum['ozone']
     end
 
@@ -174,7 +164,7 @@ class ForecastIO
         first = temp
       end
       probability = (temp - low) / differential
-      str += get_dot probability, ansi_chars
+      str += get_dot probability, @@ansi_chars
       last = temp
       break if index == 23
     end
@@ -204,7 +194,7 @@ class ForecastIO
     differential = maxtemps.max - maxtemps.min
     str = ''
     maxtemps.each do |t|
-      str += get_dot (t - maxtemps.min) / differential, ansi_chars
+      str += get_dot (t - maxtemps.min) / differential, @@ansi_chars
     end
 
     msg.reply "7day high temps for #{long_name} #{maxtemps.first}°F |#{str}| #{maxtemps.last}°F"
@@ -212,7 +202,7 @@ class ForecastIO
     differential = mintemps.max - mintemps.min
     str = ''
     mintemps.each do |t|
-      str += get_dot (t - mintemps.min) / differential, ansi_chars
+      str += get_dot (t - mintemps.min) / differential, @@ansi_chars
     end
 
     msg.reply "7day loow temps for #{long_name} #{mintemps.first}°F |#{str}| #{mintemps.last}°F"

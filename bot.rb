@@ -3,7 +3,7 @@ require 'yaml'
 
 config = YAML.load_file('config.yml')
 Dir.glob("plugins/*.rb").each { |file| require_relative file }
-
+require_relative 'helpers'
 require 'data_mapper'
 require 'dm-postgres-adapter'
 

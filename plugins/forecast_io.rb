@@ -9,6 +9,8 @@ class ForecastIO
   include Cinch::Plugin
   extend Cinch::HttpServer::Verbs
 
+  @@key = 'weather'
+
   match /forecast\s*(.*)$/i,                method: :execute #, react_on: :channel
   match /weather\s*(.*)$/i,                 method: :execute #, react_on: :channel
   match /asciithefuckingweather\s*(.*)$/i,  method: :execute #, react_on: :channel
@@ -69,7 +71,7 @@ class ForecastIO
 
   # !weather
   def execute(msg, query)
-    query = get_personalized_query(msg.user.name, query)
+    query = get_personalized_query(msg.user.name, @@key, query)
     msg.reply get_weather_forecast(query)
   end
 
@@ -90,7 +92,7 @@ class ForecastIO
 
   def rain_forecast(msg, query, chars)
     query, key = determine_intensity(query)
-    query = get_personalized_query(msg.user.name, query)
+    query = get_personalized_query(msg.user.name, @@key, query)
     str = do_the_precip_thing(query, chars, key)
     msg.reply str
   end
@@ -123,7 +125,7 @@ class ForecastIO
     chars = ozone_chars
     # O ◎ ]
 
-    query = get_personalized_query(msg.user.name, query)
+    query = get_personalized_query(msg.user.name, @@key, query)
     forecast, long_name = get_forecast_io_results query
     str = ''
     first = last = nil
@@ -139,7 +141,7 @@ class ForecastIO
   end
 
   def ascii_temp_forecast(msg, query)
-    query = get_personalized_query(msg.user.name, query)
+    query = get_personalized_query(msg.user.name, @@key, query)
     str = do_the_ascii_temp_thing(query)
     msg.reply str
   end
@@ -188,7 +190,7 @@ class ForecastIO
   end
 
   def seven_day(msg, query)
-    query = get_personalized_query(msg.user.name, query)
+    query = get_personalized_query(msg.user.name, @@key, query)
     forecast, long_name = get_forecast_io_results query
 
     mintemps = []
@@ -218,23 +220,11 @@ class ForecastIO
   end
 
   def alerts(msg, query)
-    query = get_personalized_query(msg.user.name, query)
+    query = get_personalized_query(msg.user.name, @@key, query)
     forecast, long_name = get_forecast_io_results query
     forecast['alerts'].each do |alert|
       msg.reply(long_name + ' ' + alert['uri'])
     end
-  end
-
-  def get_personalized_query(user, query)
-    if query != ''
-      UserStore.create(user: user, keything: 'weather', value: query)
-    else
-      store = UserStore.last(user: user, keything: 'weather')
-      if store
-        query = store.value
-      end
-    end
-    query
   end
 
   def get_gps_coords(query)

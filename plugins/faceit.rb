@@ -1,7 +1,8 @@
 class FaceIt
   include Cinch::Plugin
 
-  match /faceit$/i,                method: :execute #, react_on: :channel
+  match /facei*t*$/i,                method: :faceit #, react_on: :channel
+  match /asciifacei*t*$/i,                method: :asciifaceit #, react_on: :channel
 
   set :help, <<-EOF
 [/msg] !faceit
@@ -128,8 +129,18 @@ class FaceIt
               'ヽ༼Ὸل͜ຈ༽ﾉ',
               'ζ༼Ɵ͆ل͜Ɵ͆༽ᶘ',
               'Ѱζ༼ᴼل͜ᴼ༽ᶘѰ',
-              'ヽ༼ʘ̚ل͜ʘ̚༽ﾉ' ]
-  def execute(msg)
+              'ヽ༼ʘ̚ل͜ʘ̚༽ﾉ',
+              '( •_•)>⌐■-■',
+              '(⌐■_■)',
+              '(•_•)']
+
+  @@ascii_faces = ['(o^O)']
+
+  def faceit(msg)
     msg.reply @@faces.sample
+  end
+
+  def asciifaceit(msg)
+    msg.reply @@ascii_faces.sample
   end
 end

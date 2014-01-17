@@ -1,9 +1,9 @@
 class GoogleAbstract
   def get_index(query)
     index = 0
-    if query =~ /\[(\d+)\]$/
-      query.gsub! /\[(\d+)\]$/, ''
-      index = $1.to_i
+    if query =~ /\[(\d+|\*)\]$/
+      query.gsub! /\[(\d+|\*)\]$/, ''
+      index = ($1 == '*') ? $1 : $1.to_i
     end
     index
   end

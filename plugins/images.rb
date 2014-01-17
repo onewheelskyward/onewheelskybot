@@ -24,14 +24,15 @@ class Images < GoogleAbstract
     index = get_index query
     url = get_google_url query
 
-    image_url = nil
     req = ApiRequest.first_or_create(type: :image, request: query)
-    if req.reply
-      msg.reply("* #{req.reply}")
+    if req.reply # We have a cached response
+      parsed = JSON.parse req.response
+      image_url = get_image_url(parsed, index)
+      msg.reply("* #{image_url}")
     else
       result = api_call(url)
       parsed = JSON.parse result
-      image_url = get_image_url(parsed)
+      image_url = get_image_url(parsed, index)
 
       req.response = result
       req.reply = image_url
@@ -41,20 +42,33 @@ class Images < GoogleAbstract
     end
   end
 
-  def get_image_url(parsed)
+  def get_image_url(parsed, this_one)
     #Todo: Return a different image if this one has been used.
     agent = Mechanize.new
-    parsed['responseData']['results'].each do |image|
-      puts "Image URL: #{image['url']}"
-      if image['url']
-        begin
-          info = agent.head(image['url'])
-          return image['url']
-        rescue Mechanize::ResponseCodeError => e
-          puts "image['url'] not found. #{e.inspect}"
-        end
+
+    if this_one
+      if this_one == '*'
+        image_data = parsed['responseData']['results'].sample
+        image = image_data['url']
+      else
+        image = parsed['responseData']['results'][this_one]['url']
       end
+    else
+      image = parsed['responseData']['results'][0]['url']
     end
+
+    #parsed['responseData']['results'].each_with_index do |image, index|
+    #  puts "Image URL: #{image['url']}"
+    #  if image['url']
+    #    begin
+    #      info = agent.head(image['url'])
+    #      return image['url']
+    #    rescue Mechanize::ResponseCodeError => e
+    #      puts "image['url'] not found. #{e.inspect}"
+    #    end
+    #  end
+    #end
+    image
   end
 
   def api_call(url)

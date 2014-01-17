@@ -37,6 +37,7 @@ bot = Cinch::Bot.new do
     }
     c.plugins.options[ForecastIO][:forecast_io_url] = config['forecast_io_url']
     c.plugins.options[ForecastIO][:forecast_io_api_key] = config['forecast_io_api_key']
+    c.plugins.options[Private][:master_user] = config['master_user']
 
     c.channels = config['channels']
   end

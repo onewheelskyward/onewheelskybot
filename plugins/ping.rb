@@ -20,6 +20,7 @@ class Ping
                      http://media.giphy.com/media/2WhCMpG85VhWE/giphy.gif
                      http://media.giphy.com/media/rUCzODGkQF8GY/giphy.gif
                      http://i.imgur.com/SbW8sEh.gif
+                     http://i.imgur.com/2mBqBxw.jpg
                     )
     msg.reply("#{pong_images.sample}")
   end

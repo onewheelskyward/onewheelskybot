@@ -26,6 +26,8 @@ class ForecastIO
   match /ansitemp\s*(.*)/i,                 method: :ansi_temp_forecast
   match /asciiwind\s*(.*)/i,                method: :ascii_wind_forecast
   match /ansiwind\s*(.*)/i,                 method: :ansi_wind_forecast
+  match /asciisun\s*(.*)/i,                 method: :ascii_sun_forecast
+  match /ansisun\s*(.*)/i,                  method: :ansi_sun_forecast
   match /7day\s*(.*)/i,                     method: :seven_day
   match /alerts*\s*(.*)/i,                  method: :alerts
 
@@ -48,6 +50,7 @@ class ForecastIO
       when /^rain/i
         text = bot.plugins[4].do_the_ansi_thing(request.gsub /^rain\s*/i, '')
       when /^temp/i
+        puts request.inspect
         text = bot.plugins[4].do_the_temp_thing(request.gsub /^temp\s*/i, @@ansi_chars)
       when /^say/i
         text = request.sub /^say /i, ''
@@ -148,7 +151,7 @@ class ForecastIO
 
     str = get_dot_str(chars, data_limited, temps.min, differential, 'temperature')
 
-    str = "#{long_name} temps: now #{data.first['temperature'].round(1)}°F |#{str}| #{data.last['temperature'].round(1)}°F this hour tomorrow.  Range: #{temps.min.round(1)}-#{temps.max.round(1)}°F"
+    "#{long_name} temps: now #{data.first['temperature'].round(1)}°F |#{str}| #{data.last['temperature'].round(1)}°F this hour tomorrow.  Range: #{temps.min.round(1)}-#{temps.max.round(1)}°F"
   end
 
   def format_forecast_message(forecast, query, long_name)
@@ -187,6 +190,37 @@ class ForecastIO
     str = get_dot_str(chars, data, data_points.min, differential, key)
 
     "#{long_name} 24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph"  #range |_.-•*'*•-._|
+  end
+
+  def ascii_sun_forecast(msg, query)
+    sun_forecast(msg, query, @@ascii_chars)
+  end
+
+  def ansi_sun_forecast(msg, query)
+    sun_forecast(msg, query, @@ansi_chars)
+  end
+
+  def sun_forecast(msg, query, chars)
+    query = get_personalized_query(msg.user.name, @@key, query)
+    str = do_the_sun_thing(query, chars)
+    msg.reply str
+  end
+
+  def do_the_sun_thing(query, chars)
+    key = 'cloudCover'
+    forecast, long_name = get_forecast_io_results query
+    data_points = []
+    data = forecast['daily']['data']
+
+    data.each do |datum|
+      data_points.push 1 - datum[key]  # It's a cloud cover percentage, so let's inverse it to give us sun cover.
+      datum[key] = 1 - datum[key]      # Mod the source data for the get_dot_str call below.
+    end
+
+    differential = data_points.max - data_points.min
+    str = get_dot_str(chars, data, data_points.min, differential, key)
+
+    "#{long_name} 7 day sun forecast |#{str}|"
   end
 
   def seven_day(msg, query)

@@ -23,7 +23,7 @@ class ForecastIO
   match /ansisnow\s*(.*)/i,                 method: :ansi_rain_forecast
   match /asciiozone\s*(.*)/i,               method: :ascii_ozone_forecast
   match /asciitemp\s*(.*)/i,                method: :ascii_temp_forecast
-  match /ansitemp\s*(.*)/i,                 method: :ascii_temp_forecast
+  match /ansitemp\s*(.*)/i,                 method: :ansi_temp_forecast
   match /asciiwind\s*(.*)/i,                method: :ascii_wind_forecast
   match /ansiwind\s*(.*)/i,                 method: :ansi_wind_forecast
   match /7day\s*(.*)/i,                     method: :seven_day
@@ -48,7 +48,7 @@ class ForecastIO
       when /^rain/i
         text = bot.plugins[4].do_the_ansi_thing(request.gsub /^rain\s*/i, '')
       when /^temp/i
-        text = bot.plugins[4].do_the_ascii_temp_thing(request.gsub /^temp\s*/i, '')
+        text = bot.plugins[4].do_the_temp_thing(request.gsub /^temp\s*/i, @ansi_chars)
       when /^say/i
         text = request.sub /^say /i, ''
         bot.reply
@@ -92,85 +92,63 @@ class ForecastIO
 
   def do_the_precip_thing(query, chars, key)
     forecast, long_name = get_forecast_io_results query
-    str = ''
     precip_type = 'rain'
     data_points = []
-    forecast['minutely']['data'].each do |datum|
+    data = forecast['minutely']['data']
+
+    data.each do |datum|
       data_points.push datum[key]
+      precip_type = 'snow' if datum['precipType'] == 'snow'
     end
 
-    forecast['minutely']['data'].each do |datum|
-      precip_type = 'snow' if datum['precipType'] == 'snow'
-      differential = data_points.max - data_points.min
-      if differential == 0
-        percentage = 0
-      else
-        percentage = (datum[key] - data_points.min) / (differential)
-      end
-      str += get_dot percentage, chars
-    end
+    differential = data_points.max - data_points.min
+
+    str = get_dot_str(chars, data, data_points, differential, key)
     #  - 28800
-    type_str = (key == 'precipProbability')? 'likelihood':'intensity'
+    type_str = (key == 'precipProbability')? 'likelihood' : 'intensity'
     "#{long_name} #{precip_type} #{type_str} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ascii_ozone_forecast(msg, query)
     # O ◎ ]
-
     query = get_personalized_query(msg.user.name, @@key, query)
     forecast, long_name = get_forecast_io_results query
-    str = ''
-    first = last = nil
-    forecast['hourly']['data'].each do |datum|
-      unless first
-        first = datum['ozone']
-      end
-      str += get_ozone_dot datum['ozone'], @@ozone_chars
-      last = datum['ozone']
-    end
+    data = forecast['hourly']['data']
 
-    msg.reply "#{long_name} ozones #{first} |#{str}| #{last} [24h forecast]"
+    str = get_dot_str(@@ozone_chars, data, 280, 345-280, 'ozone')
+
+    msg.reply "#{long_name} ozones #{data.first['ozone']} |#{str}| #{data.last['ozone']} [24h forecast]"
   end
 
   def ascii_temp_forecast(msg, query)
     query = get_personalized_query(msg.user.name, @@key, query)
-    str = do_the_ascii_temp_thing(query)
+    str = do_the_temp_thing(query, @@ascii_chars)
     msg.reply str
   end
 
-  def do_the_ascii_temp_thing(query)
+  def ansi_temp_forecast(msg, query)
+    query = get_personalized_query(msg.user.name, @@key, query)
+    str = do_the_temp_thing(query, @@ansi_chars)
+    msg.reply str
+  end
+
+  def do_the_temp_thing(query, chars)
     forecast, long_name = get_forecast_io_results query
-    str = ''
-    first = last = nil
-    high = -99999
-    low = 99999
+    temps = []
+    data = forecast['hourly']['data']
+    data_limited = []
 
-    forecast['hourly']['data'].each_with_index do |datum, index|
-      temp = datum['temperature']
-      if temp < low.to_f
-        low = temp
-      end
-
-      if temp > high.to_f
-        high = temp
-      end
-      break if index == 23
+    data.each_with_index do |datum, index|
+      temps.push datum['temperature']
+      data_limited.push datum
+      break if index == 23 # We only want 24hrs of data.
     end
 
-    differential = high - low
+    differential = temps.max - temps.min
 
-    forecast['hourly']['data'].each_with_index do |datum, index|
-      temp = datum['temperature']
+    str = get_dot_str(chars, data_limited, temps.min, differential, 'temperature')
 
-      if index == 0
-        first = temp
-      end
-      probability = (temp - low) / differential
-      str += get_dot probability, @@ansi_chars
-      last = temp
-      break if index == 23
-    end
-    str = "#{long_name} temps: now #{first.round(1)}°F |#{str}| #{last.round(1)}°F this hour tomorrow.  Range: #{low.round(1)}-#{high.round(1)}°F"
+    str = "#{long_name} temps: now #{data.first['temperature'].round(1)}°F |#{str}| #{data.last['temperature'].round(1)}°F this hour tomorrow.  Range: #{temps.min.round(1)}-#{temps.max.round(1)}°F"
   end
 
   def format_forecast_message(forecast, query, long_name)
@@ -198,23 +176,17 @@ class ForecastIO
   def do_the_wind_thing(query, chars)
     key = 'windSpeed'
     forecast, long_name = get_forecast_io_results query
-    str = ''
     data_points = []
-    forecast['hourly']['data'].each do |datum|
+    data = forecast['hourly']['data']
+
+    data.each do |datum|
       data_points.push datum[key]
     end
 
-    forecast['hourly']['data'].each do |datum|
-      differential = data_points.max - data_points.min
-      if differential == 0
-        percentage = 0
-      else
-        percentage = (datum[key] - data_points.min) / (differential)
-      end
-      str += get_dot percentage, chars
-    end
-    #  - 28800
-    "#{long_name} 24h wind speed #{forecast['hourly']['data'][0]['windSpeed']} mph |#{str}| #{forecast['hourly']['data'].last['windSpeed']} mph"  #range |_.-•*'*•-._|
+    differential = data_points.max - data_points.min
+    str = get_dot_str(chars, data, data_points.min, differential, key)
+
+    "#{long_name} 24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph"  #range |_.-•*'*•-._|
   end
 
   def seven_day(msg, query)
@@ -224,26 +196,21 @@ class ForecastIO
     mintemps = []
     maxtemps = []
 
-    forecast['daily']['data'].each do |day|
-      mintemps.push day['temperatureMin'].to_f.round(1)
-      maxtemps.push day['temperatureMax'].to_f.round(1)
+    data = forecast['daily']['data']
+    data.each do |day|
+      mintemps.push day['temperatureMin']
+      maxtemps.push day['temperatureMax']
     end
 
     differential = maxtemps.max - maxtemps.min
-    str = ''
-    maxtemps.each do |t|
-      str += get_dot (t - maxtemps.min) / differential, @@ansi_chars
-    end
-
-    msg.reply "7day high temps for #{long_name} #{maxtemps.first}°F |#{str}| #{maxtemps.last}°F"
+    max_str = get_dot_str(@@ansi_chars, data, maxtemps.min, differential, 'temperatureMax')
 
     differential = mintemps.max - mintemps.min
-    str = ''
-    mintemps.each do |t|
-      str += get_dot (t - mintemps.min) / differential, @@ansi_chars
-    end
+    min_str = get_dot_str(@@ansi_chars, data, mintemps.min, differential, 'temperatureMin')
 
-    msg.reply "7day loow temps for #{long_name} #{mintemps.first}°F |#{str}| #{mintemps.last}°F"
+    msg.reply "7day high temps for #{long_name} #{maxtemps.first.to_f.round(1)}°F |#{max_str}| #{maxtemps.last.to_f.round(1)}°F"
+    msg.reply "7day loow temps for #{long_name} #{mintemps.first.to_f.round(1)}°F |#{min_str}| #{mintemps.last.to_f.round(1)}°F"
+
     #  / mins: #{mintemps.join ' '}
   end
 
@@ -271,9 +238,20 @@ class ForecastIO
     url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/' + gps_coords.to_s
     puts url
     forecast = HTTParty.get url
-    #puts request.body
-    #forecast = JSON.parse request.body
     return forecast, long_name
+  end
+
+  def get_dot_str(chars, data, min, differential, key)
+    str = ''
+    data.each do |datum|
+      if differential == 0
+        percentage = 0
+      else
+        percentage = (datum[key].to_f - min) / (differential)
+      end
+      str += get_dot percentage, chars
+    end
+    str
   end
 
 # °℃℉
@@ -294,20 +272,6 @@ class ForecastIO
       return char_array[4]
     elsif probability <= 1.00
       return char_array[5]
-    end
-  end
-
-  def get_ozone_dot(ozone, char_array)
-    if ozone <= 280
-      char_array[0]
-    elsif ozone <= 295
-      char_array[1]
-    elsif ozone <= 315
-      char_array[2]
-    elsif ozone <= 345
-      char_array[3]
-    elsif ozone > 345
-      char_array[4]
     end
   end
 

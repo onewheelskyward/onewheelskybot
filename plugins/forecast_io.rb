@@ -214,7 +214,7 @@ class ForecastIO
       str += get_dot percentage, chars
     end
     #  - 28800
-    "#{long_name} wind speed #{forecast['hourly']['data'][0]['windSpeed']}|#{str}|#{forecast['hourly']['data'].last['windSpeed']}"  #range |_.-•*'*•-._|
+    "#{long_name} 24h wind speed #{forecast['hourly']['data'][0]['windSpeed']} mph|#{str}|#{forecast['hourly']['data'].last['windSpeed']} mph"  #range |_.-•*'*•-._|
   end
 
   def seven_day(msg, query)

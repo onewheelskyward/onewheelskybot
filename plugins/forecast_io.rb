@@ -24,6 +24,8 @@ class ForecastIO
   match /asciiozone\s*(.*)/i,               method: :ascii_ozone_forecast
   match /asciitemp\s*(.*)/i,                method: :ascii_temp_forecast
   match /ansitemp\s*(.*)/i,                 method: :ascii_temp_forecast
+  match /asciiwind\s*(.*)/i,                method: :ascii_wind_forecast
+  match /ansiwind\s*(.*)/i,                 method: :ansi_wind_forecast
   match /7day\s*(.*)/i,                     method: :seven_day
   match /alerts*\s*(.*)/i,                  method: :alerts
 
@@ -177,6 +179,42 @@ class ForecastIO
     "and #{forecast['currently']['summary'].downcase}.  Winds out of the #{compass_point forecast['currently']['windBearing']} at #{forecast['currently']['windSpeed']} mph. " +
     "It will be #{minute_forecast}, and #{forecast['hourly']['summary'].to_s.downcase.chop}.  There are also #{forecast['currently']['ozone'].to_s} ozones."
     # daily.summary
+  end
+
+  def ascii_wind_forecast(msg, query)
+    wind_forecast(msg, query, @@ascii_chars)
+  end
+
+  def ansi_wind_forecast(msg, query)
+    wind_forecast(msg, query, @@ansi_chars)
+  end
+
+  def wind_forecast(msg, query, chars)
+    query = get_personalized_query(msg.user.name, @@key, query)
+    str = do_the_wind_thing(query, chars)
+    msg.reply str
+  end
+
+  def do_the_wind_thing(query, chars)
+    key = 'windSpeed'
+    forecast, long_name = get_forecast_io_results query
+    str = ''
+    data_points = []
+    forecast['hourly']['data'].each do |datum|
+      data_points.push datum[key]
+    end
+
+    forecast['hourly']['data'].each do |datum|
+      differential = data_points.max - data_points.min
+      if differential == 0
+        percentage = 0
+      else
+        percentage = (datum[key] - data_points.min) / (differential)
+      end
+      str += get_dot percentage, chars
+    end
+    #  - 28800
+    "#{long_name} wind speed #{forecast['hourly']['data'][0]['windSpeed']}|#{str}|#{forecast['hourly']['data'].last['windSpeed']}"  #range |_.-•*'*•-._|
   end
 
   def seven_day(msg, query)

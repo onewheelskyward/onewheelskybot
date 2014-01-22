@@ -54,7 +54,7 @@ class ForecastIO
         bot.reply
       when /^wifi/i
         text = request.sub /^wifi /i, ''
-        bot.Channel.send('#pdxtech').message("what is #{text} wifi password?")
+        bot.Channel('#pdxtech').send("what is #{text} wifi password?")
       else
         text = bot.plugins[4].get_weather_forecast(request)
     end

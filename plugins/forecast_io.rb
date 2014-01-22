@@ -11,25 +11,25 @@ class ForecastIO
 
   @@key = 'weather'
   @@ansi_chars = %w[_ ▁ ▃ ▅ ▇ █]
-  @@ozone_chars = %w[・ o O ◎ ◉]
+  @@ozone_chars = %w[・ o O @ ◎ ◉]
   @@ascii_chars = %w[_ . - • * ']
 
-  match /forecast\s*(.*)$/i,                method: :execute #, react_on: :channel
-  match /weather\s*(.*)$/i,                 method: :execute #, react_on: :channel
-  match /asciithefuckingweather\s*(.*)$/i,  method: :execute #, react_on: :channel
-  match /asciirain\s*(.*)/i,                method: :ascii_rain_forecast
-  match /asciisnow\s*(.*)/i,                method: :ascii_rain_forecast
-  match /ansirain\s*(.*)/i,                 method: :ansi_rain_forecast
-  match /ansisnow\s*(.*)/i,                 method: :ansi_rain_forecast
-  match /asciiozone\s*(.*)/i,               method: :ascii_ozone_forecast
-  match /asciitemp\s*(.*)/i,                method: :ascii_temp_forecast
-  match /ansitemp\s*(.*)/i,                 method: :ansi_temp_forecast
-  match /asciiwind\s*(.*)/i,                method: :ascii_wind_forecast
-  match /ansiwind\s*(.*)/i,                 method: :ansi_wind_forecast
-  match /asciisun\s*(.*)/i,                 method: :ascii_sun_forecast
-  match /ansisun\s*(.*)/i,                  method: :ansi_sun_forecast
-  match /7day\s*(.*)/i,                     method: :seven_day
-  match /alerts*\s*(.*)/i,                  method: :alerts
+  match /(forecast)\s*(.*)$/i,                method: :execute
+  match /(weather)\s*(.*)$/i,                 method: :execute
+  match /(asciithefuckingweather)\s*(.*)$/i,  method: :execute
+  match /(asciirain)\s*(.*)/i,                method: :execute
+  match /(asciisnow)\s*(.*)/i,                method: :execute
+  match /(ansirain)\s*(.*)/i,                 method: :execute
+  match /(ansisnow)\s*(.*)/i,                 method: :execute
+  match /(asciiozone)\s*(.*)/i,               method: :execute
+  match /(asciitemp)\s*(.*)/i,                method: :execute
+  match /(ansitemp)\s*(.*)/i,                 method: :execute
+  match /(asciiwind)\s*(.*)/i,                method: :execute
+  match /(ansiwind)\s*(.*)/i,                 method: :execute
+  match /(asciisun)\s*(.*)/i,                 method: :execute
+  match /(ansisun)\s*(.*)/i,                  method: :execute
+  match /(7day)\s*(.*)/i,                     method: :execute
+  match /(alerts*)\s*(.*)/i,                  method: :execute
 
   set :help, <<-EOF
 [/msg] !forecast
@@ -46,7 +46,7 @@ class ForecastIO
       when /^forecast/i
         text = bot.plugins[4].get_weather_forecast(request.sub /^forecast\s*/i, '')
       when /^rain/i
-        text = bot.plugins[4].do_the_precip_thing request.sub(/^rain\s*/i, '')
+        text = bot.plugins[4].do_the_rain_chance_thing request.sub(/^rain\s*/i, '')
       when /^temp/i
         text = bot.plugins[4].do_the_temp_thing(request.sub(/^temp\s*/i, ''), @@ansi_chars)
       when /^say/i
@@ -63,35 +63,63 @@ class ForecastIO
   end
 
   # !weather
-  def execute(msg, query)
+  def execute(msg, command, query)
     query = get_personalized_query(msg.user.name, @@key, query)
-    msg.reply get_weather_forecast(query)
+    forecast = get_forecast_io_results query
+
+    case command
+      when 'forecast', 'weather', 'asciithefuckingweather'
+        str = get_weather_forecast forecast
+      when 'asciirain', 'asciisnow'
+        str = ascii_rain_forecast forecast
+      when 'ansirain', 'ansisnow'
+        str = ansi_rain_forecast forecast
+      when 'asciiozone'
+        str = ascii_ozone_forecast forecast
+      when 'asciitemp'
+        str = ascii_temp_forecast forecast
+      when 'ansitemp'
+        str = ansi_temp_forecast forecast
+      when 'asciiwind'
+        str = ascii_wind_forecast forecast
+      when 'ansiwind'
+        str = ansi_wind_forecast forecast
+      when 'asciisun'
+        str = ascii_sun_forecast forecast
+      when 'ansisun'
+        str = ansi_sun_forecast forecast
+      when '7day'
+        str = seven_day forecast
+      when 'alerts'
+        str = alerts forecast
+    end
+    msg.reply "#{forecast['long_name']} #{str}"  if str
   end
 
-  def get_weather_forecast(query)
-    forecast, long_name = get_forecast_io_results query
-    format_forecast_message forecast, query, long_name
+  def get_weather_forecast(forecast)
+    format_forecast_message forecast
   end
 
 # ▁▃▅▇█▇▅▃▁ agj
-  def ascii_rain_forecast(msg, query)
-    rain_forecast(msg, query, @@ascii_chars)
+  def ascii_rain_forecast(forecast)
+    do_the_rain_chance_thing(forecast, @@ascii_chars, 'precipProbability', 'probability')
   end
 
-  def ansi_rain_forecast(msg, query)
-    rain_forecast(msg, query, @@ansi_chars)
+  def ansi_rain_forecast(forecast)
+    do_the_rain_chance_thing(forecast, @@ansi_chars, 'precipProbability', 'probability')
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
 
-  def rain_forecast(msg, query, chars)
-    query, key = determine_intensity(query)
-    query = get_personalized_query(msg.user.name, @@key, query)
-    str = do_the_precip_thing(query, chars, key)
-    msg.reply str
+  def ascii_rain_intensity_forecast(forecast)
+    do_the_rain_chance_thing(forecast, @@ascii_chars, 'precipIntensity', 'intensity')
   end
 
-  def do_the_precip_thing(query, chars, key)
-    forecast, long_name = get_forecast_io_results query
+  def ansi_rain_intensity_forecast(forecast)
+    do_the_rain_chance_thing(forecast, @@ansi_chars, 'precipIntensity', 'intensity')
+    #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
+  end
+
+  def do_the_rain_chance_thing(forecast, chars, key, type)
     precip_type = 'rain'
     data_points = []
     data = forecast['minutely']['data']
@@ -105,35 +133,27 @@ class ForecastIO
 
     str = get_dot_str(chars, data, data_points, differential, key)
     #  - 28800
-    type_str = (key == 'precipProbability')? 'likelihood' : 'intensity'
-    "#{long_name} #{precip_type} #{type_str} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
-  def ascii_ozone_forecast(msg, query)
+  def ascii_ozone_forecast(forecast)
     # O ◎ ]
-    query = get_personalized_query(msg.user.name, @@key, query)
-    forecast, long_name = get_forecast_io_results query
     data = forecast['hourly']['data']
 
-    str = get_dot_str(@@ozone_chars, data, 280, 345-280, 'ozone')
+    str = get_dot_str(@@ozone_chars, data, 280, 350-280, 'ozone')
 
-    msg.reply "#{long_name} ozones #{data.first['ozone']} |#{str}| #{data.last['ozone']} [24h forecast]"
+    "ozones #{data.first['ozone']} |#{str}| #{data.last['ozone']} [24h forecast]"
   end
 
-  def ascii_temp_forecast(msg, query)
-    query = get_personalized_query(msg.user.name, @@key, query)
-    str = do_the_temp_thing(query, @@ascii_chars)
-    msg.reply str
+  def ascii_temp_forecast(forecast)
+    do_the_temp_thing(forecast, @@ascii_chars)
   end
 
-  def ansi_temp_forecast(msg, query)
-    query = get_personalized_query(msg.user.name, @@key, query)
-    str = do_the_temp_thing(query, @@ansi_chars)
-    msg.reply str
+  def ansi_temp_forecast(forecast)
+    do_the_temp_thing(forecast, @@ansi_chars)
   end
 
-  def do_the_temp_thing(query, chars)
-    forecast, long_name = get_forecast_io_results query
+  def do_the_temp_thing(forecast, chars)
     temps = []
     data = forecast['hourly']['data']
     data_limited = []
@@ -148,34 +168,27 @@ class ForecastIO
 
     str = get_dot_str(chars, data_limited, temps.min, differential, 'temperature')
 
-    "#{long_name} temps: now #{data.first['temperature'].round(1)}°F |#{str}| #{data.last['temperature'].round(1)}°F this hour tomorrow.  Range: #{temps.min.round(1)}-#{temps.max.round(1)}°F"
+    "temps: now #{data.first['temperature'].round(1)}°F |#{str}| #{data.last['temperature'].round(1)}°F this hour tomorrow.  Range: #{temps.min.round(1)}-#{temps.max.round(1)}°F"
   end
 
-  def format_forecast_message(forecast, query, long_name)
+  def format_forecast_message(forecast)
     minute_forecast = forecast['minutely']['summary'].to_s.downcase.chop if forecast['minutely']
-    "Weather for #{long_name} is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
+    "weather is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
     "and #{forecast['currently']['summary'].downcase}.  Winds out of the #{compass_point forecast['currently']['windBearing']} at #{forecast['currently']['windSpeed']} mph. " +
     "It will be #{minute_forecast}, and #{forecast['hourly']['summary'].to_s.downcase.chop}.  There are also #{forecast['currently']['ozone'].to_s} ozones."
     # daily.summary
   end
 
-  def ascii_wind_forecast(msg, query)
-    wind_forecast(msg, query, @@ascii_chars)
+  def ascii_wind_forecast(forecast)
+    do_the_wind_thing(forecast, @@ascii_chars)
   end
 
-  def ansi_wind_forecast(msg, query)
-    wind_forecast(msg, query, @@ansi_chars)
+  def ansi_wind_forecast(forecast)
+    do_the_wind_thing(forecast, @@ansi_chars)
   end
 
-  def wind_forecast(msg, query, chars)
-    query = get_personalized_query(msg.user.name, @@key, query)
-    str = do_the_wind_thing(query, chars)
-    msg.reply str
-  end
-
-  def do_the_wind_thing(query, chars)
+  def do_the_wind_thing(forecast, chars)
     key = 'windSpeed'
-    forecast, long_name = get_forecast_io_results query
     data_points = []
     data = forecast['hourly']['data']
 
@@ -186,44 +199,34 @@ class ForecastIO
     differential = data_points.max - data_points.min
     str = get_dot_str(chars, data, data_points.min, differential, key)
 
-    "#{long_name} 24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph"  #range |_.-•*'*•-._|
+    "24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph"  #range |_.-•*'*•-._|
   end
 
-  def ascii_sun_forecast(msg, query)
-    sun_forecast(msg, query, @@ascii_chars)
+  def ascii_sun_forecast(forecast)
+    do_the_sun_thing(forecast, @@ascii_chars)
   end
 
-  def ansi_sun_forecast(msg, query)
-    sun_forecast(msg, query, @@ansi_chars)
+  def ansi_sun_forecast(forecast)
+    do_the_sun_thing(forecast, @@ansi_chars)
   end
 
-  def sun_forecast(msg, query, chars)
-    query = get_personalized_query(msg.user.name, @@key, query)
-    str = do_the_sun_thing(query, chars)
-    msg.reply str
-  end
-
-  def do_the_sun_thing(query, chars)
+  def do_the_sun_thing(forecast, chars)
     key = 'cloudCover'
-    forecast, long_name = get_forecast_io_results query
     data_points = []
     data = forecast['daily']['data']
 
     data.each do |datum|
-      data_points.push 1 - datum[key]  # It's a cloud cover percentage, so let's inverse it to give us sun cover.
-      datum[key] = 1 - datum[key]      # Mod the source data for the get_dot_str call below.
+      data_points.push (1 - datum[key]).to_f  # It's a cloud cover percentage, so let's inverse it to give us sun cover.
+      datum[key] = (1 - datum[key]).to_f      # Mod the source data for the get_dot_str call below.
     end
 
     differential = data_points.max - data_points.min
     str = get_dot_str(chars, data, data_points.min, differential, key)
 
-    "#{long_name} 7 day sun forecast |#{str}|"
+    "7 day sun forecast |#{str}|"
   end
 
-  def seven_day(msg, query)
-    query = get_personalized_query(msg.user.name, @@key, query)
-    forecast, long_name = get_forecast_io_results query
-
+  def seven_day(forecast)
     mintemps = []
     maxtemps = []
 
@@ -239,17 +242,13 @@ class ForecastIO
     differential = mintemps.max - mintemps.min
     min_str = get_dot_str(@@ansi_chars, data, mintemps.min, differential, 'temperatureMin')
 
-    msg.reply "7day high temps for #{long_name} #{maxtemps.first.to_f.round(1)}°F |#{max_str}| #{maxtemps.last.to_f.round(1)}°F"
-    msg.reply "7day loow temps for #{long_name} #{mintemps.first.to_f.round(1)}°F |#{min_str}| #{mintemps.last.to_f.round(1)}°F"
-
-    #  / mins: #{mintemps.join ' '}
+    "7day high/low temps #{maxtemps.first.to_f.round(1)}°F |#{max_str}| #{maxtemps.last.to_f.round(1)}°F / #{mintemps.first.to_f.round(1)}°F |#{min_str}| #{mintemps.last.to_f.round(1)}°F"
   end
 
-  def alerts(msg, query)
-    query = get_personalized_query(msg.user.name, @@key, query)
-    forecast, long_name = get_forecast_io_results query
+  def alerts(forecast)
+    str = ''
     forecast['alerts'].each do |alert|
-      msg.reply(long_name + ' ' + alert['uri'])
+      str += alert['uri'] + "\n"
     end
   end
 
@@ -269,7 +268,8 @@ class ForecastIO
     url = config[:forecast_io_url] + config[:forecast_io_api_key] + '/' + gps_coords.to_s
     puts url
     forecast = HTTParty.get url
-    return forecast, long_name
+    forecast['long_name'] = long_name   # Hacking the location into the hash.
+    return forecast
   end
 
   def get_dot_str(chars, data, min, differential, key)

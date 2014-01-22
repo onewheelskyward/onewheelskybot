@@ -48,10 +48,10 @@ class ForecastIO
       #when /^rain/i
       #  text = bot.plugins[4].do_the_ascii_thing(request.gsub /^asciirain\s*/i, '')
       when /^rain/i
-        text = bot.plugins[4].do_the_ansi_thing(request.gsub /^rain\s*/i, '')
+        text = bot.plugins[4].do_the_precip_thing(request.gsub /^rain\s*/i, '')
       when /^temp/i
         puts request.inspect
-        text = bot.plugins[4].do_the_temp_thing(request.gsub /^temp\s*/i, @@ansi_chars)
+        text = bot.plugins[4].do_the_temp_thing(request.to_s.gsub /^temp\s*/i, @@ansi_chars)
       when /^say/i
         text = request.sub /^say /i, ''
         bot.reply

@@ -21,6 +21,7 @@ class Ping
                      http://media.giphy.com/media/rUCzODGkQF8GY/giphy.gif
                      http://i.imgur.com/SbW8sEh.gif
                      http://i.imgur.com/2mBqBxw.jpg
+                     http://i.imgur.com/YTC0CEK.gif
                     )
     msg.reply("#{pong_images.sample}")
   end

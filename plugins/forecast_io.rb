@@ -26,6 +26,7 @@ class ForecastIO
   match /(ansitemp)\s*(.*)/i,                 method: :execute
   match /(asciiwind)\s*(.*)/i,                method: :execute
   match /(ansiwind)\s*(.*)/i,                 method: :execute
+  match /(winddir)\s*(.*)/i,                 method: :execute
   match /(asciisun)\s*(.*)/i,                 method: :execute
   match /(ansisun)\s*(.*)/i,                  method: :execute
   match /(7day)\s*(.*)/i,                     method: :execute
@@ -87,6 +88,8 @@ class ForecastIO
         str = ascii_wind_forecast forecast
       when 'ansiwind'
         str = ansi_wind_forecast forecast
+      when 'winddir'
+        str = ansi_wind_direction_forecast forecast
       when 'asciisun'
         str = ascii_sun_forecast forecast
       when 'ansisun'
@@ -177,7 +180,7 @@ class ForecastIO
   def format_forecast_message(forecast)
     minute_forecast = forecast['minutely']['summary'].to_s.downcase.chop if forecast['minutely']
     "weather is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
-    "and #{forecast['currently']['summary'].downcase}.  Winds out of the #{compass_point forecast['currently']['windBearing']} at #{forecast['currently']['windSpeed']} mph. " +
+    "and #{forecast['currently']['summary'].downcase}.  Winds out of the #{get_cardinal_direction_from_bearing forecast['currently']['windBearing']} at #{forecast['currently']['windSpeed']} mph. " +
     "It will be #{minute_forecast}, and #{forecast['hourly']['summary'].to_s.downcase.chop}.  There are also #{forecast['currently']['ozone'].to_s} ozones."
     # daily.summary
   end
@@ -188,6 +191,10 @@ class ForecastIO
 
   def ansi_wind_forecast(forecast)
     do_the_wind_thing(forecast, @@ansi_chars)
+  end
+
+  def ansi_wind_direction_forecast(forecast)
+    do_the_wind_direction_thing(forecast)
   end
 
   def do_the_wind_thing(forecast, chars)
@@ -203,6 +210,35 @@ class ForecastIO
     str = get_dot_str(chars, data, data_points.min, differential, key)
 
     "24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph"  #range |_.-•*'*•-._|
+  end
+
+  def do_the_wind_direction_thing(forecast)
+    key = 'windBearing'
+    data = forecast['hourly']['data']
+    str = ''
+
+    data.each do |datum|
+      case get_cardinal_direction_from_bearing datum[key]
+        when 'N'
+          str += '↑'
+        when 'NE'
+          str += '↗'
+        when 'E'
+          str += '→'
+        when 'SE'
+          str += '↘'
+        when 'S'
+          str += '↓'
+        when 'SW'
+          str += '↙'
+        when 'W'
+          str += '←'
+        when 'NW'
+          str += '↖'
+      end
+    end
+
+    "24h wind direction |#{str}|"
   end
 
   def ascii_sun_forecast(forecast)
@@ -323,7 +359,7 @@ class ForecastIO
     (0.5555555556 * (degreesF.to_f - 32)).round(2)
   end
 
-  def compass_point(bearing)
+  def get_cardinal_direction_from_bearing(bearing)
     case bearing
       when 0..25
         'N'

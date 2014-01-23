@@ -220,21 +220,21 @@ class ForecastIO
     data.each do |datum|
       case get_cardinal_direction_from_bearing datum[key]
         when 'N'
-          str += '↑'
-        when 'NE'
-          str += '↗'
-        when 'E'
-          str += '→'
-        when 'SE'
-          str += '↘'
-        when 'S'
           str += '↓'
-        when 'SW'
+        when 'NE'
           str += '↙'
-        when 'W'
+        when 'E'
           str += '←'
-        when 'NW'
+        when 'SE'
           str += '↖'
+        when 'S'
+          str += '↑'
+        when 'SW'
+          str += '↗'
+        when 'W'
+          str += '→'
+        when 'NW'
+          str += '↘'
       end
     end
 

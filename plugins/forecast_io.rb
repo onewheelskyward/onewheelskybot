@@ -216,26 +216,11 @@ class ForecastIO
     key = 'windBearing'
     data = forecast['hourly']['data']
     str = ''
+    # This is a little weird, because the arrows are 180° rotated.  That's because the wind bearing is "out of the N" not "towards the N".
+    wind_arrows = {'N' => '↓', 'NE' => '↙', 'E' => '←', 'SE' => '↖', 'S' => '↑', 'SW' => '↗', 'W' => '→', 'NW' => '↘'}
 
     data.each do |datum|
-      case get_cardinal_direction_from_bearing datum[key]
-        when 'N'
-          str += '↓'
-        when 'NE'
-          str += '↙'
-        when 'E'
-          str += '←'
-        when 'SE'
-          str += '↖'
-        when 'S'
-          str += '↑'
-        when 'SW'
-          str += '↗'
-        when 'W'
-          str += '→'
-        when 'NW'
-          str += '↘'
-      end
+      str += wind_arrows[get_cardinal_direction_from_bearing datum[key]]
     end
 
     "24h wind direction |#{str}|"

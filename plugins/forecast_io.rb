@@ -43,6 +43,7 @@ class ForecastIO
   get '/forecast' do
     bot = self.bot
     request = params[:Body]
+
     case request
       when /^forecast/i
         text = bot.plugins[4].get_weather_forecast(request.sub /^forecast\s*/i, '')
@@ -209,7 +210,7 @@ class ForecastIO
     differential = data_points.max - data_points.min
     str = get_dot_str(chars, data, data_points.min, differential, key)
 
-    "24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph"  #range |_.-•*'*•-._|
+    "24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph  Range: #{data_points.min}-#{data_points.max} mph"
   end
 
   def do_the_wind_direction_thing(forecast)

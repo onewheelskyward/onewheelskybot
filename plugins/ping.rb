@@ -22,6 +22,8 @@ class Ping
                      http://i.imgur.com/SbW8sEh.gif
                      http://i.imgur.com/2mBqBxw.jpg
                      http://i.imgur.com/YTC0CEK.gif
+                     http://swng.it/uYr6s.gif
+                     http://www.youtube.com/watch?v=Xb5iqUhC-kA
                     )
     msg.reply("#{pong_images.sample}")
   end

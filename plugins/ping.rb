@@ -24,6 +24,9 @@ class Ping
                      http://i.imgur.com/YTC0CEK.gif
                      http://swng.it/uYr6s.gif
                      http://www.youtube.com/watch?v=Xb5iqUhC-kA
+                     http://25.media.tumblr.com/fa6c3e51a6464e202c351c607a4ea7b9/tumblr_mqpg9st8K71snfsquo1_400.gif
+                     http://i.imgur.com/b0GVMNz.gif
+                     http://www.doggifpage.com/gifs/109.gif
                     )
     msg.reply("#{pong_images.sample}")
   end

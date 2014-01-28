@@ -3,8 +3,6 @@ require 'httparty'
 require_relative 'http_server'
 require 'twilio-ruby'
 
-# cbe69d2e1728dd7c5c04@cloudmailin.net   http://192.81.215.203/inbound/mail
-
 class ForecastIO
   include Cinch::Plugin
   extend Cinch::HttpServer::Verbs
@@ -138,7 +136,7 @@ class ForecastIO
 
     differential = data_points.max - data_points.min
 
-    str = get_dot_str(chars, data, data_points, differential, key)
+    str = get_dot_str(chars, data, data_points.min, differential, key)
     #  - 28800
     "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end

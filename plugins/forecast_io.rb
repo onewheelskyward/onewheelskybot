@@ -67,6 +67,14 @@ class ForecastIO
 
   # !weather
   def execute(msg, command, query)
+    secondary_command = nil
+
+    # Put here a list of all secondary commands.
+    if query.match /^(intensity|dir)\s*/
+      secondary_command = $1
+      query.gsub! /^#{$1}\s*/, ''
+    end
+
     query = get_personalized_query(msg.user.name, @@key, query)
     forecast = get_forecast_io_results query
 
@@ -74,9 +82,17 @@ class ForecastIO
       when 'forecast', 'weather', 'asciithefuckingweather'
         str = get_weather_forecast forecast
       when 'asciirain', 'asciisnow'
-        str = ascii_rain_forecast forecast
+        if secondary_command == 'intensity'
+          str = ascii_rain_intensity_forecast forecast
+        else
+          str = ascii_rain_forecast forecast
+        end
       when 'ansirain', 'ansisnow'
-        str = ansi_rain_forecast forecast
+        if secondary_command == 'intensity'
+          str = ansi_rain_intensity_forecast forecast
+        else
+          str = ansi_rain_forecast forecast
+        end
       when 'asciiozone'
         str = ascii_ozone_forecast forecast
       when 'asciitemp'
@@ -84,9 +100,17 @@ class ForecastIO
       when 'ansitemp'
         str = ansi_temp_forecast forecast
       when 'asciiwind'
-        str = ascii_wind_forecast forecast
+        if secondary_command == 'dir'
+          str = ansi_wind_direction_forecast forecast
+        else
+          str = ascii_wind_forecast forecast
+        end
       when 'ansiwind'
-        str = ansi_wind_forecast forecast
+        if secondary_command == 'dir'
+          str = ansi_wind_direction_forecast forecast
+        else
+          str = ansi_wind_forecast forecast
+        end
       when 'winddir'
         str = ansi_wind_direction_forecast forecast
       when 'asciisun'

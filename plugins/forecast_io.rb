@@ -8,6 +8,7 @@ class ForecastIO
   extend Cinch::HttpServer::Verbs
 
   @@key = 'weather'
+  @@scale = 'f'
   @@ansi_chars = %w[_ ▁ ▃ ▅ ▇ █]
   @@ozone_chars = %w[・ o O @ ◎ ◉]
   @@ascii_chars = %w[_ . - • * ']
@@ -70,9 +71,21 @@ class ForecastIO
     secondary_command = nil
 
     # Put here a list of all secondary commands.
-    if query.match /^(intensity|dir)\s*/
+    if query.match /^(intensity|dir|set)\s*/
       secondary_command = $1
       query.gsub! /^#{$1}\s*/, ''
+    end
+
+    if secondary_command == 'set'
+      # We're really setting this here, but hey.
+      (setting, value) = query.downcase.split /\s+/
+      if setting == 'scale' and (value == 'f' or value == 'c')
+        get_personalized_query(msg.user.name, @@key + "_#{setting}", value)
+        msg.reply "#{msg.user.nick}: Temperature scale set to #{value}"
+        return
+      end
+    else
+      @@scale = get_personalized_query(msg.user.name, @@key + "_scale", '')
     end
 
     query = get_personalized_query(msg.user.name, @@key, query)
@@ -197,12 +210,12 @@ class ForecastIO
 
     str = get_dot_str(chars, data_limited, temps.min, differential, 'temperature')
 
-    "temps: now #{data.first['temperature'].round(1)}°F |#{str}| #{data.last['temperature'].round(1)}°F this hour tomorrow.  Range: #{temps.min.round(1)}-#{temps.max.round(1)}°F"
+    "temps: now #{get_temperature data.first['temperature'].round(1)} |#{str}| #{get_temperature data.last['temperature'].round(1)} this hour tomorrow.  Range: #{get_temperature temps.min.round(1)}-#{get_temperature temps.max.round(1)}"
   end
 
   def format_forecast_message(forecast)
     minute_forecast = forecast['minutely']['summary'].to_s.downcase.chop if forecast['minutely']
-    "weather is currently #{forecast['currently']['temperature']}°F (#{celcius forecast['currently']['temperature']}°C) " +
+    "weather is currently #{get_temperature forecast['currently']['temperature']} " +
     "and #{forecast['currently']['summary'].downcase}.  Winds out of the #{get_cardinal_direction_from_bearing forecast['currently']['windBearing']} at #{forecast['currently']['windSpeed']} mph. " +
     "It will be #{minute_forecast}, and #{forecast['hourly']['summary'].to_s.downcase.chop}.  There are also #{forecast['currently']['ozone'].to_s} ozones."
     # daily.summary
@@ -289,7 +302,7 @@ class ForecastIO
     differential = mintemps.max - mintemps.min
     min_str = get_dot_str(@@ansi_chars, data, mintemps.min, differential, 'temperatureMin')
 
-    "7day high/low temps #{maxtemps.first.to_f.round(1)}°F |#{max_str}| #{maxtemps.last.to_f.round(1)}°F / #{mintemps.first.to_f.round(1)}°F |#{min_str}| #{mintemps.last.to_f.round(1)}°F"
+    "7day high/low temps #{get_temperature maxtemps.first.to_f.round(1)} |#{max_str}| #{get_temperature maxtemps.last.to_f.round(1)} / #{get_temperature mintemps.first.to_f.round(1)} |#{min_str}| #{get_temperature mintemps.last.to_f.round(1)}"
   end
 
   def alerts(forecast)
@@ -361,6 +374,14 @@ class ForecastIO
       key = 'precipProbability'
     end
     return query, key
+  end
+
+  def get_temperature(temp_f)
+    if @@scale == 'c'
+      celcius(temp_f).to_s + '°C'
+    else
+      temp_f.to_s + '°F'
+    end
   end
 
   def celcius(degreesF)

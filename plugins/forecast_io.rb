@@ -44,6 +44,7 @@ class ForecastIO
 !asciisun   [location] 7 days of sun likelihood data, fancy style.
 !7day       [location] 7 days of temperature data.
 !alerts     [location] NOAA alerts for your location, if available.
+!forecast   set scale [c|f] Change your temperature scale.  This works with all available commands.
   EOF
 
   # Twillio response block

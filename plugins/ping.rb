@@ -30,8 +30,9 @@ class Ping
                       http://i.imgur.com/aVn5ABf.gif
                       http://swng.it/14ZqYT.gif
                       http://i.imgur.com/2PjC7RX.gif
-http://i.imgur.com/82FbFvi.gif
-https://dl.dropboxusercontent.com/u/575564/tumblr_mppsh4IaB81snfsquo1_400.gif
+                      http://i.imgur.com/82FbFvi.gif
+                      https://dl.dropboxusercontent.com/u/575564/tumblr_mppsh4IaB81snfsquo1_400.gif
+                      http://0.media.collegehumor.cvcdn.com/80/11/a5514aa0d1ad89720722b4fc12a9fe12.gif
                     )
     msg.reply("#{pong_images.sample}")
   end

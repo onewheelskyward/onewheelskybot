@@ -6,8 +6,9 @@ class FaceIt
   match /asciifacei*t*$/i,                method: :asciifaceit
 
   set :help, <<-EOF
-[/msg] !faceit
-  Face it.
+!face
+!faceit  Just face it.
+!asciiface
   EOF
 
   @@faces = [ '( .-. )',

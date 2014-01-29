@@ -12,8 +12,8 @@ class Images < GoogleAbstract
   match /puppy$/, method: :puppy
 
   set :help, <<-EOF
-[/msg] image me [x]
-  Display an image of [x]
+!image <search term>[index]  For instant Google image results, right in IRC.  [index] is 0-n or * for a random image.
+!puppy Try it and see.
   EOF
 
   def get_google_url(query)

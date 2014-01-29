@@ -23,13 +23,12 @@ class Wolfram
   match /moonphase$/i, method: :moonphase
 
   set :help, <<-EOF
-[/msg] !alpha [me] [x]
-  Wolfram Alpha search for [x]
-[/msg] !sunrise
-[/msg] !sunset
-[/msg] !moonrise
-[/msg] !moonset
-[/msg] !moonphase
+!alpha <search term>  Wolfram Alpha computational search.
+!sunrise   Next sunrise in PDX.
+!sunset    Next sunset in PDX.
+!moonrise  Next moonrise in PDX.
+!moonset   Next moonset in PDX.
+!moonphase Current moon phase in PDX.
   EOF
 
   def get_app_id

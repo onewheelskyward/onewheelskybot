@@ -13,8 +13,7 @@ class Youtube < GoogleAbstract
   match /yo*u*t*u*b*e*\s*m*e*\s(.*)/i, method: :google_search #, react_on: :channel
 
   set :help, <<-EOF
-[/msg] youtube me [x]
-  Display an youtube of [x]
+!youtube <search>  Show some youtubes.
   EOF
 
   def google_search(msg, query)

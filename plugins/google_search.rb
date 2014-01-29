@@ -11,8 +11,7 @@ class GoogleSearch < GoogleAbstract
   match /go*o*g*l*e*\s*m*e*\s(.*)/i, method: :google_search #, react_on: :channel
 
   set :help, <<-EOF
-[/msg] image me [x]
-  Display an image of [x]
+!g[oogle] <search term>[index]  For instant Google results, right in IRC.  [index] is 0-n or * for a random result.
   EOF
 
   def get_google_url(query)
@@ -45,7 +44,12 @@ class GoogleSearch < GoogleAbstract
     #Todo: Return a different image if this one has been used.
     #agent = Mechanize.new
     parsed = JSON.parse json
-    link = parsed['responseData']['results'][index]
+    if index == '*'
+      link = parsed['responseData']['results'].sample
+    else
+      link = parsed['responseData']['results'][index]
+    end
+
     if link['url']
       return link['url'], link['titleNoFormatting']
     end

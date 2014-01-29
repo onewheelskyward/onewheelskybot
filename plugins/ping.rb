@@ -5,8 +5,7 @@ class Ping
   match /^ping$/, use_prefix: false, method: :pong
 
   set :help, <<-EOF
-[/msg] ping
-  pong
+[!]ping PONG
   EOF
 
   def pong(msg)

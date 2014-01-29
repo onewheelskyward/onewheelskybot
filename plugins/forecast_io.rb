@@ -32,10 +32,18 @@ class ForecastIO
   match /(alerts*)\s*(.*)/i,                  method: :execute
 
   set :help, <<-EOF
-[/msg] !forecast
-  Forecast IO forecast for Portland.
-[/msg] !asciirain
-  Incoming rain data for the next hour.
+!forecast   [location] Forecast IO forecast for Portland.
+!asciirain  [location] Incoming rain data for the next hour.
+!ansirain   [location] Fancy incoming rain data for the next hour.
+!asciiozone [location] Ozone data for the next 24 hours.
+!asciitemp  [location] 24 hours of temperature data.
+!ansitemp   [location] 24 hours of fancy temperature data.
+!asciiwind  [dir] [location] 24 hours of wind speed data.  Option dir retrieves wind direction data.
+!ansiwind   [dir] [location] 24 hours of fancy wind speed data.  Option dir retrieves wind direction data.
+!asciisun   [location] 7 days of sun likelihood data.
+!asciisun   [location] 7 days of sun likelihood data, fancy style.
+!7day       [location] 7 days of temperature data.
+!alerts     [location] NOAA alerts for your location, if available.
   EOF
 
   # Twillio response block

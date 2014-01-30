@@ -32,6 +32,8 @@ class ForecastIO
   match /(alerts*)\s*(.*)/i,                  method: :execute
 
   set :help, <<-EOF
+This is the weather prediction module.  Location is optional, and defaults to Portland, OR.
+Once you specify a location, it will persist as long as you own your nick.
 !forecast   [location] Forecast IO forecast for Portland.
 !asciirain  [location] Incoming rain data for the next hour.
 !ansirain   [location] Fancy incoming rain data for the next hour.
@@ -46,7 +48,7 @@ class ForecastIO
 !alerts     [location] NOAA alerts for your location, if available.
 !forecast   set scale [c|f] Change your temperature scale.  This works with all available commands.
   EOF
-
+I
   # Twillio response block
   get '/forecast' do
     bot = self.bot

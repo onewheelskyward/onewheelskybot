@@ -1,13 +1,13 @@
 require 'cinch'
 require 'yaml'
 
-config = YAML.load_file('config.yml')
-Dir.glob("plugins/*.rb").each { |file| require_relative file }
+config = YAML.load_file(File.dirname(__FILE__) + '/config.yml')
+Dir.glob(File.dirname(__FILE__) + "/plugins/*.rb").each { |file| require_relative file }
 require_relative 'helpers'
 require 'data_mapper'
 require 'dm-postgres-adapter'
 
-Dir.glob("models/*.rb").each { |model| require_relative model }
+Dir.glob(File.dirname(__FILE__) + "/models/*.rb").each { |model| require_relative model }
 DataMapper::Logger.new($stdout, :debug)
 DataMapper::Property::String.length(4000)
 DataMapper.setup(:default, "postgres://localhost/skybot")
@@ -22,7 +22,7 @@ bot = Cinch::Bot.new do
     c.realname = config['realname']
     c.password = config['password']
     c.port = config['port']
-    puts config['plugins'].inspect
+      puts config['plugins'].inspect
 
     c.plugins.plugins = config['plugins'].map {|p| Kernel.const_get p}
 

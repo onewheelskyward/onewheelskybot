@@ -20,3 +20,6 @@ gem 'twilio-ruby'
 gem 'hipchat-api'
 gem 'capistrano', '<3'
 
+gem 'simplecov'
+gem 'minitest'
+

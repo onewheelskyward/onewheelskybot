@@ -1,7 +1,7 @@
 class Private
   include Cinch::Plugin
   #listen_to :private, method: private
-  match /say\s(#.*)\s(.*)$/, method: :say
+  match /^say\s+(#.*)\s+(.*)$/, method: :say
   #on :private do |m, q|
   #  debug("#{q}")
   #end

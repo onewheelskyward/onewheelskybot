@@ -68,7 +68,7 @@ class Images < GoogleAbstract
     #    end
     #  end
     #end
-    image
+    shorten_url image
   end
 
   def api_call(url)

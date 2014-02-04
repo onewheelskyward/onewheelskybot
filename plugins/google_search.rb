@@ -51,7 +51,7 @@ class GoogleSearch < GoogleAbstract
     end
 
     if link['url']
-      return link['url'], link['titleNoFormatting']
+      return shorten_url(link['url']), link['titleNoFormatting']
     end
   end
 end

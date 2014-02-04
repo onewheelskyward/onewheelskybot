@@ -38,6 +38,7 @@ class Ping
                       http://i.imgur.com/RgTu8yb.gif
                       https://github-camo.global.ssl.fastly.net/4ba69a537791f9b79584abccf4b6a925d397acbc/687474703a2f2f6d656469612e67697068792e636f6d2f6d656469612f575257396463645933663839572f67697068792e676966#.png
                       http://img.imgur.com/Ga5GtAM.gif
+                      http://www.hdpaperwall.com/wp-content/uploads/2013/11/sad_dog.jpg
                     )
     msg.reply("#{pong_images.sample}")
   end

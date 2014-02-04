@@ -164,7 +164,7 @@ module ForecastIOMethods
 
     str = get_dot_str(chars, data_limited, temps.min, differential, 'temperature')
 
-    "temps: now #{get_temperature data.first['temperature'].round(1)} |#{str}| #{get_temperature data.last['temperature'].round(1)} this hour tomorrow.  Range: #{get_temperature temps.min.round(1)}-#{get_temperature temps.max.round(1)}"
+    "temps: now #{get_temperature data.first['temperature'].round(1)} |#{str}| #{get_temperature data.last['temperature'].round(1)} this hour tomorrow.  Range: #{get_temperature temps.min.round(1)} - #{get_temperature temps.max.round(1)}"
   end
 
   def format_forecast_message(forecast)
@@ -199,7 +199,7 @@ module ForecastIOMethods
     differential = data_points.max - data_points.min
     str = get_dot_str(chars, data, data_points.min, differential, key)
 
-    "24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph  Range: #{data_points.min}-#{data_points.max} mph"
+    "24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph  Range: #{data_points.min} - #{data_points.max} mph"
   end
 
   def do_the_wind_direction_thing(forecast)

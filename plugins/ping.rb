@@ -40,6 +40,7 @@ class Ping
                       http://img.imgur.com/Ga5GtAM.gif
                       http://www.hdpaperwall.com/wp-content/uploads/2013/11/sad_dog.jpg
                       https://i.chzbgr.com/maxW500/1087527680/h0403FA19.jpg
+                      http://www.stupid.com/assets/images/JRCC_1.jpg
                     )
     msg.reply("#{pong_images.sample}")
   end

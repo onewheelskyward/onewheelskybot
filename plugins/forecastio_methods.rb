@@ -266,8 +266,10 @@ module ForecastIOMethods
 
   def alerts(forecast)
     str = ''
-    forecast['alerts'].each do |alert|
-      str += shorten_url(alert['uri']) + "\n"
+    if forecast['alerts']
+      forecast['alerts'].each do |alert|
+        str += shorten_url(alert['uri']) + "\n"
+      end
     end
   end
 

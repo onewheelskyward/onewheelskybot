@@ -27,5 +27,5 @@ def shorten_url(url, is_image = false)
     end
   end
   g = HTTParty.get "http://is.gd/create.php?format=simple&url=#{URI::encode url}"
-  g.body + extension
+  g.body + extension.to_s
 end

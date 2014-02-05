@@ -25,7 +25,7 @@ class ForecastIO
   match /(asciisun)\s*(.*)/i,                 method: :execute
   match /(ansisun)\s*(.*)/i,                  method: :execute
   match /(7day)\s*(.*)/i,                     method: :execute
-  match /(alerts*)\s*(.*)/i,                  method: :execute
+  match /(alerts)\s*(.*)/i,                   method: :execute
 
   set :help, <<-EOF
 This is the weather prediction module.  Location is optional, and defaults to Portland, OR.

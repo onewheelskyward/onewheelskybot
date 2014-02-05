@@ -146,10 +146,10 @@ module ForecastIOMethods
   end
 
   def ansi_temp_forecast(forecast)
-    do_the_temp_thing(forecast, ansi_chars)
+    do_the_temp_thing(forecast, ansi_chars, true)
   end
 
-  def do_the_temp_thing(forecast, chars)
+  def do_the_temp_thing(forecast, chars, ansi = false)
     temps = []
     data = forecast['hourly']['data']
     data_limited = []
@@ -162,7 +162,12 @@ module ForecastIOMethods
 
     differential = temps.max - temps.min
 
-    str = get_dot_str(chars, data_limited, temps.min, differential, 'temperature')
+    # Hmm.  There's a better way.
+    if ansi
+      str = get_ansitemp_dot_str(chars, data_limited, temps.min, differential, 'temperature')
+    else
+      str = get_dot_str(chars, data_limited, temps.min, differential, 'temperature')
+    end
 
     "temps: now #{get_temperature data.first['temperature'].round(1)} |#{str}| #{get_temperature data.last['temperature'].round(1)} this hour tomorrow.  Range: #{get_temperature temps.min.round(1)} - #{get_temperature temps.max.round(1)}"
   end
@@ -289,14 +294,72 @@ module ForecastIOMethods
   def get_dot_str(chars, data, min, differential, key)
     str = ''
     data.each do |datum|
-      if differential == 0
-        percentage = 0
-      else
-        percentage = (datum[key].to_f - min) / (differential)
-      end
-      str += get_dot percentage, chars
+      percentage = get_percentage(datum[key], differential, min)
+      str += get_dot(percentage, chars)
     end
     str
+  end
+
+#  aqua
+#  black
+#  blue
+#  brown
+#  green
+#  grey
+#  lime
+#  orange
+#  pink
+#  purple
+#  red
+#  royal
+#  silver
+#  teal
+#  white
+#  yellow
+  def get_temp_color(temp)
+    case temp
+      when -459.7..24.99
+        :blue
+      when 25..31.99
+        :purple
+      when 32..38
+        :teal
+      when 38..45
+        :green
+      when 45..55
+        :lime
+      when 55..65
+        :aqua
+      when 65..75
+        :yellow
+      when 75..85
+        :orange
+      when 85..95
+        :red
+      when 95..159.3
+        :pink
+      else
+        :pink #wha
+    end
+  end
+
+  def get_ansitemp_dot_str(chars, data, min, differential, key)
+    str = ''
+    data.each do |datum|
+      color = get_temp_color datum[key]
+      percentage = get_percentage(datum[key], differential, min)
+      str += Format(get_temp_color(datum[key]), get_dot(percentage, chars))
+    end
+    str
+  end
+
+  def get_percentage(number, differential, min)
+    if differential == 0
+      percentage = 0
+    else
+      percentage = (number.to_f - min) / (differential)
+    end
+    percentage
   end
 
 # °℃℉

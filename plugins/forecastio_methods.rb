@@ -267,7 +267,7 @@ module ForecastIOMethods
   def alerts(forecast)
     str = ''
     forecast['alerts'].each do |alert|
-      str += alert['uri'] + "\n"
+      str += shorten_url(alert['uri']) + "\n"
     end
   end
 
@@ -318,6 +318,7 @@ module ForecastIOMethods
 #  yellow
   def get_temp_color(temp)
     case temp
+      # Absolute zero?  Sure, we support that!
       when -459.7..24.99
         :blue
       when 25..31.99

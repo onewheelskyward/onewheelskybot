@@ -271,6 +271,7 @@ module ForecastIOMethods
         str += shorten_url(alert['uri']) + "\n"
       end
     end
+    str
   end
 
   def get_gps_coords(query)

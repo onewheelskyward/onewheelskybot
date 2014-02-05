@@ -202,7 +202,7 @@ module ForecastIOMethods
     end
 
     differential = data_points.max - data_points.min
-    str = get_dot_str(chars, data, data_points.min, differential, key)
+    str = get_wind_dot_str(chars, data, data_points.min, differential, key)
 
     "24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph  Range: #{data_points.min} - #{data_points.max} mph"
   end
@@ -215,7 +215,7 @@ module ForecastIOMethods
     wind_arrows = {'N' => '↓', 'NE' => '↙', 'E' => '←', 'SE' => '↖', 'S' => '↑', 'SW' => '↗', 'W' => '→', 'NW' => '↘'}
 
     data.each do |datum|
-      str += wind_arrows[get_cardinal_direction_from_bearing datum[key]]
+      str += Format(get_wind_color(datum['windSpeed']), wind_arrows[get_cardinal_direction_from_bearing datum[key]])
     end
 
     "24h wind direction |#{str}|"
@@ -268,7 +268,8 @@ module ForecastIOMethods
     str = ''
     if forecast['alerts']
       forecast['alerts'].each do |alert|
-        str += shorten_url(alert['uri']) + "\n"
+        alert['description'].match /\.\.\.(\w+)\.\.\./
+        str += "#{shorten_url(alert['uri'])}#{$1}\n"
       end
     end
     str
@@ -347,12 +348,45 @@ module ForecastIOMethods
     end
   end
 
+  def get_wind_color(speed)
+    case speed
+      when 0..3
+        :blue
+      when 3..6
+        :purple
+      when 6..9
+        :teal
+      when 9..12
+        :aqua
+      when 12..15
+        :yellow
+      when 15..18
+        :orange
+      when 18..21
+        :red
+      when 21..999
+        :pink
+      else
+        :pink #wha
+    end
+  end
+
   def get_ansitemp_dot_str(chars, data, min, differential, key)
     str = ''
     data.each do |datum|
       color = get_temp_color datum[key]
       percentage = get_percentage(datum[key], differential, min)
-      str += Format(get_temp_color(datum[key]), get_dot(percentage, chars))
+      str += Format(color, get_dot(percentage, chars))
+    end
+    str
+  end
+
+  def get_wind_dot_str(chars, data, min, differential, key)
+    str = ''
+    data.each do |datum|
+      color = get_wind_color datum[key]
+      percentage = get_percentage(datum[key], differential, min)
+      str += Format(color, get_dot(percentage, chars))
     end
     str
   end

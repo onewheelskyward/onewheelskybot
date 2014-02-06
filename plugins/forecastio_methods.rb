@@ -411,17 +411,17 @@ module ForecastIOMethods
     end
 
     if probability == 0
-      return char_array[0]
+      return Format(:blue, char_array[0])
     elsif probability <= 0.10
-      return char_array[1]
+      return Format(:purple, char_array[1])
     elsif probability <= 0.25
-      return char_array[2]
+      return Format(:teal, char_array[2])
     elsif probability <= 0.50
-      return char_array[3]
+      return Format(:yellow, char_array[3])
     elsif probability <= 0.75
-      return char_array[4]
+      return Format(:orange, char_array[4])
     elsif probability <= 1.00
-      return char_array[5]
+      return Format(:red, char_array[5])
     end
   end
 

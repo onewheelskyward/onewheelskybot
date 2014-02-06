@@ -125,6 +125,10 @@ module ForecastIOMethods
       precip_type = 'snow' if datum['precipType'] == 'snow'
     end
 
+    if precip_type = 'snow'
+      chars = %w[_ ☃ ☃ ☃ ☃ ☃] # Hat tip to hallettj@#pdxtech
+    end
+
     differential = data_points.max - data_points.min
 
     str = get_dot_str(chars, data, data_points.min, differential, key)

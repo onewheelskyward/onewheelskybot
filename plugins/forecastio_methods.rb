@@ -125,7 +125,7 @@ module ForecastIOMethods
       precip_type = 'snow' if datum['precipType'] == 'snow'
     end
 
-    if precip_type = 'snow'
+    if precip_type = 'snow' and type != 'intensity'
       chars = %w[_ ☃ ☃ ☃ ☃ ☃] # Hat tip to hallettj@#pdxtech
     end
 

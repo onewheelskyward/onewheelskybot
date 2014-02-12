@@ -41,7 +41,35 @@ class Ping
                       http://www.hdpaperwall.com/wp-content/uploads/2013/11/sad_dog.jpg
                       https://i.chzbgr.com/maxW500/1087527680/h0403FA19.jpg
                       http://www.stupid.com/assets/images/JRCC_1.jpg
-                    )
-    msg.reply("#{pong_images.sample}")
+                      https://lh6.googleusercontent.com/-KaoDXtxBeBw/UvTxrt7hZqI/AAAAAAAAph4/_fTAcb_9lRI/w280-h154-no/EvolutionDoor.gif
+                      http://i.imgur.com/tJKlWOL.gif
+                      http://www.totalprosports.com/wp-content/uploads/2012/12/u.s.-open-bird-man-videobombs-costas.gif
+                      https://f.cloud.github.com/assets/937626/2140770/b384be2c-9350-11e3-83e0-374c2b646829.jpg
+                      http://i.imgur.com/JTW4cle.jpg
+                      http://www.totalprosports.com/wp-content/uploads/2012/12/sports-reporter-almost-run-over-by-car.gif
+                      http://www.totalprosports.com/wp-content/uploads/2012/12/jay-onrait-jazz-hands-gif.gif
+                      http://www.totalprosports.com/wp-content/uploads/2012/12/towel-thrown-on-courtside-reporters-head.gif
+                      http://www.totalprosports.com/wp-content/uploads/2012/12/reporter-hit-in-head-with-soccer-ball.gif
+                      http://www.totalprosports.com/wp-content/uploads/2012/12/ian-hit-with-football.gif
+                      http://www.totalprosports.com/wp-content/uploads/2012/12/shaq-attacking-pinata-1.gif
+                      http://www.totalprosports.com/wp-content/uploads/2012/12/shaq-attacking-pinata-2.gif
+                      http://www.totalprosports.com/wp-content/uploads/2012/12/Jessica-Kastrop-Hit-in-the-Head-with-Soccer-Ball.gif
+                      http://oi40.tinypic.com/215y1d.jpg
+                     )
+    if msg.user.nick == 'incanus77'
+      pong = %w(
+                 'http://i.imgur.com/JTW4cle.jpg',
+                 'https://f.cloud.github.com/assets/5572214/2140070/38283e06-9347-11e3-85a8-78b30b2f5701.JPG',
+                 'https://f.cloud.github.com/assets/32314/2140406/00e89698-934c-11e3-9235-a8feb82e77fc.png',
+                 'https://f.cloud.github.com/assets/937626/2140770/b384be2c-9350-11e3-83e0-374c2b646829.jpg',
+                 'https://f.cloud.github.com/assets/26278/2140782/cd459340-9350-11e3-87a2-90fa8bf85872.jpg',
+                 'http://i.imgur.com/cGDUG1B.jpg',
+                 'https://f.cloud.github.com/assets/17722/2141926/8143e812-935e-11e3-9188-e48035860036.jpg'
+      ).sample
+    else
+      pong = pong_images.sample
+    end
+
+    msg.reply(pong)
   end
 end

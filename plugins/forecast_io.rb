@@ -54,7 +54,7 @@ Once you specify a location, it will persist as long as you own your nick.
       when /^forecast/i
         text = bot.plugins[4].get_weather_forecast(request.sub /^forecast\s*/i, '')
       when /^rain/i
-        text = bot.plugins[4].do_the_rain_chance_thing request.sub(/^rain\s*/i, '')
+        text = bot.plugins[4].sms_rain_forecast request.sub(/^rain\s*/i, '')
       when /^temp/i
         text = bot.plugins[4].do_the_temp_thing(request.sub(/^temp\s*/i, ''), @@ansi_chars)
       when /^say/i

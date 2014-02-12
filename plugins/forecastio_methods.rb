@@ -170,7 +170,12 @@ module ForecastIOMethods
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
 
-  def do_the_rain_chance_thing(forecast, chars, key, type, range_colors)
+  def sms_rain_forecast(location)
+    forecast = get_forecast_io_results location
+    do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability')
+  end
+
+  def do_the_rain_chance_thing(forecast, chars, key, type, range_colors = nil)
     precip_type = 'rain'
     data_points = []
     data = forecast['minutely']['data']
@@ -188,9 +193,11 @@ module ForecastIOMethods
 
     str = get_dot_str(chars, data, data_points.min, differential, key)
 
-    colored_str = get_colored_string(data, key, str, range_colors)
+    if range_colors
+      str = get_colored_string(data, key, str, range_colors)
+    end
     #  - 28800
-    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{colored_str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ascii_ozone_forecast(forecast)

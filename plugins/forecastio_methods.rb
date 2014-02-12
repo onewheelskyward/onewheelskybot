@@ -132,8 +132,10 @@ module ForecastIOMethods
     differential = data_points.max - data_points.min
 
     str = get_dot_str(chars, data, data_points.min, differential, key)
+
+    colored_str = get_colored_string(data, key, str, get_rain_range_colors)
     #  - 28800
-    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{colored_str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ascii_ozone_forecast(forecast)
@@ -151,6 +153,20 @@ module ForecastIOMethods
 
   def ansi_temp_forecast(forecast)
     do_the_temp_thing(forecast, ansi_chars)
+  end
+
+  def get_rain_range_colors
+    { 0..0.10    => :blue,
+      0.11..0.20 => :purple,
+      0.21..0.30 => :teal,
+      0.31..0.40 => :green,
+      0.41..0.50 => :lime,
+      0.51..0.60 => :aqua,
+      0.61..0.70 => :yellow,
+      0.71..0.80 => :orange,
+      0.81..0.90 => :red,
+      0.91..1    => :pink
+    }
   end
 
   def get_temp_range_colors

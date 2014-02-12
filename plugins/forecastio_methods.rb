@@ -125,7 +125,7 @@ module ForecastIOMethods
       precip_type = 'snow' if datum['precipType'] == 'snow'
     end
 
-    if precip_type = 'snow' and type != 'intensity'
+    if precip_type == 'snow' and type != 'intensity'
       chars = %w[_ ☃ ☃ ☃ ☃ ☃] # Hat tip to hallettj@#pdxtech
     end
 
@@ -150,16 +150,44 @@ module ForecastIOMethods
   end
 
   def ansi_temp_forecast(forecast)
-    do_the_temp_thing(forecast, ansi_chars, true)
+    do_the_temp_thing(forecast, ansi_chars)
   end
 
-  def do_the_temp_thing(forecast, chars, ansi = false)
+  def get_temp_range_colors
+    { -459.7..24.99 => :blue,
+      25..31.99     => :purple,
+      32..38        => :teal,
+      38..45        => :green,
+      45..55        => :lime,
+      55..65        => :aqua,
+      65..75        => :yellow,
+      75..85        => :orange,
+      85..95        => :red,
+      95..159.3     => :pink
+    }
+  end
+
+  def get_wind_colors
+    {
+      0..3    => :blue,
+      3..6    => :purple,
+      6..9    => :teal,
+      9..12   => :aqua,
+      12..15  => :yellow,
+      15..18  => :orange,
+      18..21  => :red,
+      21..999 => :pink,
+    }
+  end
+
+  def do_the_temp_thing(forecast, chars)
     temps = []
     data = forecast['hourly']['data']
     data_limited = []
+    key = 'temperature'
 
     data.each_with_index do |datum, index|
-      temps.push datum['temperature']
+      temps.push datum[key]
       data_limited.push datum
       break if index == 23 # We only want 24hrs of data.
     end
@@ -167,13 +195,36 @@ module ForecastIOMethods
     differential = temps.max - temps.min
 
     # Hmm.  There's a better way.
-    if ansi
-      str = get_ansitemp_dot_str(chars, data_limited, temps.min, differential, 'temperature')
-    else
-      str = get_dot_str(chars, data_limited, temps.min, differential, 'temperature')
+    dot_str = get_dot_str(chars, data_limited, temps.min, differential, key)
+
+    temp_range_colors = get_temp_range_colors
+    colored_str = get_colored_string(data_limited, key, dot_str, temp_range_colors)
+
+    "temps: now #{get_temperature data.first['temperature'].round(1)} |#{colored_str}| #{get_temperature data.last['temperature'].round(1)} this hour tomorrow.  Range: #{get_temperature temps.min.round(1)} - #{get_temperature temps.max.round(1)}"
+  end
+
+  def get_colored_string(data_limited, key, dot_str, range_hash)
+    color = nil
+    prev_color = nil
+    collect_str = ''
+    colored_str = ''
+
+    data_limited.each_with_index do |data, index|
+      range_hash.keys.each do |range_hash_key|
+        if range_hash_key.cover? data[key]
+          color = range_hash[range_hash_key]
+        end
+      end
+      if color == prev_color
+        collect_str += dot_str[index]
+      else
+        colored_str += Format(prev_color, collect_str)
+        collect_str = ''
+      end
+      prev_color = color
     end
 
-    "temps: now #{get_temperature data.first['temperature'].round(1)} |#{str}| #{get_temperature data.last['temperature'].round(1)} this hour tomorrow.  Range: #{get_temperature temps.min.round(1)} - #{get_temperature temps.max.round(1)}"
+    colored_str += Format(color, collect_str)
   end
 
   def format_forecast_message(forecast)
@@ -206,9 +257,11 @@ module ForecastIOMethods
     end
 
     differential = data_points.max - data_points.min
-    str = get_wind_dot_str(chars, data, data_points.min, differential, key)
+    str = get_dot_str(chars, data, data_points.min, differential, key)
 
-    "24h wind speed #{data.first['windSpeed']} mph |#{str}| #{data.last['windSpeed']} mph  Range: #{data_points.min} - #{data_points.max} mph"
+    colored_str = get_colored_string(data, key, str, get_wind_colors)
+
+    "24h wind speed #{data.first['windSpeed']} mph |#{colored_str}| #{data.last['windSpeed']} mph  Range: #{data_points.min} - #{data_points.max} mph"
   end
 
   def do_the_wind_direction_thing(forecast)
@@ -219,10 +272,12 @@ module ForecastIOMethods
     wind_arrows = {'N' => '↓', 'NE' => '↙', 'E' => '←', 'SE' => '↖', 'S' => '↑', 'SW' => '↗', 'W' => '→', 'NW' => '↘'}
 
     data.each do |datum|
-      str += Format(get_wind_color(datum['windSpeed']), wind_arrows[get_cardinal_direction_from_bearing datum[key]])
+      str += wind_arrows[get_cardinal_direction_from_bearing datum[key]]
     end
 
-    "24h wind direction |#{str}|"
+    colored_str = get_colored_string(data, 'windSpeed', str, get_wind_colors)
+
+    "24h wind direction |#{colored_str}|"
   end
 
   def ascii_sun_forecast(forecast)
@@ -265,7 +320,10 @@ module ForecastIOMethods
     differential = mintemps.max - mintemps.min
     min_str = get_dot_str(ansi_chars, data, mintemps.min, differential, 'temperatureMin')
 
-    "7day high/low temps #{get_temperature maxtemps.first.to_f.round(1)} |#{max_str}| #{get_temperature maxtemps.last.to_f.round(1)} / #{get_temperature mintemps.first.to_f.round(1)} |#{min_str}| #{get_temperature mintemps.last.to_f.round(1)} Range: #{get_temperature mintemps.min} - #{get_temperature maxtemps.max}"
+    colored_max_str = get_colored_string(data, 'temperatureMax', max_str, get_temp_range_colors)
+    colored_min_str = get_colored_string(data, 'temperatureMin', min_str, get_temp_range_colors)
+
+    "7day high/low temps #{get_temperature maxtemps.first.to_f.round(1)} |#{colored_max_str}| #{get_temperature maxtemps.last.to_f.round(1)} / #{get_temperature mintemps.first.to_f.round(1)} |#{colored_min_str}| #{get_temperature mintemps.last.to_f.round(1)} Range: #{get_temperature mintemps.min} - #{get_temperature maxtemps.max}"
   end
 
   def alerts(forecast)
@@ -287,7 +345,11 @@ module ForecastIOMethods
     url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{CGI.escape query}&sensor=false"
     puts url
     response = HTTParty.get url
-    return response['results'][0]['geometry']['location']['lat'].to_s + ',' + response['results'][0]['geometry']['location']['lng'].to_s, response['results'][0]['formatted_address']
+    if response['results'].empty?
+      return '0,0', 'Geocoder fail, Null Island'
+    else
+      return response['results'][0]['geometry']['location']['lat'].to_s + ',' + response['results'][0]['geometry']['location']['lng'].to_s, response['results'][0]['formatted_address']
+    end
   end
 
   def get_forecast_io_results(query = '45.5252,-122.6751')
@@ -324,76 +386,6 @@ module ForecastIOMethods
 #  teal
 #  white
 #  yellow
-  def get_temp_color(temp)
-    case temp
-      # Absolute zero?  Sure, we support that!
-      when -459.7..24.99
-        :blue
-      when 25..31.99
-        :purple
-      when 32..38
-        :teal
-      when 38..45
-        :green
-      when 45..55
-        :lime
-      when 55..65
-        :aqua
-      when 65..75
-        :yellow
-      when 75..85
-        :orange
-      when 85..95
-        :red
-      when 95..159.3
-        :pink
-      else
-        :pink #wha
-    end
-  end
-
-  def get_wind_color(speed)
-    case speed
-      when 0..3
-        :blue
-      when 3..6
-        :purple
-      when 6..9
-        :teal
-      when 9..12
-        :aqua
-      when 12..15
-        :yellow
-      when 15..18
-        :orange
-      when 18..21
-        :red
-      when 21..999
-        :pink
-      else
-        :pink #wha
-    end
-  end
-
-  def get_ansitemp_dot_str(chars, data, min, differential, key)
-    str = ''
-    data.each do |datum|
-      color = get_temp_color datum[key]
-      percentage = get_percentage(datum[key], differential, min)
-      str += Format(color, get_dot(percentage, chars))
-    end
-    str
-  end
-
-  def get_wind_dot_str(chars, data, min, differential, key)
-    str = ''
-    data.each do |datum|
-      color = get_wind_color datum[key]
-      percentage = get_percentage(datum[key], differential, min)
-      str += Format(color, get_dot(percentage, chars))
-    end
-    str
-  end
 
   def get_percentage(number, differential, min)
     if differential == 0
@@ -411,18 +403,32 @@ module ForecastIOMethods
     end
 
     if probability == 0
-      return Format(:blue, char_array[0])
+      return char_array[0]
     elsif probability <= 0.10
-      return Format(:purple, char_array[1])
+      return char_array[1]
     elsif probability <= 0.25
-      return Format(:teal, char_array[2])
+      return char_array[2]
     elsif probability <= 0.50
-      return Format(:yellow, char_array[3])
+      return char_array[3]
     elsif probability <= 0.75
-      return Format(:orange, char_array[4])
+      return char_array[4]
     elsif probability <= 1.00
-      return Format(:red, char_array[5])
+      return char_array[5]
     end
+    #if probability == 0
+    #  return Format(:blue, char_array[0])
+    #elsif probability <= 0.10
+    #  return Format(:purple, char_array[1])
+    #elsif probability <= 0.25
+    #  return Format(:teal, char_array[2])
+    #elsif probability <= 0.50
+    #  return Format(:yellow, char_array[3])
+    #elsif probability <= 0.75
+    #  return Format(:orange, char_array[4])
+    #elsif probability <= 1.00
+    #  return Format(:red, char_array[5])
+    #end
+
   end
 
   def determine_intensity(query)

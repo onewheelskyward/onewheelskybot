@@ -20,6 +20,61 @@ module ForecastIOMethods
     %w[_ . - • * ']
   end
 
+  def get_rain_range_colors
+    { 0..0.10    => :blue,
+      0.11..0.20 => :purple,
+      0.21..0.30 => :teal,
+      0.31..0.40 => :green,
+      0.41..0.50 => :lime,
+      0.51..0.60 => :aqua,
+      0.61..0.70 => :yellow,
+      0.71..0.80 => :orange,
+      0.81..0.90 => :red,
+      0.91..1    => :pink
+    }
+  end
+
+  def get_rain_intensity_range_colors
+    { 0..0.0010      => :blue,
+      0.0011..0.0020 => :purple,
+      0.0021..0.0030 => :teal,
+      0.0031..0.0040 => :green,
+      0.0041..0.0050 => :lime,
+      0.0051..0.0060 => :aqua,
+      0.0061..0.0070 => :yellow,
+      0.0071..0.0080 => :orange,
+      0.0081..0.0090 => :red,
+      0.0091..1      => :pink
+    }
+  end
+
+  def get_temp_range_colors
+    # Absolute zero?  You never know.
+    { -459.7..24.99 => :blue,
+      25..31.99     => :purple,
+      32..38        => :teal,
+      38..45        => :green,
+      45..55        => :lime,
+      55..65        => :aqua,
+      65..75        => :yellow,
+      75..85        => :orange,
+      85..95        => :red,
+      95..159.3     => :pink
+    }
+  end
+
+  def get_wind_range_colors
+    {   0..3    => :blue,
+        3..6    => :purple,
+        6..9    => :teal,
+        9..12   => :aqua,
+        12..15  => :yellow,
+        15..18  => :orange,
+        18..21  => :red,
+        21..999 => :pink,
+    }
+  end
+
   # !weather
   def execute(msg, command, query)
     secondary_command = nil
@@ -98,24 +153,24 @@ module ForecastIOMethods
 
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(forecast)
-    do_the_rain_chance_thing(forecast, ascii_chars, 'precipProbability', 'probability')
+    do_the_rain_chance_thing(forecast, ascii_chars, 'precipProbability', 'probability', get_rain_range_colors)
   end
 
   def ansi_rain_forecast(forecast)
-    do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability')
+    do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability', get_rain_range_colors)
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
 
   def ascii_rain_intensity_forecast(forecast)
-    do_the_rain_chance_thing(forecast, ascii_chars, 'precipIntensity', 'intensity')
+    do_the_rain_chance_thing(forecast, ascii_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
   end
 
   def ansi_rain_intensity_forecast(forecast)
-    do_the_rain_chance_thing(forecast, ansi_chars, 'precipIntensity', 'intensity')
+    do_the_rain_chance_thing(forecast, ansi_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
   end
 
-  def do_the_rain_chance_thing(forecast, chars, key, type)
+  def do_the_rain_chance_thing(forecast, chars, key, type, range_colors)
     precip_type = 'rain'
     data_points = []
     data = forecast['minutely']['data']
@@ -133,7 +188,7 @@ module ForecastIOMethods
 
     str = get_dot_str(chars, data, data_points.min, differential, key)
 
-    colored_str = get_colored_string(data, key, str, get_rain_range_colors)
+    colored_str = get_colored_string(data, key, str, range_colors)
     #  - 28800
     "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{colored_str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
@@ -153,47 +208,6 @@ module ForecastIOMethods
 
   def ansi_temp_forecast(forecast)
     do_the_temp_thing(forecast, ansi_chars)
-  end
-
-  def get_rain_range_colors
-    { 0..0.10    => :blue,
-      0.11..0.20 => :purple,
-      0.21..0.30 => :teal,
-      0.31..0.40 => :green,
-      0.41..0.50 => :lime,
-      0.51..0.60 => :aqua,
-      0.61..0.70 => :yellow,
-      0.71..0.80 => :orange,
-      0.81..0.90 => :red,
-      0.91..1    => :pink
-    }
-  end
-
-  def get_temp_range_colors
-    { -459.7..24.99 => :blue,
-      25..31.99     => :purple,
-      32..38        => :teal,
-      38..45        => :green,
-      45..55        => :lime,
-      55..65        => :aqua,
-      65..75        => :yellow,
-      75..85        => :orange,
-      85..95        => :red,
-      95..159.3     => :pink
-    }
-  end
-
-  def get_wind_colors
-    {
-      0..3    => :blue,
-      3..6    => :purple,
-      6..9    => :teal,
-      9..12   => :aqua,
-      12..15  => :yellow,
-      15..18  => :orange,
-      18..21  => :red,
-      21..999 => :pink,
-    }
   end
 
   def do_the_temp_thing(forecast, chars)
@@ -275,7 +289,7 @@ module ForecastIOMethods
     differential = data_points.max - data_points.min
     str = get_dot_str(chars, data, data_points.min, differential, key)
 
-    colored_str = get_colored_string(data, key, str, get_wind_colors)
+    colored_str = get_colored_string(data, key, str, get_wind_range_colors)
 
     "24h wind speed #{data.first['windSpeed']} mph |#{colored_str}| #{data.last['windSpeed']} mph  Range: #{data_points.min} - #{data_points.max} mph"
   end
@@ -291,7 +305,7 @@ module ForecastIOMethods
       str += wind_arrows[get_cardinal_direction_from_bearing datum[key]]
     end
 
-    colored_str = get_colored_string(data, 'windSpeed', str, get_wind_colors)
+    colored_str = get_colored_string(data, 'windSpeed', str, get_wind_range_colors)
 
     "24h wind direction |#{colored_str}|"
   end

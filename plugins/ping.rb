@@ -55,6 +55,11 @@ class Ping
                       http://www.totalprosports.com/wp-content/uploads/2012/12/shaq-attacking-pinata-2.gif
                       http://www.totalprosports.com/wp-content/uploads/2012/12/Jessica-Kastrop-Hit-in-the-Head-with-Soccer-Ball.gif
                       http://oi40.tinypic.com/215y1d.jpg
+                      http://blog.evaria.com/wp-content/uploads/2008/02/nuns-with-legs.jpg
+                      http://www.ivorytowertutoring.com/blog/wp-content/uploads/2011/12/butt-chair.jpg
+                      http://i.imgur.com/EXHo2Ag.gif
+                      https://f.cloud.github.com/assets/2894119/2172154/45e89dca-958f-11e3-86a0-63c60967148f.gif
+                      http://assets.inhabitat.com/wp-content/blogs.dir/1/files/2011/10/Blinky-e1319824451193.jpg
                      )
     if msg.user.nick == 'incanus77'
       pong = %w(

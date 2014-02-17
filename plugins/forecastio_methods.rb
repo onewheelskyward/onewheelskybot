@@ -316,7 +316,7 @@ module ForecastIOMethods
     colored_str = get_colored_string(data, 'windSpeed', str, get_wind_range_colors)
 
     data.each do |datum|
-      data_points.push datum[key]
+      data_points.push datum['windSpeed']
     end
 
     "24h wind direction |#{colored_str}| Range: #{data_points.min} - #{data_points.max} mph"

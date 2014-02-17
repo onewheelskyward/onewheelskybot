@@ -305,6 +305,7 @@ module ForecastIOMethods
     key = 'windBearing'
     data = forecast['hourly']['data']
     str = ''
+    data_points = []
     # This is a little weird, because the arrows are 180° rotated.  That's because the wind bearing is "out of the N" not "towards the N".
     wind_arrows = {'N' => '↓', 'NE' => '↙', 'E' => '←', 'SE' => '↖', 'S' => '↑', 'SW' => '↗', 'W' => '→', 'NW' => '↘'}
 
@@ -314,7 +315,11 @@ module ForecastIOMethods
 
     colored_str = get_colored_string(data, 'windSpeed', str, get_wind_range_colors)
 
-    "24h wind direction |#{colored_str}|"
+    data.each do |datum|
+      data_points.push datum[key]
+    end
+
+    "24h wind direction |#{colored_str}| Range: #{data_points.min} - #{data_points.max} mph"
   end
 
   def ascii_sun_forecast(forecast)

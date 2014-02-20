@@ -60,6 +60,9 @@ class Ping
                       https://dl.dropboxusercontent.com/u/55631203/700_9162-MOTION.gif
                       https://d3j5vwomefv46c.cloudfront.net/photos/large/839385081.gif
                       http://31.media.tumblr.com/tumblr_lgq7ygJyck1qdgq6go1_250.gif
+                      http://i.imgur.com/eVlTtRy.gif
+                      http://i.imgur.com/civQQne.gif
+                      http://a.gifb.in/g60050g6868.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

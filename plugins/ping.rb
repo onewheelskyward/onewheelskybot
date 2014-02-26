@@ -70,7 +70,7 @@ class Ping
                       http://i.imgur.com/JMXus92.gif
                       http://www.dogster.com/files/Audrey_Baby_Bjorn_Rusty_2.jpg
                       http://cl.ly/image/1P372A1U4316/dkwyjs.gif
-
+                      http://i.imgur.com/h3N15C2.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

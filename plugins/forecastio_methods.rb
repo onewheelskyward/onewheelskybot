@@ -408,7 +408,7 @@ module ForecastIOMethods
       end
       i += 1
     end
-    sun_chance = (1 - forecast['daily']['data'][0]['cloudCover']) * 100
+    sun_chance = ((1 - forecast['daily']['data'][0]['cloudCover']) * 100).round
     "#{get_temperature temps.first.round(2)} |#{temp_str}| #{get_temperature temps.last.round(2)} " + "/ #{winds.first}mph |#{wind_str}| #{winds.last}mph / #{sun_chance}% chance of sun / 60m rain |#{rs}|"
   end
 

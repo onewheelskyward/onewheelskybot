@@ -143,8 +143,13 @@ module ForecastIOMethods
         str = seven_day forecast
       when 'alerts'
         str = alerts forecast
+      when /condi*t*i*o*n*s*/i
+        str = conditions forecast
+
     end
-    msg.reply "#{forecast['long_name']} #{str}"  if str
+    unless str.empty?
+      msg.reply "#{forecast['long_name']} #{str}"
+    end
   end
 
   def get_weather_forecast(forecast)
@@ -157,22 +162,26 @@ module ForecastIOMethods
   end
 
   def ansi_rain_forecast(forecast)
-    do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability', get_rain_range_colors)
+    str = do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability', get_rain_range_colors)
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
+    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ascii_rain_intensity_forecast(forecast)
-    do_the_rain_chance_thing(forecast, ascii_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
+    str = do_the_rain_chance_thing(forecast, ascii_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
+    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ansi_rain_intensity_forecast(forecast)
-    do_the_rain_chance_thing(forecast, ansi_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
+    str = do_the_rain_chance_thing(forecast, ansi_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
+    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def sms_rain_forecast(location)
     forecast = get_forecast_io_results location
-    do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability')
+    str = do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability')
+    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def do_the_rain_chance_thing(forecast, chars, key, type, range_colors = nil)
@@ -197,7 +206,7 @@ module ForecastIOMethods
       str = get_colored_string(data, key, str, range_colors)
     end
     #  - 28800
-    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    return str
   end
 
   def ascii_ozone_forecast(forecast)
@@ -209,15 +218,17 @@ module ForecastIOMethods
     "ozones #{data.first['ozone']} |#{str}| #{data.last['ozone']} [24h forecast]"
   end
 
-  def ascii_temp_forecast(forecast)
-    do_the_temp_thing(forecast, ascii_chars)
+  def ascii_temp_forecast(forecast, hours = 24)
+    str, tempurature_data = do_the_temp_thing(forecast, ascii_chars, hours)
+    "temps: now #{get_temperature tempurature_data.min.round(1)} |#{str}| #{get_temperature tempurature_data.round(1)} this hour tomorrow.  Range: #{get_temperature tempurature_data.min.round(1)} - #{get_temperature tempurature_data.max.round(1)}"
   end
 
-  def ansi_temp_forecast(forecast)
-    do_the_temp_thing(forecast, ansi_chars)
+  def ansi_temp_forecast(forecast, hours = 24)
+    str, tempurature_data = do_the_temp_thing(forecast, ansi_chars, hours)
+    "temps: now #{get_temperature tempurature_data.first.round(1)} |#{str}| #{get_temperature tempurature_data.last.round(1)} this hour tomorrow.  Range: #{get_temperature tempurature_data.min.round(1)} - #{get_temperature tempurature_data.max.round(1)}"
   end
 
-  def do_the_temp_thing(forecast, chars)
+  def do_the_temp_thing(forecast, chars, hours)
     temps = []
     data = forecast['hourly']['data']
     data_limited = []
@@ -226,7 +237,7 @@ module ForecastIOMethods
     data.each_with_index do |datum, index|
       temps.push datum[key]
       data_limited.push datum
-      break if index == 23 # We only want 24hrs of data.
+      break if index == hours - 1 # We only want (hours) 24hrs of data.
     end
 
     differential = temps.max - temps.min
@@ -237,7 +248,7 @@ module ForecastIOMethods
     temp_range_colors = get_temp_range_colors
     colored_str = get_colored_string(data_limited, key, dot_str, temp_range_colors)
 
-    "temps: now #{get_temperature data.first['temperature'].round(1)} |#{colored_str}| #{get_temperature data.last['temperature'].round(1)} this hour tomorrow.  Range: #{get_temperature temps.min.round(1)} - #{get_temperature temps.max.round(1)}"
+    return colored_str, temps
   end
 
   def get_colored_string(data_limited, key, dot_str, range_hash)
@@ -250,11 +261,15 @@ module ForecastIOMethods
       range_hash.keys.each do |range_hash_key|
         if range_hash_key.cover? data[key]
           color = range_hash[range_hash_key]
+          if index == 0
+            prev_color = color
+          end
         end
       end
-      if color == prev_color
-        collect_str += dot_str[index]
-      else
+
+      collect_str += dot_str[index]
+
+      unless color == prev_color
         colored_str += Format(prev_color, collect_str)
         collect_str = ''
       end
@@ -262,6 +277,7 @@ module ForecastIOMethods
     end
 
     colored_str += Format(color, collect_str)
+    colored_str
   end
 
   def format_forecast_message(forecast)
@@ -281,7 +297,8 @@ module ForecastIOMethods
   end
 
   def ansi_wind_direction_forecast(forecast)
-    do_the_wind_direction_thing(forecast)
+    str, data = do_the_wind_direction_thing(forecast)
+    "24h wind direction |#{str}| Range: #{data.min} - #{data.max} mph"
   end
 
   def do_the_wind_thing(forecast, chars)
@@ -301,25 +318,25 @@ module ForecastIOMethods
     "24h wind speed #{data.first['windSpeed']} mph |#{colored_str}| #{data.last['windSpeed']} mph  Range: #{data_points.min} - #{data_points.max} mph"
   end
 
-  def do_the_wind_direction_thing(forecast)
+  def do_the_wind_direction_thing(forecast, hours = 24)
     key = 'windBearing'
     data = forecast['hourly']['data']
     str = ''
     data_points = []
+    data_limited = []
     # This is a little weird, because the arrows are 180° rotated.  That's because the wind bearing is "out of the N" not "towards the N".
     wind_arrows = {'N' => '↓', 'NE' => '↙', 'E' => '←', 'SE' => '↖', 'S' => '↑', 'SW' => '↗', 'W' => '→', 'NW' => '↘'}
 
-    data.each do |datum|
+    data.each_with_index do |datum, index|
       str += wind_arrows[get_cardinal_direction_from_bearing datum[key]]
-    end
-
-    colored_str = get_colored_string(data, 'windSpeed', str, get_wind_range_colors)
-
-    data.each do |datum|
+      data_limited.push datum
       data_points.push datum['windSpeed']
+      break if index == hours - 1 # We only want (hours) 24hrs of data.
     end
 
-    "24h wind direction |#{colored_str}| Range: #{data_points.min} - #{data_points.max} mph"
+    colored_str = get_colored_string(data_limited, 'windSpeed', str, get_wind_range_colors)
+
+    return colored_str, data_points
   end
 
   def ascii_sun_forecast(forecast)
@@ -377,6 +394,22 @@ module ForecastIOMethods
       end
     end
     str
+  end
+
+  def conditions(forecast)
+    temp_str, temps = do_the_temp_thing(forecast, ansi_chars, 8)
+    wind_str, winds = do_the_wind_direction_thing(forecast, 8)
+    rain_str, rains = do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability')
+    i = 0
+    rs = ''
+    rain_str.each_char do |char|
+      if i % 4 == 0
+        rs += char
+      end
+      i += 1
+    end
+    sun_chance = (1 - forecast['daily']['data'][0]['cloudCover']) * 100
+    "#{get_temperature temps.first.round(2)} |#{temp_str}| #{get_temperature temps.last.round(2)} " + "/ #{winds.first}mph |#{wind_str}| #{winds.last}mph / #{sun_chance}% chance of sun / 60m rain |#{rs}|"
   end
 
   def get_gps_coords(query)

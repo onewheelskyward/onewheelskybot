@@ -19,6 +19,7 @@ gem 'nokogiri'
 gem 'twilio-ruby'
 gem 'hipchat-api'
 gem 'capistrano', '<3'
+gem 'pdf-reader'
 
 gem 'simplecov'
 gem 'minitest'

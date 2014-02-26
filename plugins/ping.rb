@@ -22,7 +22,6 @@ class Ping
                       http://i.imgur.com/2mBqBxw.jpg
                       http://i.imgur.com/YTC0CEK.gif
                       http://swng.it/uYr6s.gif
-                      http://www.youtube.com/watch?v=Xb5iqUhC-kA
                       http://25.media.tumblr.com/fa6c3e51a6464e202c351c607a4ea7b9/tumblr_mqpg9st8K71snfsquo1_400.gif
                       http://i.imgur.com/b0GVMNz.gif
                       http://www.doggifpage.com/gifs/109.gif
@@ -63,6 +62,15 @@ class Ping
                       http://i.imgur.com/eVlTtRy.gif
                       http://i.imgur.com/civQQne.gif
                       http://a.gifb.in/g60050g6868.gif
+                      https://i.chzbgr.com/maxW500/8068878848/h0B8447D2/
+                      http://i.imgur.com/aleMzyT.gif
+                      http://weknowmemes.com/wp-content/uploads/2012/06/i-dont-always-poo-holy-shit.jpg
+                      http://i.imgur.com/tQBVFkV.gif
+                      http://pbs.twimg.com/media/BhQkaF4CcAADpxY.jpg
+                      http://i.imgur.com/JMXus92.gif
+                      http://www.dogster.com/files/Audrey_Baby_Bjorn_Rusty_2.jpg
+                      http://cl.ly/image/1P372A1U4316/dkwyjs.gif
+
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

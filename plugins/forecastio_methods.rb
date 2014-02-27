@@ -158,24 +158,25 @@ module ForecastIOMethods
 
 # ▁▃▅▇█▇▅▃▁ agj
   def ascii_rain_forecast(forecast)
-    do_the_rain_chance_thing(forecast, ascii_chars, 'precipProbability', 'probability', get_rain_range_colors)
+    str = do_the_rain_chance_thing(forecast, ascii_chars, 'precipProbability', 'probability', get_rain_range_colors)
+    "rain probability #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ansi_rain_forecast(forecast)
     str = do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability', get_rain_range_colors)
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
-    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    "rain probability #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ascii_rain_intensity_forecast(forecast)
     str = do_the_rain_chance_thing(forecast, ascii_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
-    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    "rain intensity #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def ansi_rain_intensity_forecast(forecast)
     str = do_the_rain_chance_thing(forecast, ansi_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
     #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
-    "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+    "rain intensity #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
   def sms_rain_forecast(location)

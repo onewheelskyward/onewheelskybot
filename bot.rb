@@ -10,7 +10,7 @@ require 'dm-postgres-adapter'
 Dir.glob(File.dirname(__FILE__) + "/models/*.rb").each { |model| require_relative model }
 DataMapper::Logger.new($stdout, :debug)
 DataMapper::Property::String.length(4000)
-DataMapper.setup(:default, "postgres://localhost/skybot")
+DataMapper.setup(:default, "postgres://#{config['db_username']}:#{config['db_password']}@#{config['db_host']}/#{config['database']}")
 DataMapper.finalize
 DataMapper.auto_upgrade!
 

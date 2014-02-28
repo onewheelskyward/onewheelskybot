@@ -6,6 +6,7 @@ password: password
 port: 1919
 
 database: bot
+db_host: localhost
 db_username:
 db_password:
 

@@ -5,6 +5,10 @@ realname: bot
 password: password
 port: 1919
 
+database: bot
+db_username:
+db_password:
+
 plugins: [Images,
          Wolfram,
          GoogleSearch,

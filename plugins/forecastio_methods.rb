@@ -35,16 +35,16 @@ module ForecastIOMethods
   end
 
   def get_rain_intensity_range_colors
-    { 0..0.0010      => :blue,
-      0.0011..0.0020 => :purple,
-      0.0021..0.0030 => :teal,
-      0.0031..0.0040 => :green,
-      0.0041..0.0050 => :lime,
-      0.0051..0.0060 => :aqua,
-      0.0061..0.0070 => :yellow,
-      0.0071..0.0080 => :orange,
-      0.0081..0.0090 => :red,
-      0.0091..1      => :pink
+    { 0..0.0050      => :blue,
+      0.0051..0.0100 => :purple,
+      0.0101..0.0130 => :teal,
+      0.0131..0.0170 => :green,
+      0.0171..0.0220 => :lime,
+      0.0221..0.0280 => :aqua,
+      0.0281..0.0330 => :yellow,
+      0.0331..0.0380 => :orange,
+      0.0381..0.0430 => :red,
+      0.0431..1      => :pink
     }
   end
 
@@ -72,6 +72,14 @@ module ForecastIOMethods
         15..18  => :orange,
         18..21  => :red,
         21..999 => :pink,
+    }
+  end
+
+  def get_sun_range_colors
+    { 0..0.20    => :green,
+      0.21..0.50 => :lime,
+      0.51..0.70 => :orange,
+      0.71..1 => :yellow
     }
   end
 
@@ -359,9 +367,11 @@ module ForecastIOMethods
     end
 
     differential = data_points.max - data_points.min
-    str = get_dot_str(chars, data, data_points.min, differential, key)
 
-    "7 day sun forecast |#{str}|"
+    str = get_dot_str(chars, data, data_points.min, differential, key)
+    colored_str = get_colored_string(data, key, str, get_sun_range_colors)
+
+    "7 day sun forecast |#{colored_str}|"
   end
 
   def seven_day(forecast)
@@ -465,7 +475,7 @@ module ForecastIOMethods
 
   def get_percentage(number, differential, min)
     if differential == 0
-      percentage = 0
+      percentage = number
     else
       percentage = (number.to_f - min) / (differential)
     end

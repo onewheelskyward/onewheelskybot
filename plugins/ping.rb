@@ -71,6 +71,7 @@ class Ping
                       http://www.dogster.com/files/Audrey_Baby_Bjorn_Rusty_2.jpg
                       http://cl.ly/image/1P372A1U4316/dkwyjs.gif
                       http://i.imgur.com/h3N15C2.gif
+                      http://i.imgur.com/0uDd2Z5.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

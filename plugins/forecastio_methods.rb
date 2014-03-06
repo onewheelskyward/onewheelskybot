@@ -276,12 +276,12 @@ module ForecastIOMethods
         end
       end
 
-      collect_str += dot_str[index]
-
       unless color == prev_color
         colored_str += Format(prev_color, collect_str)
         collect_str = ''
       end
+
+      collect_str += dot_str[index]
       prev_color = color
     end
 

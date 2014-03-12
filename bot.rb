@@ -2,6 +2,8 @@ require 'cinch'
 require 'yaml'
 
 config = YAML.load_file(File.dirname(__FILE__) + '/config.yml')
+puts "postgres://#{config['db_username']}:#{config['db_password']}@#{config['db_host']}/#{config['database']}"
+
 Dir.glob(File.dirname(__FILE__) + "/plugins/*.rb").each { |file| require_relative file }
 require_relative 'helpers'
 require 'data_mapper'
@@ -10,7 +12,7 @@ require 'dm-postgres-adapter'
 Dir.glob(File.dirname(__FILE__) + "/models/*.rb").each { |model| require_relative model }
 DataMapper::Logger.new($stdout, :debug)
 DataMapper::Property::String.length(4000)
-DataMapper.setup(:default, "postgres://localhost/skybot")
+DataMapper.setup(:default, "postgres://#{config['db_username']}:#{config['db_password']}@#{config['db_host']}/#{config['database']}")
 DataMapper.finalize
 DataMapper.auto_upgrade!
 

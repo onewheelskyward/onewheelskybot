@@ -18,14 +18,15 @@ def get_location_from_zrobo(user)
 end
 
 def shorten_url(url, is_image = false)
-  extension = nil
-  if url.scan /\.(jpg|png|gif|tiff)$/
-    if $1
-      extension = ".#{$1}"
-    elsif is_image
-      extension = '.jpg'  # Default no-extension handling.  I'm looking at you, cheezburger.
-    end
-  end
-  g = HTTParty.get "http://is.gd/create.php?format=simple&url=#{URI::encode url}"
-  g.body + extension.to_s
+  url
+  #extension = nil
+  #if url.scan /\.(jpg|png|gif|tiff)$/
+  #  if $1
+  #    extension = ".#{$1}"
+  #  elsif is_image
+  #    extension = '.jpg'  # Default no-extension handling.  I'm looking at you, cheezburger.
+  #  end
+  #end
+  #g = HTTParty.get "http://is.gd/create.php?format=simple&url=#{URI::encode url}"
+  #g.body + extension.to_s
 end

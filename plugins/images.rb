@@ -115,6 +115,7 @@ class Images < GoogleAbstract
                       http://post.barkbox.com/wp-content/uploads/2013/02/download-1.gif
                       http://post.barkbox.com/wp-content/uploads/2013/02/download.gif
                       http://post.barkbox.com/wp-content/uploads/2013/02/tumblr_mhdh3aaPE51r2afs6o1_500.gif)
+
     msg.reply("#{puppy_images.sample}")
   end
 

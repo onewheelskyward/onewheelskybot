@@ -22,7 +22,6 @@ class Ping
                       http://i.imgur.com/2mBqBxw.jpg
                       http://i.imgur.com/YTC0CEK.gif
                       http://swng.it/uYr6s.gif
-                      http://www.youtube.com/watch?v=Xb5iqUhC-kA
                       http://25.media.tumblr.com/fa6c3e51a6464e202c351c607a4ea7b9/tumblr_mqpg9st8K71snfsquo1_400.gif
                       http://i.imgur.com/b0GVMNz.gif
                       http://www.doggifpage.com/gifs/109.gif
@@ -60,7 +59,33 @@ class Ping
                       http://i.imgur.com/EXHo2Ag.gif
                       https://f.cloud.github.com/assets/2894119/2172154/45e89dca-958f-11e3-86a0-63c60967148f.gif
                       http://assets.inhabitat.com/wp-content/blogs.dir/1/files/2011/10/Blinky-e1319824451193.jpg
-                     )
+                      http://i0.kym-cdn.com/photos/images/original/000/120/151/space_core_wallpaper_2_by_deathonabun-d3eta23.jpg
+                      http://i.imgur.com/v1TyHu8.jpg
+                      https://dl.dropboxusercontent.com/u/55631203/700_9162-MOTION.gif
+                      https://d3j5vwomefv46c.cloudfront.net/photos/large/839385081.gif
+                      http://31.media.tumblr.com/tumblr_lgq7ygJyck1qdgq6go1_250.gif
+                      http://i.imgur.com/eVlTtRy.gif
+                      http://i.imgur.com/civQQne.gif
+                      http://a.gifb.in/g60050g6868.gif
+                      https://i.chzbgr.com/maxW500/8068878848/h0B8447D2/
+                      http://i.imgur.com/aleMzyT.gif
+                      http://weknowmemes.com/wp-content/uploads/2012/06/i-dont-always-poo-holy-shit.jpg
+                      http://i.imgur.com/tQBVFkV.gif
+                      http://pbs.twimg.com/media/BhQkaF4CcAADpxY.jpg
+                      http://i.imgur.com/JMXus92.gif
+                      http://www.dogster.com/files/Audrey_Baby_Bjorn_Rusty_2.jpg
+                      http://cl.ly/image/1P372A1U4316/dkwyjs.gif
+                      http://i.imgur.com/h3N15C2.gif
+                      http://i.imgur.com/0uDd2Z5.gif
+                      http://kontraband.se/blog/wp-content/uploads/2009/08/st1.gif
+                      http://pauloliverfpblog.files.wordpress.com/2013/05/banging-head.gif
+                      https://lh3.googleusercontent.com/-ZRuuQPYHm4s/Uw4Euht_IQI/AAAAAAAAiig/LNMIBDyvVXY/w421-h288-no/Man+disguised+as+a+speed+camera+flashes+as+cars+drive+by+%2528medias.omgif.net%2529.gif
+                      http://i.imgur.com/AzS1hgd.gif
+                      https://mail.google.com/mail/u/1/?ui=2&ik=cef0db8d39&view=att&th=144899510f2a72c4&attid=0.1&disp=emb&realattid=ii_1448994d8d1f1a16&zw&atsh=1
+                      http://www.doggifpage.com/gifs/116.gif
+                      http://24.media.tumblr.com/dc361833d0a5ddb4bc8f14c5f76719f8/tumblr_n1wme9Ziti1qdlh1io1_400.gif
+                      http://i.imgur.com/SIngIEm.jpg
+                  )
     if msg.user.nick == 'incanus77'
       pong = %w(
                  'http://i.imgur.com/JTW4cle.jpg',

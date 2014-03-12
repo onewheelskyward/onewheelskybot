@@ -26,6 +26,7 @@ class ForecastIO
   match /(ansisun)\s*(.*)/i,                  method: :execute
   match /(7day)\s*(.*)/i,                     method: :execute
   match /(alerts)\s*(.*)/i,                   method: :execute
+  match /(condi*t*i*o*n*s*)\s*(.*)/i,         method: :execute
 
   set :help, <<-EOF
 This is the weather prediction module.  Location is optional, and defaults to Portland, OR.
@@ -42,7 +43,9 @@ Once you specify a location, it will persist as long as you own your nick.
 !asciisun   [location] 7 days of sun likelihood data, fancy style.
 !7day       [location] 7 days of temperature data.
 !alerts     [location] NOAA alerts for your location, if available.
+!conditions [location] get a summary of conditions.
 !forecast   set scale [c|f] Change your temperature scale.  This works with all available commands.
+
   EOF
 
   # Twillio response block
@@ -57,6 +60,8 @@ Once you specify a location, it will persist as long as you own your nick.
         text = bot.plugins[4].sms_rain_forecast request.sub(/^rain\s*/i, '')
       when /^temp/i
         text = bot.plugins[4].do_the_temp_thing(request.sub(/^temp\s*/i, ''), @@ansi_chars)
+      when /^cond/i
+        text = bot.plugins[4].conditions(request.sub(/^temp\s*/i, ''), @@ansi_chars)
       when /^say/i
         text = request.sub /^say /i, ''
         bot.Channel('#pdxtech').send(text)

@@ -87,12 +87,12 @@ class Wolfram
 
   def sunrise(msg)
     reply = wolfram_alpha_search(msg, 'sunrise pdx')
-    date = DateTime.parse(reply)
-    hh, mm, ss = get_hms_until_date(date) #=> [3, 3]
+    hh, mm, ss = get_hms_until_date(reply)
     msg.reply reply + ", #{hh} hours, #{mm} minutes and #{ss} seconds from now."
   end
 
-  def get_hms_until_date(date)
+  def get_hms_until_date(date_str)
+    date = DateTime.parse(date_str)
     date_diff_in_days = (date - DateTime.now()).to_f
     date_diff_in_seconds = (date_diff_in_days * 24 * 60 * 60).to_i
     mm, ss = date_diff_in_seconds.divmod(60) #=> [4515, 21]
@@ -104,21 +104,21 @@ class Wolfram
   def sunset(msg)
     reply = wolfram_alpha_search(msg, 'sunset pdx')
     date = DateTime.parse(reply)
-    hh, mm, ss = get_hms_until_date(date) #=> [3, 3]
+    hh, mm, ss = get_hms_until_date(reply)
     msg.reply reply + ", #{hh} hours, #{mm} minutes and #{ss} seconds from now."
   end
 
   def moonrise(msg)
     reply = wolfram_alpha_search(msg, 'moonrise pdx')
     date = DateTime.parse(reply)
-    hh, mm, ss = get_hms_until_date(date) #=> [3, 3]
+    hh, mm, ss = get_hms_until_date(reply)
     msg.reply reply + ", #{hh} hours, #{mm} minutes and #{ss} seconds from now."
   end
 
   def moonset(msg)
     reply = wolfram_alpha_search(msg, 'moonset pdx')
     date = DateTime.parse(reply)
-    hh, mm, ss = get_hms_until_date(date) #=> [3, 3]
+    hh, mm, ss = get_hms_until_date(reply)
     msg.reply reply + ", #{hh} hours, #{mm} minutes and #{ss} seconds from now."
   end
 

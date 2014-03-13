@@ -85,6 +85,7 @@ class Ping
                       http://www.doggifpage.com/gifs/116.gif
                       http://24.media.tumblr.com/dc361833d0a5ddb4bc8f14c5f76719f8/tumblr_n1wme9Ziti1qdlh1io1_400.gif
                       http://i.imgur.com/SIngIEm.jpg
+                      http://i.imgur.com/mIeNbA2.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

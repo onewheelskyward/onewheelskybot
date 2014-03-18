@@ -81,7 +81,7 @@ class Wolfram
       reply = parse_search_result(xml)
       req.reply = reply.to_s.gsub "\n", "  /  "
       req.save
-    req.reply
+    msg.reply req.reply
     #end
   end
 

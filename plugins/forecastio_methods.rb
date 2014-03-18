@@ -228,13 +228,13 @@ module ForecastIOMethods
   end
 
   def ascii_temp_forecast(forecast, hours = 24)
-    str, tempurature_data = do_the_temp_thing(forecast, ascii_chars, hours)
-    "temps: now #{get_temperature tempurature_data.min.round(1)} |#{str}| #{get_temperature tempurature_data.round(1)} this hour tomorrow.  Range: #{get_temperature tempurature_data.min.round(1)} - #{get_temperature tempurature_data.max.round(1)}"
+    str, temperature_data = do_the_temp_thing(forecast, ascii_chars, hours)
+    "temps: now #{get_temperature temperature_data.first.round(1)} |#{str}| #{get_temperature temperature_data.last.round(1)} this hour tomorrow.  Range: #{get_temperature temperature_data.min.round(1)} - #{get_temperature temperature_data.max.round(1)}"
   end
 
   def ansi_temp_forecast(forecast, hours = 24)
-    str, tempurature_data = do_the_temp_thing(forecast, ansi_chars, hours)
-    "temps: now #{get_temperature tempurature_data.first.round(1)} |#{str}| #{get_temperature tempurature_data.last.round(1)} this hour tomorrow.  Range: #{get_temperature tempurature_data.min.round(1)} - #{get_temperature tempurature_data.max.round(1)}"
+    str, temperature_data = do_the_temp_thing(forecast, ansi_chars, hours)
+    "temps: now #{get_temperature temperature_data.first.round(1)} |#{str}| #{get_temperature temperature_data.last.round(1)} this hour tomorrow.  Range: #{get_temperature temperature_data.min.round(1)} - #{get_temperature temperature_data.max.round(1)}"
   end
 
   def do_the_temp_thing(forecast, chars, hours)
@@ -410,15 +410,10 @@ module ForecastIOMethods
   def conditions(forecast)
     temp_str, temps = do_the_temp_thing(forecast, ansi_chars, 8)
     wind_str, winds = do_the_wind_direction_thing(forecast, 8)
-    rain_str, rains = do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability')
-    i = 0
-    rs = ''
-    rain_str.each_char do |char|
-      if i % 4 == 0
-        rs += char
-      end
-      i += 1
-    end
+    rain_str, rains = do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability', get_rain_range_colors)
+
+    rs = compress_string(rain_str, 4)
+
     sun_chance = ((1 - forecast['daily']['data'][0]['cloudCover']) * 100).round
     "#{get_temperature temps.first.round(2)} |#{temp_str}| #{get_temperature temps.last.round(2)} " + "/ #{winds.first}mph |#{wind_str}| #{winds.last}mph / #{sun_chance}% chance of sun / 60m rain |#{rs}|"
   end

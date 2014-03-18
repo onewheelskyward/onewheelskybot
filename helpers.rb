@@ -30,3 +30,15 @@ def shorten_url(url, is_image = false)
   #g = HTTParty.get "http://is.gd/create.php?format=simple&url=#{URI::encode url}"
   #g.body + extension.to_s
 end
+
+def compress_string(str, compression_factor)
+  i = 0
+  rs = ''
+  str.to_s.each_char do |char|
+    if i % compression_factor == 0
+      rs += char
+    end
+    i += 1
+  end
+  rs
+end

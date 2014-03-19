@@ -17,7 +17,7 @@ module ForecastIOMethods
   end
 
   def ascii_chars
-    %w[_ . - • * ']
+    %w[_ . - ~ * ']
   end
 
   def get_rain_range_colors
@@ -371,7 +371,7 @@ module ForecastIOMethods
     str = get_dot_str(chars, data, data_points.min, differential, key)
     colored_str = get_colored_string(data, key, str, get_sun_range_colors)
 
-    "7 day sun forecast |#{colored_str}|"
+    "8 day sun forecast |#{colored_str}|"
   end
 
   def seven_day(forecast)

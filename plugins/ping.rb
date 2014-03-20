@@ -81,8 +81,8 @@ class Ping
                       http://pauloliverfpblog.files.wordpress.com/2013/05/banging-head.gif
                       https://lh3.googleusercontent.com/-ZRuuQPYHm4s/Uw4Euht_IQI/AAAAAAAAiig/LNMIBDyvVXY/w421-h288-no/Man+disguised+as+a+speed+camera+flashes+as+cars+drive+by+%2528medias.omgif.net%2529.gif
                       http://i.imgur.com/AzS1hgd.gif
-                      https://mail.google.com/mail/u/1/?ui=2&ik=cef0db8d39&view=att&th=144899510f2a72c4&attid=0.1&disp=emb&realattid=ii_1448994d8d1f1a16&zw&atsh=1
                       http://www.doggifpage.com/gifs/116.gif
+                      https://dl.dropboxusercontent.com/u/12492300/excited_brad_pitt.gif
                       http://24.media.tumblr.com/dc361833d0a5ddb4bc8f14c5f76719f8/tumblr_n1wme9Ziti1qdlh1io1_400.gif
                       http://i.imgur.com/SIngIEm.jpg
                       http://i.imgur.com/mIeNbA2.gif

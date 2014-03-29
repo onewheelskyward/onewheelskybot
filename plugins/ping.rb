@@ -86,6 +86,12 @@ class Ping
                       http://24.media.tumblr.com/dc361833d0a5ddb4bc8f14c5f76719f8/tumblr_n1wme9Ziti1qdlh1io1_400.gif
                       http://i.imgur.com/SIngIEm.jpg
                       http://i.imgur.com/mIeNbA2.gif
+                      http://i.imgur.com/JSaqC5H.gif
+                      http://meme.loqi.me/4VEGnnN4.gif
+                      http://i.imgur.com/R7tEQPA.gif
+                      http://i.imgur.com/L2ASIya.gif
+                      https://s3.amazonaws.com/uploads.hipchat.com/81832/599114/KAnjyhhsb1DacFp/moto-twist.gif
+                      http://i.imgur.com/ZIbuNJE.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

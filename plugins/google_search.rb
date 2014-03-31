@@ -6,13 +6,12 @@ require_relative 'google_abstract'
 class GoogleSearch < GoogleAbstract
   include Cinch::Plugin
 
-  #listen_to :message, :method => :on_connect
-  #match /help(.*)/i, :use_prefix => false, :react_on => :private
-  match /go*o*g*l*e*\s*m*e*\s(.*)/i, method: :google_search #, react_on: :channel
-
+  match /go*o*g*l*e*\s*m*e*\s(.*)/i, method: :google_search
+  match /man\s+(.*)$/, method: :man_search
   set :help, <<-EOF
 !g[oogle] <search term>[index]  For instant Google results, right in IRC.  [index] is 0-n or * for a random result.
-  EOF
+!man [page] Search for an online man page for [page].
+EOF
 
   def get_google_url(query)
     "https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=#{URI::encode query}"
@@ -34,6 +33,10 @@ class GoogleSearch < GoogleAbstract
       req.save
       msg.reply(req.reply)    if req.reply
     end
+  end
+
+  def man_search(msg, query)
+    google_search(msg, "man #{query}")
   end
 
   def format_reply_string(search_text, search_url)

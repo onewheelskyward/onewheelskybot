@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rspec'
-gem 'cinch'
+gem 'cinch', '~> 2.1.0'
 gem 'cinch-test'
 gem 'mechanize'
 gem 'data_mapper'
@@ -20,6 +20,7 @@ gem 'twilio-ruby'
 gem 'hipchat-api'
 gem 'capistrano', '<3'
 gem 'pdf-reader'
+gem '3scale_client'
 
 gem 'simplecov'
 gem 'minitest'

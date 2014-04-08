@@ -92,6 +92,8 @@ class Ping
                       http://i.imgur.com/L2ASIya.gif
                       https://s3.amazonaws.com/uploads.hipchat.com/81832/599114/KAnjyhhsb1DacFp/moto-twist.gif
                       http://i.imgur.com/ZIbuNJE.gif
+                      https://dl.dropboxusercontent.com/u/12492300/no-no-no.gif
+
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

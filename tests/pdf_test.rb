@@ -2,7 +2,7 @@ require 'minitest'
 require 'minitest/spec'
 require 'minitest/autorun'
 require 'minitest/mock'
-require_relative 'helper'
+require_relative 'test_helper'
 require 'pdf-reader'
 
 describe 'PDF Test' do

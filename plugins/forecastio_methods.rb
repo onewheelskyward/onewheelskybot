@@ -1,3 +1,4 @@
+require 'cinch/test'
 module ForecastIOMethods
 
   def key

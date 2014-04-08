@@ -24,4 +24,5 @@ gem '3scale_client'
 
 gem 'simplecov'
 gem 'minitest'
+gem 'timecop'
 

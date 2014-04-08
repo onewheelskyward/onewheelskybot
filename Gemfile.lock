@@ -182,6 +182,7 @@ GEM
       eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
     tilt (1.4.1)
+    timecop (0.7.1)
     trollop (2.0)
     ttfunk (1.1.1)
     twilio-ruby (3.11.5)
@@ -218,5 +219,6 @@ DEPENDENCIES
   simplecov
   sinatra
   thin
+  timecop
   trollop
   twilio-ruby

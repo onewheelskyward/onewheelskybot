@@ -1,6 +1,7 @@
 require 'simplecov'
 SimpleCov.start
 require 'cinch/test'
+require 'timecop'
 # require 'minitest'
 require_relative 'test_helper'
 require_relative '../plugins/forecast_io'
@@ -76,51 +77,66 @@ describe 'this' do
   end
 
   it 'fires off asciirain' do
-    # message = make_message(bot, '!asciirain')
-    # replies = get_replies(message)
-    # replies[0].should == " rain probability 23:38|\x0302_____________________________________________________________\x0F|00:38"
+    Timecop.freeze(2014, 04, 07, 22, 32, 00) do
+      message = make_message(bot, '!asciirain')
+      replies = get_replies(message)
+      replies[0].should == " rain probability 22:32|\x0302_.\x0F\x0306-\x0F\x0310~\x0F\x0303~\x0F\x0309~\x0F\x0311*\x0F\x0308*\x0F\x0307'\x0F\x0304'\x0F\x0313'\x0F\x0302__________________________________________________\x0F|23:32"
+    end
   end
 
   it 'lights up ansirain' do
-    # message = make_message(bot, '!ansirain')
-    # replies = get_replies(message)
-    # replies[0].should == " rain probability 23:35|\x0302_____________________________________________________________\x0F|00:35"
+    Timecop.freeze(2014, 04, 07, 22, 32, 00) do
+      message = make_message(bot, '!ansirain')
+      replies = get_replies(message)
+      replies[0].should == " rain probability 22:32|\u000302_▁\u000F\u000306▃\u000F\u000310▅\u000F\u000303▅\u000F\u000309▅\u000F\u000311▇\u000F\u000308▇\u000F\u000307█\u000F\u000304█\u000F\u000313█\u000F\u000302__________________________________________________\u000F|23:32"
+    end
   end
 
-  it 'fires off asciirain' do
-    # message = make_message(bot, '!asciirain intensity')
-    # replies = get_replies(message)
-    # replies[0].should == " rain probability 23:38|\x0302_____________________________________________________________\x0F|00:38"
+  it 'fires off asciirain intensity' do
+    Timecop.freeze(2014, 04, 07, 22, 32, 00) do
+      message = make_message(bot, '!asciirain intensity')
+      replies = get_replies(message)
+      replies[0].should == " rain intensity 22:32|\x0302_\x0F\x0306.\x0F\x0310.\x0F\x0303.\x0F\x0309.\x0F\x0311.\x0F\x0308.\x0F\x0307.\x0F\x0304.\x0F\x0313.'\x0F\x0302__________________________________________________\x0F|23:32"
+    end
   end
 
-  it 'lights up ansirain' do
-    # message = make_message(bot, '!ansirain intensity')
-    # replies = get_replies(message)
-    # replies[0].should == " rain probability 23:35|\x0302_____________________________________________________________\x0F|00:35"
+  it 'lights up ansirain intensity' do
+    Timecop.freeze(2014, 04, 07, 22, 32, 00) do
+      message = make_message(bot, '!ansirain intensity')
+      replies = get_replies(message)
+      replies[0].should == " rain intensity 22:32|\u000302_\u000F\u000306▁\u000F\u000310▁\u000F\u000303▁\u000F\u000309▁\u000F\u000311▁\u000F\u000308▁\u000F\u000307▁\u000F\u000304▁\u000F\u000313▁█\u000F\u000302__________________________________________________\u000F|23:32"
+    end
   end
 
   it 'asciiwind' do
-    message = make_message(bot, '!asciiwind')
-    replies = get_replies(message)
-    replies[0].should == " 24h wind speed 2.52 mph |\x0302--------.._.-\x0F\x0306~~~*\x0F\x0310*'''*\x0F\x0306*~~~~~~~\x0F\x0302-----\x0F\x0306~~~*\x0F\x0310**''''*\x0F\x0306*~~\x0F| 4.69 mph  Range: 1.59 - 8.61 mph"
+    Timecop.freeze(2014, 04, 07, 22, 32, 00) do
+      message = make_message(bot, '!asciiwind')
+      replies = get_replies(message)
+      replies[0].should == " 24h wind speed 2.52 mph |\x0302--------.._.-\x0F\x0306~~~*\x0F\x0310*'''*\x0F\x0306*~~~~~~~\x0F\x0302-----\x0F\x0306~~~*\x0F\x0310**''''*\x0F\x0306*~~\x0F| 4.69 mph  Range: 1.59 - 8.61 mph"
+    end
   end
 
   it 'asciiwind dir' do
-    message = make_message(bot, '!asciiwind dir')
-    replies = get_replies(message)
-    replies[0].should == " 24h wind direction |\u000302↓↓↙←↖↗↑↑↑↑↑↗↗\u000F\u000306→→↗→\u000F\u000310→→→→↘\u000F\u000306↘↘\u000F| Range: 1.59 - 8.61 mph"
+    Timecop.freeze(2014, 04, 07, 22, 32, 00) do
+      message = make_message(bot, '!asciiwind dir')
+      replies = get_replies(message)
+      replies[0].should == " 24h wind direction |\u000302↓↓↙←↖↗↑↑↑↑↑↗↗\u000F\u000306→→↗→\u000F\u000310→→→→↘\u000F\u000306↘↘\u000F| Range: 1.59 - 8.61 mph"
+    end
   end
 
   it 'ansiwind' do
-    message = make_message(bot, '!ansiwind')
-    replies = get_replies(message)
-    replies[0].should == " 24h wind speed 2.52 mph |\u000302▃▃▃▃▃▃▃▃▁▁_▁▃\u000F\u000306▅▅▅▇\u000F\u000310▇███▇\u000F\u000306▇▅▅▅▅▅▅▅\u000F\u000302▃▃▃▃▃\u000F\u000306▅▅▅▇\u000F\u000310▇▇████▇\u000F\u000306▇▅▅\u000F| 4.69 mph  Range: 1.59 - 8.61 mph"
+    Timecop.freeze(2014, 04, 07, 22, 32, 00) do
+      message = make_message(bot, '!ansiwind')
+      replies = get_replies(message)
+      replies[0].should == " 24h wind speed 2.52 mph |\u000302▃▃▃▃▃▃▃▃▁▁_▁▃\u000F\u000306▅▅▅▇\u000F\u000310▇███▇\u000F\u000306▇▅▅▅▅▅▅▅\u000F\u000302▃▃▃▃▃\u000F\u000306▅▅▅▇\u000F\u000310▇▇████▇\u000F\u000306▇▅▅\u000F| 4.69 mph  Range: 1.59 - 8.61 mph"
+    end
   end
 
   it 'ansiwind dir' do
-    message = make_message(bot, '!ansiwind dir')
-    replies = get_replies(message)
-    replies[0].should == " 24h wind direction |\u000302↓↓↙←↖↗↑↑↑↑↑↗↗\u000F\u000306→→↗→\u000F\u000310→→→→↘\u000F\u000306↘↘\u000F| Range: 1.59 - 8.61 mph"
+    Timecop.freeze(2014, 04, 07, 22, 32, 00) do
+      message = make_message(bot, '!ansiwind dir')
+      replies = get_replies(message)
+      replies[0].should == " 24h wind direction |\u000302↓↓↙←↖↗↑↑↑↑↑↗↗\u000F\u000306→→↗→\u000F\u000310→→→→↘\u000F\u000306↘↘\u000F| Range: 1.59 - 8.61 mph"
+    end
   end
-
 end

@@ -17,13 +17,20 @@ describe 'this' do
   it 'tries the forecast' do
     message = make_message(bot, '!forecast')
     replies = get_replies(message)
-    replies[0].should == ' weather is currently 56.89°F and partly cloudy.  Winds out of the W at 2.42 mph. It will be partly cloudy for the hour, and light rain tomorrow evening.  There are also 317.73 ozones.'
+    replies[0].should == ' weather is currently 56.89°F and partly cloudy.  Winds out of the N at 2.42 mph. It will be partly cloudy for the hour, and light rain tomorrow evening.  There are also 317.73 ozones.'
   end
 
   it 'tries the weather' do
     message = make_message(bot, '!weather')
     replies = get_replies(message)
-    replies[0].should == ' weather is currently 56.89°F and partly cloudy.  Winds out of the W at 2.42 mph. It will be partly cloudy for the hour, and light rain tomorrow evening.  There are also 317.73 ozones.'
+    replies[0].should == ' weather is currently 56.89°F and partly cloudy.  Winds out of the N at 2.42 mph. It will be partly cloudy for the hour, and light rain tomorrow evening.  There are also 317.73 ozones.'
+  end
+
+  it 'tries the weather c' do
+    message = make_message(bot, '!weather set scale c')
+    message = make_message(bot, '!weather')
+    replies = get_replies(message)
+    replies[0].should == ' weather is currently 56.89°F and partly cloudy.  Winds out of the N at 2.42 mph. It will be partly cloudy for the hour, and light rain tomorrow evening.  There are also 317.73 ozones.'
   end
 
   it 'drives out some ascii temps' do

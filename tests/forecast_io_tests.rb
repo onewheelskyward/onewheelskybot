@@ -108,7 +108,7 @@ describe 'this' do
   it 'asciiwind dir' do
     message = make_message(bot, '!asciiwind dir')
     replies = get_replies(message)
-    replies[0].should == " 24h wind direction |\u000302→→→↗↗↗↑↑↑↑↑↗↗\u000F\u000306→→↗→\u000F\u000310→→→→↘\u000F\u000306↘↘\u000F| Range: 1.59 - 8.61 mph"
+    replies[0].should == " 24h wind direction |\u000302↓↓↙←↖↗↑↑↑↑↑↗↗\u000F\u000306→→↗→\u000F\u000310→→→→↘\u000F\u000306↘↘\u000F| Range: 1.59 - 8.61 mph"
   end
 
   it 'ansiwind' do
@@ -120,7 +120,7 @@ describe 'this' do
   it 'ansiwind dir' do
     message = make_message(bot, '!ansiwind dir')
     replies = get_replies(message)
-    replies[0].should == " 24h wind direction |\u000302→→→↗↗↗↑↑↑↑↑↗↗\u000F\u000306→→↗→\u000F\u000310→→→→↘\u000F\u000306↘↘\u000F| Range: 1.59 - 8.61 mph"
+    replies[0].should == " 24h wind direction |\u000302↓↓↙←↖↗↑↑↑↑↑↗↗\u000F\u000306→→↗→\u000F\u000310→→→→↘\u000F\u000306↘↘\u000F| Range: 1.59 - 8.61 mph"
   end
 
 end

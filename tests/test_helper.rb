@@ -1,6 +1,8 @@
 require 'simplecov'
 SimpleCov.start
 
+require 'cinch/test'
+require 'timecop'
 require 'data_mapper'
 
 Dir.glob(File.dirname(__FILE__) + "/../models/*.rb").each { |model| require_relative model }

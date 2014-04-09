@@ -420,24 +420,6 @@ module ForecastIOMethods
     "#{get_temperature temps.first.round(2)} |#{temp_str}| #{get_temperature temps.last.round(2)} " + "/ #{winds.first}mph |#{wind_str}| #{winds.last}mph / #{sun_chance}% chance of sun / 60m rain |#{rs}|"
   end
 
-  def get_gps_coords(query)
-    if @bot.is_a? Cinch::Test::MockBot
-      return ''
-    end
-    query = 'Portland, OR' if query == ''
-    if query =~ /\d+\.*\d*,\d+\.*\d*/
-      return query
-    end
-    url = "http://maps.googleapis.com/maps/api/geocode/json?address=#{CGI.escape query}&sensor=false"
-    puts url
-    response = HTTParty.get url
-    if response['results'].empty?
-      return '0,0', 'Geocoder fail, Null Island'
-    else
-      return response['results'][0]['geometry']['location']['lat'].to_s + ',' + response['results'][0]['geometry']['location']['lng'].to_s, response['results'][0]['formatted_address']
-    end
-  end
-
   def get_forecast_io_results(query = '45.5252,-122.6751')
     gps_coords, long_name = get_gps_coords query
     if @bot.is_a? Cinch::Test::MockBot

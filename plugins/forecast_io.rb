@@ -59,9 +59,9 @@ Once you specify a location, it will persist as long as you own your nick.
       when /^rain/i
         text = bot.plugins[4].sms_rain_forecast request.sub(/^rain\s*/i, '')
       when /^temp/i
-        text = bot.plugins[4].do_the_temp_thing(request.sub(/^temp\s*/i, ''), @@ansi_chars)
+        text = bot.plugins[4].do_the_temp_thing(request.sub(/^temp\s*/i, ''), ansi_chars)
       when /^cond/i
-        text = bot.plugins[4].conditions(request.sub(/^temp\s*/i, ''), @@ansi_chars)
+        text = bot.plugins[4].conditions(request.sub(/^temp\s*/i, ''), ansi_chars)
       when /^say/i
         text = request.sub /^say /i, ''
         bot.Channel('#pdxtech').send(text)

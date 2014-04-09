@@ -17,16 +17,8 @@ Moon phase and civil twilight information.
     lat_degrees, lat_minutes = get_gps_minutes_from_decimal lat
     long_degrees, long_minutes = get_gps_minutes_from_decimal long
 
-    lat_negative = 1
-    if lat_degrees < 1
-      lat_negative = -1
-    end
-
-    long_negative = 1
-    if long_degrees < 1
-      long_negative = -1
-    end
-
+    lat_negative = is_negative(lat_degrees)
+    long_negative = is_negative(long_degrees)
 
     resp = HTTParty.post('http://aa.usno.navy.mil/cgi-bin/aa_pap.pl', :body => {
     'FFX' => 2,
@@ -47,6 +39,14 @@ Moon phase and civil twilight information.
     })
     noko = Nokogiri::HTML resp.body
     noko.css('pre').children
+  end
+
+  def is_negative(degrees)
+    negative = 1
+    if degrees < 1
+      negative = -1
+    end
+    negative
   end
 
   def execute (msg, query)

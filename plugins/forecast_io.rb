@@ -54,7 +54,7 @@ Once you specify a location, it will persist as long as you own your nick.
     request, query = params[:Body].split ' '
 
     query = get_personalized_query('twillio text', 'weather', query)
-    forecast = get_forecast_io_results query
+    forecast = ForecastIOMethods::get_forecast_io_results query
 
     case request
       when /^forecast/i

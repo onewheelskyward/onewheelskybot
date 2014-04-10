@@ -1,5 +1,3 @@
-require_relative 'test_helper'
-require 'cinch/test'
 require_relative '../helpers'
 
 describe 'GPS functions test' do

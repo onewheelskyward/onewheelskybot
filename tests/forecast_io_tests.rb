@@ -1,4 +1,3 @@
-require_relative 'test_helper'
 require_relative '../plugins/forecast_io'
 require 'httparty'
 

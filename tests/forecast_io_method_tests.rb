@@ -1,9 +1,3 @@
-require 'simplecov'
-SimpleCov.start
-require 'cinch/test'
-require 'timecop'
-# require 'minitest'
-require_relative 'test_helper'
 require_relative '../plugins/forecast_io'
 require_relative '../helpers'
 

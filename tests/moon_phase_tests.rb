@@ -1,3 +1,4 @@
+require_relative 'test_helper'
 require_relative '../plugins/moon_phase'
 
 describe 'this' do
@@ -9,9 +10,9 @@ describe 'this' do
   end
 
   it 'Checks the portland moon phase' do
-    message = make_message(bot, '!mp Portland, OR')
+    message = make_message(bot, '!moon Portland, OR')
     replies = get_replies(message)
-    replies[0].should == ' '
+    replies[0].text.should == ': rise 01:40, transit 06:39, set 11:42'
   end
 
   # it 'lights up ansirain intensity' do

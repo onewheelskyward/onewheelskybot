@@ -1,4 +1,6 @@
 require 'data_mapper'
+require 'cinch'
+require 'cinch/test'
 
 Dir.glob(File.dirname(__FILE__) + "/../models/*.rb").each { |model| require_relative model }
 DataMapper::Logger.new($stdout, :debug)

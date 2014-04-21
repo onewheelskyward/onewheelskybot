@@ -94,6 +94,7 @@ class Ping
                       http://i.imgur.com/ZIbuNJE.gif
                       https://dl.dropboxusercontent.com/u/12492300/no-no-no.gif
                       http://s3-ec.buzzfed.com/static/enhanced/terminal05/2012/6/27/15/anigif_enhanced-buzz-31051-1340824765-10.gif
+                      http://static.fjcdn.com/pictures/Srsly_530ff6_429093.jpg
 
                   )
     if msg.user.nick == 'incanus77'

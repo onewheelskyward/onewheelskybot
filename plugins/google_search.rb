@@ -54,7 +54,7 @@ EOF
     end
 
     if link['url']
-      return shorten_url(link['url']), link['titleNoFormatting']
+      return shorten_url(link['unescapedUrl']), link['titleNoFormatting']
     end
   end
 end

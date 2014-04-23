@@ -53,7 +53,7 @@ Pro photo used search
       arr.each do |element|
         if element[:item].downcase.include? query.downcase
           results = true
-          msg.reply "#{elements}: #{element[:item]} $#{element[:price]}"
+          User(msg.user.nick).send("#{elements}: #{element[:item]} $#{element[:price]}")
         end
       end
     end

@@ -125,6 +125,12 @@ module ForecastIOMethods
         else
           str = ansi_rain_forecast forecast
         end
+      when 'dailyrain'
+        if secondary_command == 'intensity'
+          str = daily_rain_intensity_forecast forecast
+        else
+          str = daily_rain_forecast forecast
+        end
       when 'asciiozone'
         str = ascii_ozone_forecast forecast
       when 'asciitemp'
@@ -178,6 +184,18 @@ module ForecastIOMethods
     "rain probability #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
   end
 
+  def daily_rain_forecast(forecast)
+    str = do_the_daily_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability', get_rain_range_colors)
+    #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
+    "rain probability now |#{str}| this hour tomorrow"
+  end
+
+  def daily_rain_intensity_forecast(forecast)
+    str = do_the_daily_rain_chance_thing(forecast, ansi_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
+    #msg.reply "|#{str}|  min-by-min rain prediction.  range |▁▃▅▇█▇▅▃▁| art by 'a-g-j' =~ s/-//g"
+    "rain intensity now |#{str}| this hour tomorrow"
+  end
+
   def ascii_rain_intensity_forecast(forecast)
     str = do_the_rain_chance_thing(forecast, ascii_chars, 'precipIntensity', 'intensity', get_rain_intensity_range_colors)
     "rain intensity #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
@@ -215,6 +233,38 @@ module ForecastIOMethods
 
     if range_colors
       str = get_colored_string(data, key, str, range_colors)
+    end
+    #  - 28800
+    return str
+  end
+
+  def do_the_daily_rain_chance_thing(forecast, chars, key, type, range_colors = nil)
+    precip_type = 'rain'
+    data_points = []
+    data = forecast['hourly']['data']
+    partial_data = []
+
+    data.each_with_index do |datum, index|
+      partial_data.push datum
+      break if index == 23
+    end
+
+    partial_data.each_with_index do |datum, index|
+      data_points.push datum[key]
+      precip_type = 'snow' if datum['precipType'] == 'snow'
+      break if index == 23
+    end
+
+    if precip_type == 'snow' and type != 'intensity'
+      chars = %w[_ ☃ ☃ ☃ ☃ ☃] # Hat tip to hallettj@#pdxtech
+    end
+
+    differential = data_points.max - data_points.min
+
+    str = get_dot_str(chars, partial_data, data_points.min, differential, key)
+
+    if range_colors
+      str = get_colored_string(partial_data, key, str, range_colors)
     end
     #  - 28800
     return str

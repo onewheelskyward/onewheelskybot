@@ -15,6 +15,7 @@ class ForecastIO
   match /(asciirain)\s*(.*)/i,                method: :execute
   match /(asciisnow)\s*(.*)/i,                method: :execute
   match /(ansirain)\s*(.*)/i,                 method: :execute
+  match /(dailyrain)\s*(.*)/i,                method: :execute
   match /(ansisnow)\s*(.*)/i,                 method: :execute
   match /(asciiozone)\s*(.*)/i,               method: :execute
   match /(asciitemp)\s*(.*)/i,                method: :execute
@@ -34,6 +35,7 @@ Once you specify a location, it will persist as long as you own your nick.
 !forecast   [location] Forecast IO forecast for Portland.
 !asciirain  [location] Incoming rain data for the next hour.
 !ansirain   [location] Fancy incoming rain data for the next hour.
+!dailyrain  [location] Rain forecast for the next 24 hours.
 !asciiozone [location] Ozone data for the next 24 hours.
 !asciitemp  [location] 24 hours of temperature data.
 !ansitemp   [location] 24 hours of fancy temperature data.

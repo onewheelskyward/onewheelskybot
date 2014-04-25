@@ -28,6 +28,7 @@ class ForecastIO
   match /(7day)\s*(.*)/i,                     method: :execute
   match /(alerts)\s*(.*)/i,                   method: :execute
   match /(condi*t*i*o*n*s*)\s*(.*)/i,         method: :execute
+  match /(rain)\s*(.*)/i,                     method: :execute
 
   set :help, <<-EOF
 This is the weather prediction module.  Location is optional, and defaults to Portland, OR.
@@ -47,7 +48,7 @@ Once you specify a location, it will persist as long as you own your nick.
 !alerts     [location] NOAA alerts for your location, if available.
 !conditions [location] get a summary of conditions.
 !forecast   set scale [c|f] Change your temperature scale.  This works with all available commands.
-
+!rain       Yesno?
   EOF
 
   # Twillio response block

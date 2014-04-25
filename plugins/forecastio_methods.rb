@@ -109,6 +109,7 @@ module ForecastIOMethods
 
     query = get_personalized_query(username, key, query)
     forecast = get_forecast_io_results query
+    location = forecast['long_name'] + ' '
 
     case command
       when 'forecast', 'weather', 'asciithefuckingweather'
@@ -161,10 +162,12 @@ module ForecastIOMethods
         str = alerts forecast
       when /condi*t*i*o*n*s*/i
         str = conditions forecast
-
+      when 'rain'
+        location = ''
+        str = is_it_raining forecast
     end
     unless str.empty?
-      msg.reply "#{forecast['long_name']} #{str}"
+      msg.reply "#{location}#{str}"
     end
   end
 
@@ -211,6 +214,38 @@ module ForecastIOMethods
     forecast = get_forecast_io_results location
     str = do_the_rain_chance_thing(forecast, ansi_chars, 'precipProbability', 'probability')
     "#{precip_type} #{type} #{(Time.now).strftime('%H:%M').to_s}|#{str}|#{(Time.now + 3600).strftime('%H:%M').to_s}"  #range |_.-•*'*•-._|
+  end
+
+  def is_it_raining(forecast)
+    eight_ball = {yes: ['It is certain',
+                        'It is decidedly so',
+                        'Without a doubt',
+                        'Yes definitely',
+                        'You may rely on it',
+                        'As I see it, yes',
+                        'Most likely',
+                        'Outlook good',
+                        'Yes',
+                        'Signs point to yes'],
+                  maybe: ['Reply hazy try again',
+                          'Ask again later',
+                          'Better not tell you now',
+                          'Cannot predict now',
+                          'Concentrate and ask again'],
+                  no: ['Don\'t count on it',
+                       'My reply is no',
+                       'My sources say no',
+                       'Outlook not so good',
+                       'Very doubtful']
+    }
+    case forecast['currently']['precipProbability']
+      when 0..0.2
+        eight_ball[:no].sample
+      when 0.201..0.7
+        eight_ball[:maybe].sample
+      when 0.701..1
+        eight_ball[:yes].sample
+    end
   end
 
   def do_the_rain_chance_thing(forecast, chars, key, type, range_colors = nil)

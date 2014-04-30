@@ -109,7 +109,7 @@ module ForecastIOMethods
 
     query = get_personalized_query(username, key, query)
     forecast = get_forecast_io_results query
-    location = forecast['long_name'] + ' '
+    location = forecast['long_name'].to_s + ' '
 
     case command
       when 'forecast', 'weather', 'asciithefuckingweather'
@@ -403,7 +403,7 @@ module ForecastIOMethods
   def do_the_wind_thing(forecast, chars)
     key = 'windSpeed'
     data_points = []
-    data = forecast['hourly']['data']
+    data = forecast['hourly']['data'].slice(0,23)
 
     data.each do |datum|
       data_points.push datum[key]

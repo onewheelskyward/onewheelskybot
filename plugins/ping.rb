@@ -97,6 +97,8 @@ class Ping
                       http://static.fjcdn.com/pictures/Srsly_530ff6_429093.jpg
                       https://31.media.tumblr.com/ba0ece39a50141b81431a1d1f7f930b5/tumblr_n3t0x55yDi1rs41dlo1_250.gif
                       http://cl.ly/image/1x3e2S1k423H/PEH2j2j.gif
+                      http://i.imgur.com/4l4px0l.gif
+                      http://s1.cdn.autoevolution.com/images/news/yes-this-is-a-caterpillar-797-carried-by-a-mercedes-benz-actros-80513_1.jpg
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

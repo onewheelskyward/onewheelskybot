@@ -318,7 +318,7 @@ module ForecastIOMethods
 
   def ansi_cloud_forecast(forecast)
     # O ◎ ]
-    data = forecast['hourly']['data']
+    data = forecast['hourly']['data'].slice(0,23)
 
     str = get_dot_str(ansi_chars, data, 0, 1, 'cloudCover')
 

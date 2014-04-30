@@ -15,6 +15,7 @@ class ForecastIO
   match /(asciirain)\s*(.*)/i,                method: :execute
   match /(asciisnow)\s*(.*)/i,                method: :execute
   match /(ansirain)\s*(.*)/i,                 method: :execute
+  match /(ansicloud)s*\s*(.*)/i,              method: :execute
   match /(dailyrain)\s*(.*)/i,                method: :execute
   match /(ansisnow)\s*(.*)/i,                 method: :execute
   match /(asciiozone)\s*(.*)/i,               method: :execute

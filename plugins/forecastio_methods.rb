@@ -134,6 +134,8 @@ module ForecastIOMethods
         end
       when 'asciiozone'
         str = ascii_ozone_forecast forecast
+      when 'ansicloud'
+        str = ansi_cloud_forecast forecast
       when 'asciitemp'
         str = ascii_temp_forecast forecast
       when 'ansitemp'
@@ -312,6 +314,15 @@ module ForecastIOMethods
     str = get_dot_str(ozone_chars, data, 280, 350-280, 'ozone')
 
     "ozones #{data.first['ozone']} |#{str}| #{data.last['ozone']} [24h forecast]"
+  end
+
+  def ansi_cloud_forecast(forecast)
+    # O ◎ ]
+    data = forecast['hourly']['data']
+
+    str = get_dot_str(ansi_chars, data, 0, 1, 'cloudCover')
+
+    "24h cloud cover |#{str}|"
   end
 
   def ascii_temp_forecast(forecast, hours = 24)

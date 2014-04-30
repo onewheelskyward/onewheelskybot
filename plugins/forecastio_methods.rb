@@ -278,15 +278,9 @@ module ForecastIOMethods
   def do_the_daily_rain_chance_thing(forecast, chars, key, type, range_colors = nil)
     precip_type = 'rain'
     data_points = []
-    data = forecast['hourly']['data']
-    partial_data = []
+    data = forecast['hourly']['data'].slice(0,23)
 
     data.each_with_index do |datum, index|
-      partial_data.push datum
-      break if index == 23
-    end
-
-    partial_data.each_with_index do |datum, index|
       data_points.push datum[key]
       precip_type = 'snow' if datum['precipType'] == 'snow'
       break if index == 23
@@ -298,10 +292,10 @@ module ForecastIOMethods
 
     differential = data_points.max - data_points.min
 
-    str = get_dot_str(chars, partial_data, data_points.min, differential, key)
+    str = get_dot_str(chars, data, data_points.min, differential, key)
 
     if range_colors
-      str = get_colored_string(partial_data, key, str, range_colors)
+      str = get_colored_string(data, key, str, range_colors)
     end
     #  - 28800
     return str
@@ -337,23 +331,21 @@ module ForecastIOMethods
 
   def do_the_temp_thing(forecast, chars, hours)
     temps = []
-    data = forecast['hourly']['data']
-    data_limited = []
+    data = forecast['hourly']['data'].slice(0,hours - 1)
     key = 'temperature'
 
     data.each_with_index do |datum, index|
       temps.push datum[key]
-      data_limited.push datum
       break if index == hours - 1 # We only want (hours) 24hrs of data.
     end
 
     differential = temps.max - temps.min
 
     # Hmm.  There's a better way.
-    dot_str = get_dot_str(chars, data_limited, temps.min, differential, key)
+    dot_str = get_dot_str(chars, data, temps.min, differential, key)
 
     temp_range_colors = get_temp_range_colors
-    colored_str = get_colored_string(data_limited, key, dot_str, temp_range_colors)
+    colored_str = get_colored_string(data, key, dot_str, temp_range_colors)
 
     return colored_str, temps
   end
@@ -427,21 +419,19 @@ module ForecastIOMethods
 
   def do_the_wind_direction_thing(forecast, hours = 24)
     key = 'windBearing'
-    data = forecast['hourly']['data']
+    data = forecast['hourly']['data'].slice(0,hours - 1)
     str = ''
     data_points = []
-    data_limited = []
     # This is a little weird, because the arrows are 180° rotated.  That's because the wind bearing is "out of the N" not "towards the N".
     wind_arrows = {'N' => '↓', 'NE' => '↙', 'E' => '←', 'SE' => '↖', 'S' => '↑', 'SW' => '↗', 'W' => '→', 'NW' => '↘'}
 
     data.each_with_index do |datum, index|
       str += wind_arrows[get_cardinal_direction_from_bearing datum[key]]
-      data_limited.push datum
       data_points.push datum['windSpeed']
       break if index == hours - 1 # We only want (hours) 24hrs of data.
     end
 
-    colored_str = get_colored_string(data_limited, 'windSpeed', str, get_wind_range_colors)
+    colored_str = get_colored_string(data, 'windSpeed', str, get_wind_range_colors)
 
     return colored_str, data_points
   end

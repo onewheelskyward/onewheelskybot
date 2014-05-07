@@ -99,6 +99,7 @@ class Ping
                       http://cl.ly/image/1x3e2S1k423H/PEH2j2j.gif
                       http://i.imgur.com/4l4px0l.gif
                       http://s1.cdn.autoevolution.com/images/news/yes-this-is-a-caterpillar-797-carried-by-a-mercedes-benz-actros-80513_1.jpg
+                      https://dl.dropboxusercontent.com/u/575564/um.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

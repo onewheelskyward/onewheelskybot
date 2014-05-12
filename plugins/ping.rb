@@ -101,6 +101,7 @@ class Ping
                       http://s1.cdn.autoevolution.com/images/news/yes-this-is-a-caterpillar-797-carried-by-a-mercedes-benz-actros-80513_1.jpg
                       https://dl.dropboxusercontent.com/u/575564/um.gif
                       https://i.chzbgr.com/maxW500/8175176960/h4DD8E7B8/.jpg
+                      http://i.imgur.com/fqhoT64.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

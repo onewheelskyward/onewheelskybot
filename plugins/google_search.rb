@@ -15,8 +15,7 @@ class GoogleSearch < GoogleAbstract
 EOF
 
   def bang(msg)
-
-    msg.reply("#{msg.user.nick} duckhunt bang")
+    msg.reply("PULL!")
   end
 
   def get_google_url(query)

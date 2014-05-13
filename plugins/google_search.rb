@@ -8,10 +8,15 @@ class GoogleSearch < GoogleAbstract
 
   match /go*o*g*l*e*\s*m*e*\s(.*)/i, method: :google_search
   match /man\s+(.*)$/, method: :man_search
+  match /\\_o< quack\!/, use_prefix: false, method: :bang
   set :help, <<-EOF
 !g[oogle] <search term>[index]  For instant Google results, right in IRC.  [index] is 0-n or * for a random result.
 !man [page] Search for an online man page for [page].
 EOF
+
+  def bang(msg)
+    msg.reply('Ultragon duckhunt bang')
+  end
 
   def get_google_url(query)
     "https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=#{URI::encode query}"

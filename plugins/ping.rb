@@ -102,6 +102,7 @@ class Ping
                       https://dl.dropboxusercontent.com/u/575564/um.gif
                       https://i.chzbgr.com/maxW500/8175176960/h4DD8E7B8/.jpg
                       http://i.imgur.com/fqhoT64.gif
+                      http://i.imgur.com/lKvEFKo.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

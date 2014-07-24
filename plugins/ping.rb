@@ -103,7 +103,8 @@ class Ping
                       https://i.chzbgr.com/maxW500/8175176960/h4DD8E7B8/.jpg
                       http://i.imgur.com/fqhoT64.gif
                       http://i.imgur.com/lKvEFKo.gif
-                  )
+                      http://www.toychute.com/ProductImages/10300.jpg
+                    )
     if msg.user.nick == 'incanus77'
       pong = %w(
                  'http://i.imgur.com/JTW4cle.jpg',

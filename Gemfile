@@ -26,3 +26,4 @@ gem 'simplecov'
 gem 'minitest'
 gem 'timecop'
 
+gem 'cinch-forecast-io', github: 'onewheelskyward/cinch-forecast-io'

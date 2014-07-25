@@ -1,5 +1,6 @@
 require 'cinch'
 require 'yaml'
+require 'cinch/plugins/forecast_io'
 
 config = YAML.load_file(File.dirname(__FILE__) + '/config.yml')
 puts "postgres://#{config['db_username']}:#{config['db_password']}@#{config['db_host']}/#{config['database']}"

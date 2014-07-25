@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/onewheelskyward/cinch-forecast-io.git
-  revision: 80d84c680a99cfc6b6485c39807de66798e195ec
+  revision: bfb8e62246011115ca50ba78b907cc3b0d5bf733
   specs:
     cinch-forecast-io (1.0.0)
 

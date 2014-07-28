@@ -4,14 +4,28 @@ require 'json'
 class UvIndex
   include Cinch::Plugin
 
-  match /uvi*n*d*e*x*\s*(.*)$/i,                method: :uv_index
-  match /uvula\s*(.*)$/i,                method: :uv_index
+  match /uv\s*(.*)$/i,                method: :uv_index
 
   set :help, <<-EOF
 !uv[index] zipcode
   EOF
 
   def uv_index(msg, zip)
+    snarky_replies = [
+        'It\'s nighttime.',
+        'Is it daybreak yet?',
+        'Well, at least you can put away the flashlight.',
+        '',
+        '',
+        '',
+        '',
+        '',
+        'Better grab that spf30.',
+        '',
+        '',
+        '']
+
+
     unless zip.match /^\d{5}$/
       # msg.reply "Sorry, #{msg.user.nick}, #{zip} doesn't look like a proper zip code Selecting Portland."
       zip = 97205
@@ -29,6 +43,6 @@ class UvIndex
     # zip
     #date_time
     #uv_value
-    msg.reply "Today's UV index will be #{uv_index[:value]} at #{uv_index[:time]}."
+    msg.reply "Today's UV index will be #{uv_index[:value]} at #{uv_index[:time]}.  #{snarky_replies[uv_index[:value]]}"
   end
 end

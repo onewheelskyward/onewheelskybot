@@ -19,11 +19,11 @@ end
 class PedalPalooza
   include Cinch::Plugin
 
-  match /(pedalpalooza|pp)\s*$/i,                                                      method: :next_ride
-  match /(pedalpalooza|pp)\s+next/i,                                                   method: :next_ride
-  match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+next/i,                             method: :zip_code_next
-  match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+(\d+\/\d+\s+\d+:\d+)/i,            method: :zip_code_date_time
-  match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+(.*)$/i,                            method: :zip_code_search
+  # match /(pedalpalooza|pp)\s*$/i,                                                      method: :next_ride
+  # match /(pedalpalooza|pp)\s+next/i,                                                   method: :next_ride
+  # match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+next/i,                             method: :zip_code_next
+  # match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+(\d+\/\d+\s+\d+:\d+)/i,            method: :zip_code_date_time
+  # match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+(.*)$/i,                            method: :zip_code_search
   match /pp reload$/i,                        method: :load_ical
 
   set :help, <<-EOF

@@ -109,6 +109,7 @@ class Ping
                       http://i.imgur.com/9betuST.gif
                       http://i.imgur.com/zyPiTOc.gif
                       http://i.imgur.com/qmPKJHh.gif
+                      http://2.bp.blogspot.com/-0F5h8vZhZeM/T7a8ny5ZlAI/AAAAAAAAD-w/2nSM6yOQ30Q/s640/tumblr_m3r4nej4d91qf5do9o1_500.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

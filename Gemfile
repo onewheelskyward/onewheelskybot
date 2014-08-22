@@ -21,6 +21,7 @@ gem 'hipchat-api'
 gem 'capistrano', '<3'
 gem 'pdf-reader'
 gem '3scale_client'
+gem 'htmlentities'
 
 gem 'simplecov'
 gem 'minitest'

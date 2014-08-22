@@ -108,6 +108,7 @@ GEM
     highline (1.6.21)
     hipchat-api (1.0.6)
       httparty
+    htmlentities (4.3.2)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     httparty (0.13.1)
@@ -218,6 +219,7 @@ DEPENDENCIES
   dm-sqlite-adapter
   google-api-client
   hipchat-api
+  htmlentities
   httparty
   mechanize
   minitest

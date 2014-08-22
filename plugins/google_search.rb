@@ -1,6 +1,7 @@
 require 'mechanize'
 require 'open-uri'
 require 'json'
+require 'htmlentities'
 require_relative 'google_abstract'
 
 class GoogleSearch < GoogleAbstract
@@ -30,7 +31,7 @@ EOF
     req = ApiRequest.first_or_create(type: :google, request: query)
     if req.reply
       search_url, search_text = get_search_url_and_text(req.response, index)
-      msg.reply("* #{format_reply_string(search_text, search_url)}")
+      msg.reply("* #{format_reply_string(HTMLEntities.new.decode(search_text), search_url)}")
     else
       result = api_call(url)
       search_url, search_text = get_search_url_and_text(result, index)
@@ -60,7 +61,7 @@ EOF
     end
 
     if link['url']
-      return shorten_url(link['unescapedUrl']), link['titleNoFormatting']
+      return shorten_url(link['unescapedUrl']), HTMLEntities.new.decode(link['titleNoFormatting'])
     end
   end
 end

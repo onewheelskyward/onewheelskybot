@@ -1,83 +1,83 @@
 require 'json'
 require 'httparty'
 
-class PedalpaloozaEvent
-  include DataMapper::Resource
-
-  property :id, Serial
-  property :sequence, Integer
-  property :dtstart, String, length: 255
-  property :dtstamp, String, length: 255
-  property :summary, String, length: 2000
-  property :uid, String, length: 255
-  property :description, String, length: 4000
-  property :organizer, String, length: 500
-  property :location, String, length: 2000
-  property :attach, String, length: 2048
-end
-
+# class PedalpaloozaEvent
+#   include DataMapper::Resource
+#
+#   property :id, Serial
+#   property :sequence, Integer
+#   property :dtstart, String, length: 255
+#   property :dtstamp, String, length: 255
+#   property :summary, String, length: 2000
+#   property :uid, String, length: 255
+#   property :description, String, length: 4000
+#   property :organizer, String, length: 500
+#   property :location, String, length: 2000
+#   property :attach, String, length: 2048
+# end
+#
 class PedalPalooza
   include Cinch::Plugin
 
-  match /(pedalpalooza|pp)\s*$/i,                                                      method: :next_ride
-  match /(pedalpalooza|pp)\s+next/i,                                                   method: :next_ride
-  match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+next/i,                             method: :zip_code_next
-  match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+(\d+\/\d+\s+\d+:\d+)/i,            method: :zip_code_date_time
-  match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+(.*)$/i,                            method: :zip_code_search
-  match /pp reload$/i,                        method: :load_ical
+  # match /(pedalpalooza|pp)\s*$/i,                                                      method: :next_ride
+  # match /(pedalpalooza|pp)\s+next/i,                                                   method: :next_ride
+  # match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+next/i,                             method: :zip_code_next
+  # match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+(\d+\/\d+\s+\d+:\d+)/i,            method: :zip_code_date_time
+  # match /(pedalpalooza|pp)\s+(\d{5}|\d{5}-\d{4})\s+(.*)$/i,                            method: :zip_code_search
+  # match /pp reload$/i,                        method: :load_ical
 
-  set :help, <<-EOF
-  Pedalpalooza search bot!  Find the nearest, or next, or nearest next ride.  Or find something you missed.
-  !pedalpalooza [search]            [search] rides
-  !pedalpalooza [zip] [search]      [search] rides nearest to zip
-  !pedalpalooza next                Next ride, anywhere.
-  !pedalpalooza [zip] next          Next ride nearest to [zip]
-  !pedalpalooza [time/date]         Next ride after specified time/date.  e.g. 6/10 16:45
-  !pedalpalooza [zip] [time/date]   Rides near [zip] after [time/date]
-  !pedalpalooza past [search]       Past rides, optionally specifying [search]
-  EOF
+  # set :help, <<-EOF
+  # Pedalpalooza search bot!  Find the nearest, or next, or nearest next ride.  Or find something you missed.
+  # !pedalpalooza [search]            [search] rides
+  # !pedalpalooza [zip] [search]      [search] rides nearest to zip
+  # !pedalpalooza next                Next ride, anywhere.
+  # !pedalpalooza [zip] next          Next ride nearest to [zip]
+  # !pedalpalooza [time/date]         Next ride after specified time/date.  e.g. 6/10 16:45
+  # !pedalpalooza [zip] [time/date]   Rides near [zip] after [time/date]
+  # !pedalpalooza past [search]       Past rides, optionally specifying [search]
+  # EOF
 
-  def execute (msg, query)
-    msg.reply(['nice try.', 'Nuh-uh', 'Not yet', 'workin\' on it', 'under construction'].sample)
-  end
-
-  def load_ical
-    in_event = false
-    last_key = nil
-
-    #todo: get ical from web
-    PedalpaloozaEvent.delete
-    @ical.split("\n").each do |line|
-      if line.scan /^BEGIN:VEVENT$/
-        event = PedalpaloozaEvent.new()
-        in_event = true
-      end
-      if line.scan /^END:VEVENT$/
-        in_event = false
-        puts event.inspect
-        puts event.valid?
-        puts event.save
-      end
-
-      if in_event
-        if matches = line.match(/^([A-Za-z;\/=]+):(.*)/)
-          #todo: named regex
-          key = matches[0].downcase
-          data = matches[1]
-
-          if key.match /^DTSTART/ # Little hack for the DTSTART;TZID=US/Pacific key.
-            key = 'dtstart'
-          end
-
-          event[key] = data
-          last_key = key
-        elsif matches = line.match(/\s{2}(.*)/)    # line continuations.
-          event[last_key] += " #{matches[0]}"
-         end
-
-      end
-    end
-  end
+  # def execute (msg, query)
+  #   msg.reply(['nice try.', 'Nuh-uh', 'Not yet', 'workin\' on it', 'under construction'].sample)
+  # end
+  #
+  # def load_ical
+  #   in_event = false
+  #   last_key = nil
+  #
+  #   todo: get ical from web
+    # PedalpaloozaEvent.delete
+    # @ical.split("\n").each do |line|
+    #   if line.scan /^BEGIN:VEVENT$/
+    #     event = PedalpaloozaEvent.new()
+    #     in_event = true
+    #   end
+    #   if line.scan /^END:VEVENT$/
+    #     in_event = false
+    #     puts event.inspect
+    #     puts event.valid?
+    #     puts event.save
+    #   end
+    #
+    #   if in_event
+    #     if matches = line.match(/^([A-Za-z;\/=]+):(.*)/)
+    #       todo: named regex
+          # key = matches[0].downcase
+          # data = matches[1]
+          #
+          # if key.match /^DTSTART/ # Little hack for the DTSTART;TZID=US/Pacific key.
+          #   key = 'dtstart'
+          # end
+          #
+          # event[key] = data
+          # last_key = key
+        # elsif matches = line.match(/\s{2}(.*)/)    # line continuations.
+        #   event[last_key] += " #{matches[0]}"
+        #  end
+      #
+      # end
+    # end
+  # end
   @ical =<<END
 BEGIN:VCALENDAR
 CALSCALE:GREGORIAN

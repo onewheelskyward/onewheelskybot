@@ -109,6 +109,14 @@ class Ping
                       http://i.imgur.com/9betuST.gif
                       http://i.imgur.com/zyPiTOc.gif
                       http://i.imgur.com/qmPKJHh.gif
+                      http://2.bp.blogspot.com/-0F5h8vZhZeM/T7a8ny5ZlAI/AAAAAAAAD-w/2nSM6yOQ30Q/s640/tumblr_m3r4nej4d91qf5do9o1_500.gif
+                      http://giant.gfycat.com/InbornGrandioseAfricanporcupine.gif
+                      http://37.media.tumblr.com/b677b6b70be6235fbfe8797d6ce59734/tumblr_n6euc1ZIIw1txy0q2o1_400.gif
+                      http://i.imgur.com/s6bjPGC.gif
+                      http://i.hizliresim.com/wvPaVv.jpg
+                      http://s.mlkshk.com/r/104ZM.gif
+                      http://i.imgur.com/h6YTosu.gif
+                      http://i.imgur.com/8BcPh2d.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

@@ -119,6 +119,7 @@ class Ping
                       http://i.imgur.com/8BcPh2d.gif
                       http://i.imgur.com/tVjLxnv.gif
                       http://i.imgur.com/2DmKoaq.gif
+                      http://i.imgur.com/PBhpWe7.jpg
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

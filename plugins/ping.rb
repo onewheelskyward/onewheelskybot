@@ -124,13 +124,14 @@ class Ping
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(
-                 'http://i.imgur.com/JTW4cle.jpg',
-                 'https://f.cloud.github.com/assets/5572214/2140070/38283e06-9347-11e3-85a8-78b30b2f5701.JPG',
-                 'https://f.cloud.github.com/assets/32314/2140406/00e89698-934c-11e3-9235-a8feb82e77fc.png',
-                 'https://f.cloud.github.com/assets/937626/2140770/b384be2c-9350-11e3-83e0-374c2b646829.jpg',
-                 'https://f.cloud.github.com/assets/26278/2140782/cd459340-9350-11e3-87a2-90fa8bf85872.jpg',
-                 'http://i.imgur.com/cGDUG1B.jpg',
-                 'https://f.cloud.github.com/assets/17722/2141926/8143e812-935e-11e3-9188-e48035860036.jpg'
+                 http://i.imgur.com/JTW4cle.jpg,
+                 https://f.cloud.github.com/assets/5572214/2140070/38283e06-9347-11e3-85a8-78b30b2f5701.JPG
+                 https://f.cloud.github.com/assets/32314/2140406/00e89698-934c-11e3-9235-a8feb82e77fc.png
+                 https://f.cloud.github.com/assets/937626/2140770/b384be2c-9350-11e3-83e0-374c2b646829.jpg
+                 https://f.cloud.github.com/assets/26278/2140782/cd459340-9350-11e3-87a2-90fa8bf85872.jpg
+                 http://i.imgur.com/cGDUG1B.jpg
+                 https://f.cloud.github.com/assets/17722/2141926/8143e812-935e-11e3-9188-e48035860036.jpg
+                 https://s3.amazonaws.com/uploads.hipchat.com/81832/590730/MgmFHcYSCMWqfGm/john.jpg
       ).sample
     else
       pong = pong_images.sample

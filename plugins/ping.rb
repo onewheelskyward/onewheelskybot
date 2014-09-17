@@ -121,6 +121,7 @@ class Ping
                       http://i.imgur.com/2DmKoaq.gif
                       http://i.imgur.com/PBhpWe7.jpg
                       http://media.tumblr.com/76164aff91b34c5c96893a951118be50/tumblr_inline_nbk74zpzIc1syjnre.gif
+                      http://cdn.gifbay.com/2012/11/nap_time-12556.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

@@ -123,6 +123,7 @@ class Ping
                       http://media.tumblr.com/76164aff91b34c5c96893a951118be50/tumblr_inline_nbk74zpzIc1syjnre.gif
                       http://cdn.gifbay.com/2012/11/nap_time-12556.gif
                       http://www.tehcute.com/pics/201109/baby-sloth-is-content-big.jpg
+                      https://s3.amazonaws.com/uploads.hipchat.com/81832/606728/w8Ttqi2tokoln3N/DanceChewbacca-1-1.gif
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(

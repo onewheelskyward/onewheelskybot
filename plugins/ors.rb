@@ -8,7 +8,7 @@
 class ORS
   include Cinch::Plugin
 
-  match /!ors\s*(\d+\.\d+)$/i, method: :execute
+  match /ors\s*(\d+\.\d+)$/i, method: :execute
 
   set :help, <<-EOF
 This will simply redirect you to oregonlaws.org.

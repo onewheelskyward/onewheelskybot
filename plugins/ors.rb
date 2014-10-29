@@ -3,7 +3,7 @@
 ##
 require 'json'
 require 'httparty'
-require 'URI'
+require 'uri'
 require 'nokogiri'
 
 class ORS

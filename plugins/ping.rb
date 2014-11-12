@@ -125,6 +125,7 @@ class Ping
                       http://www.tehcute.com/pics/201109/baby-sloth-is-content-big.jpg
                       https://s3.amazonaws.com/uploads.hipchat.com/81832/606728/w8Ttqi2tokoln3N/DanceChewbacca-1-1.gif
                       http://i.imgur.com/5EFJrLx.gif
+                      http://www.argudo.org/~jpargudo/elephant_deal_scale30.png
                   )
     if msg.user.nick == 'incanus77'
       pong = %w(
